@@ -22,6 +22,12 @@ import LibraryBooks from "@material-ui/icons/LibraryBooks";
 import BubbleChart from "@material-ui/icons/BubbleChart";
 import LocationOn from "@material-ui/icons/LocationOn";
 import Notifications from "@material-ui/icons/Notifications";
+import AddShoppingCart from "@material-ui/icons/AddShoppingCart";
+import Class from "@material-ui/icons/Class";
+import ImportantDevices from "@material-ui/icons/ImportantDevices";
+import Redeem from "@material-ui/icons/Redeem";
+import ShoppingCart from "@material-ui/icons/ShoppingCart";
+import SupervisedUserCircle from "@material-ui/icons/SupervisedUserCircle";
 // core components/views for Admin layout
 import DashboardPage from "views/Dashboard/Dashboard.js";
 import UserProfile from "views/UserProfile/UserProfile.js";
@@ -30,6 +36,8 @@ import Typography from "views/Typography/Typography.js";
 import Icons from "views/Icons/Icons.js";
 import Maps from "views/Maps/Maps.js";
 import NotificationsPage from "views/Notifications/Notifications.js";
+import { MonetizationOn } from "@material-ui/icons";
+import Categorias from "views/Categorias/Categorias";
 
 const dashboardRoutes = [
   {
@@ -44,15 +52,15 @@ const dashboardRoutes = [
     path: "/categorias",
     name: "Categorias",
     rtlName: "ملف تعريفي للمستخدم",
-    icon: "class",
-    component: UserProfile,
+    icon: Class,
+    component: Categorias,
     layout: "/admin",
   },
   {
     path: "/produtos",
     name: "Produtos",
     rtlName: "ملف تعريفي للمستخدم",
-    icon: "add_shopping_cart",
+    icon: AddShoppingCart,
     component: UserProfile,
     layout: "/admin",
   },
@@ -60,7 +68,7 @@ const dashboardRoutes = [
     path: "/vendas",
     name: "Vendas",
     rtlName: "ملف تعريفي للمستخدم",
-    icon: "shopping_basket",
+    icon: ShoppingCart,
     component: UserProfile,
     layout: "/admin",
   },
@@ -68,7 +76,7 @@ const dashboardRoutes = [
     path: "/promocoes",
     name: "Promoções",
     rtlName: "ملف تعريفي للمستخدم",
-    icon: "paid",
+    icon: MonetizationOn,
     component: UserProfile,
     layout: "/admin",
   },
@@ -76,7 +84,7 @@ const dashboardRoutes = [
     path: "/premios",
     name: "Prêmios",
     rtlName: "ملف تعريفي للمستخدم",
-    icon: "redeem",
+    icon: Redeem,
     component: UserProfile,
     layout: "/admin",
   },
@@ -84,7 +92,7 @@ const dashboardRoutes = [
     path: "/aplicacoes",
     name: "Aplicações",
     rtlName: "ملف تعريفي للمستخدم",
-    icon: "important_devices",
+    icon: ImportantDevices,
     component: UserProfile,
     layout: "/admin",
   },
@@ -92,7 +100,7 @@ const dashboardRoutes = [
     path: "/cargos",
     name: "Cargos",
     rtlName: "ملف تعريفي للمستخدم",
-    icon: "supervised_user_circle",
+    icon: SupervisedUserCircle,
     component: UserProfile,
     layout: "/admin",
   },
