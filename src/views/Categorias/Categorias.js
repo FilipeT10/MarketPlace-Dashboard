@@ -1,6 +1,5 @@
 import React from 'react';
 // @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -8,6 +7,10 @@ import Table from "components/Table/Table.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
+
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/styles';
+import ServiceCategorias from '../../services/Categorias.js'
 
 const styles = {
   cardCategoryWhite: {
@@ -26,20 +29,35 @@ const styles = {
     marginBottom: "3px",
     textDecoration: "none",
   },
-};
-  const useStyles = makeStyles(styles);
-
-
-
-
-   const classes = useStyles();
+}
 
  class Categorias extends React.Component {
 
+  state = {
+    categorias: []
+  };
 
-   
+
+  componentDidMount() {
+
+    this.getCategoria()
+  }
+  getCategoria = () => {
+    ServiceCategorias.getCategorias().then(response => {
+        var categorias = response.data;
+        console.log(categorias)
+        this.setState({categorias})
+      
+    }).catch(error => {
+        console.log(error);
+    });
+  }
+  
 
   render(){
+
+    const { classes } = this.props;
+    const { categorias} = this.state;
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
@@ -55,27 +73,9 @@ const styles = {
           <CardBody>
             <Table
               tableHeaderColor="primary"
-              tableHead={["ID", "Name", "Country", "City", "Salary"]}
-              tableData={[
-                ["1", "Dakota Rice", "$36,738", "Niger", "Oud-Turnhout"],
-                ["2", "Minerva Hooper", "$23,789", "Curaçao", "Sinaai-Waas"],
-                ["3", "Sage Rodriguez", "$56,142", "Netherlands", "Baileux"],
-                [
-                  "4",
-                  "Philip Chaney",
-                  "$38,735",
-                  "Korea, South",
-                  "Overland Park",
-                ],
-                [
-                  "5",
-                  "Doris Greene",
-                  "$63,542",
-                  "Malawi",
-                  "Feldkirchen in Kärnten",
-                ],
-                ["6", "Mason Porter", "$78,615", "Chile", "Gloucester"],
-              ]}
+              tableHead={["ID", "Name", "Situação", "Ações"]}
+              tableData={categorias}
+              dataClass="categorias"
             />
           </CardBody>
         </Card>
@@ -84,4 +84,10 @@ const styles = {
   );
   }
 }
-export default Categorias;
+
+
+Categorias.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(Categorias);

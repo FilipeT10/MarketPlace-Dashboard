@@ -1,25 +1,25 @@
 import axios from "axios";
 
-import ServiceConfig from '../config/ServiceConfig';
 
 // Pode ser algum servidor executando localmente: 
 // http://localhost:3000
 
 const api = axios.create({
-  baseURL: ServiceConfig.url
+  baseURL: "https://marketplace-base.herokuapp.com/"
 });
 
 api.interceptors.request.use(request => {
-   /* request.headers = {
+   /* request.headers = {/*
         'Accept': 'application/json, text/plain',
         'Accept-Encoding': 'gzip, deflate',
-        'Content-Type': getContentTypeHeader(type),
-    };*/
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin' : '*',
+    }*/
 
     /*if (Usuario.token) {
         request.headers['Authorization'] = Usuario.token;
     }*/
-
+ 
     console.log('REQUEST', request);
     return request;
 });
@@ -28,6 +28,7 @@ api.interceptors.response.use((response) => {
     console.log('RESPONSE', response);
     return response;
 }, error => {
+    console.log(error)
     if (error.response === undefined) {
         console.log('RESPONSE error : Ocorreu uma situação inesperada. Tente novamente em alguns minutos.');
         let data;

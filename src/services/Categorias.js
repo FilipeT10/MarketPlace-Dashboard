@@ -1,5 +1,5 @@
 
-import api from '../services/api'
+import api from './api'
 /*
 // Buscando usuários do github
 api.get("users/tgmarinho")
@@ -8,10 +8,11 @@ api.get("users/tgmarinho")
         console.error("ops! ocorreu um erro" + err);
      });*/
 
-class Categorias  {
+class ServiceCategorias  {
     
     static getCategorias = () => api.get(`categorias?loja=61663f593ad92700047d5e1f&ativo=true`)
   
+    static getInfo = () => api.get(`info`)
 }
 
-export default Categorias;
+export default ServiceCategorias;

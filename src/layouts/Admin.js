@@ -50,7 +50,7 @@ export default function Admin({ ...rest }) {
   const [color, setColor] = React.useState("blue");
   const [fixedClasses, setFixedClasses] = React.useState("dropdown show");
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const handleImageClick = (image) => {
+ /* const handleImageClick = (image) => {
     setImage(image);
   };
   const handleColorClick = (color) => {
@@ -62,7 +62,7 @@ export default function Admin({ ...rest }) {
     } else {
       setFixedClasses("dropdown");
     }
-  };
+  };*/
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -119,14 +119,14 @@ export default function Admin({ ...rest }) {
           <div className={classes.map}>{switchRoutes}</div>
         )}
         {getRoute() ? <Footer /> : null}
-        <FixedPlugin
+        { /*<FixedPlugin
           handleImageClick={handleImageClick}
           handleColorClick={handleColorClick}
           bgColor={color}
           bgImage={image}
           handleFixedClick={handleFixedClick}
           fixedClasses={fixedClasses}
-        />
+        />*/}
       </div>
     </div>
   );

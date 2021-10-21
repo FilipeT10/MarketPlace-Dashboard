@@ -7,10 +7,15 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
+
+import Edit from "@material-ui/icons/Edit";
+
+import IconButton from "@material-ui/core/IconButton";
 // core components
 import styles from "assets/jss/material-dashboard-react/components/tableStyle.js";
 
 const useStyles = makeStyles(styles);
+
 
 export default function CustomTable(props) {
   const classes = useStyles();
@@ -35,19 +40,36 @@ export default function CustomTable(props) {
           </TableHead>
         ) : null}
         <TableBody>
-          {tableData.map((prop, key) => {
-            return (
+          { tableData != [] ? tableData.map((prop, key) => {
+  
+            return(
               <TableRow key={key} className={classes.tableBodyRow}>
-                {prop.map((prop, key) => {
-                  return (
                     <TableCell className={classes.tableCell} key={key}>
-                      {prop}
+                      {key}
                     </TableCell>
-                  );
-                })}
-              </TableRow>
-            );
-          })}
+                    <TableCell className={classes.tableCell} key={key}>
+                      {prop.name}
+                    </TableCell>
+                    <TableCell className={classes.tableCell} key={key}>
+                      {prop.ativo ? 'Ativo': "Desativado"}
+                    </TableCell>
+                    <TableCell className={classes.tableCell} key={key}>
+                       <IconButton
+                       color="inherit"
+                       aria-label="open drawer"
+                       onClick={()=>{}}
+                     >
+                       <Edit/>
+                     </IconButton>
+                     </TableCell>
+                
+              </TableRow> )
+          
+          }) : null}
+          { /*tableData != [] ? tableData.map((prop, key) => {
+            console.log(JSON.stringify(prop) + " Key" + key)
+            return null
+          }) : null*/}
         </TableBody>
       </Table>
     </div>
