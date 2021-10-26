@@ -38,6 +38,7 @@ import Maps from "views/Maps/Maps.js";
 import NotificationsPage from "views/Notifications/Notifications.js";
 import { MonetizationOn } from "@material-ui/icons";
 import Categorias from "views/Categorias/Categorias";
+import Produtos from "views/Produtos/Produtos";
 
 const dashboardRoutes = [
   {
@@ -61,7 +62,7 @@ const dashboardRoutes = [
     name: "Produtos",
     rtlName: "ملف تعريفي للمستخدم",
     icon: AddShoppingCart,
-    component: UserProfile,
+    component: Produtos,
     layout: "/admin",
   },
   {

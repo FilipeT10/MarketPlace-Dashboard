@@ -10,7 +10,7 @@ api.get("users/tgmarinho")
 
 class ServiceCategorias  {
     
-    static getCategorias = () => api.get(`categorias?loja=61663f593ad92700047d5e1f&ativo=true`)
+    static getCategorias = () => api.get(`categorias?loja=61663f593ad92700047d5e1f`)
   
     static getInfo = () => api.get(`info`)
 }

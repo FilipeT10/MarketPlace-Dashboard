@@ -8,10 +8,10 @@ api.get("users/tgmarinho")
         console.error("ops! ocorreu um erro" + err);
      });*/
 
-class Produtos  {
+class ServiceProdutos  {
     
-    static getProdutos = () => api.get(`produtos?loja=61663f593ad92700047d5e1f&ativo=true`)
+    static getProdutos = () => api.get(`produtos?loja=61663f593ad92700047d5e1f`)
   
 }
 
-export default Produtos;
+export default ServiceProdutos;
