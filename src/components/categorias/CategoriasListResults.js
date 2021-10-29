@@ -21,7 +21,7 @@ import Edit from "@material-ui/icons/Edit";
 
 import IconButton from "@material-ui/core/IconButton";
 
-const CustomerListResults = ({ customers, ...rest }) => {
+const CategoriasListResults = ({ customers, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
@@ -156,8 +156,8 @@ const CustomerListResults = ({ customers, ...rest }) => {
   );
 };
 
-CustomerListResults.propTypes = {
+CategoriasListResults.propTypes = {
   customers: PropTypes.array.isRequired
 };
 
-export default CustomerListResults;
+export default CategoriasListResults;

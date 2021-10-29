@@ -5,11 +5,22 @@ import {
   CardContent,
   TextField,
   InputAdornment,
+  IconButton,
   SvgIcon
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
 
-const ProductListToolbar = (props) => (
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+
+
+import { FormatListBulleted, Reorder, ViewModule } from '@material-ui/icons';
+
+const ProductListToolbar = ({ onListType, props}) => {
+
+  const [isList, setList] = useState(false);
+
+  return (
   <Box {...props}>
     <Box
       sx={{
@@ -32,7 +43,8 @@ const ProductListToolbar = (props) => (
     </Box>
     <Box sx={{ mt: 3 }}>
       <Card>
-        <CardContent>
+        <CardContent sx={{  display: 'flex',
+        justifyContent: 'space-between'}}>
           <Box sx={{ maxWidth: 500 }}>
             <TextField
               fullWidth
@@ -52,10 +64,21 @@ const ProductListToolbar = (props) => (
               variant="outlined"
             />
           </Box>
+          <IconButton color="inherit" onClick={() => {  onListType(); isList ?  setList(false) : setList(true) }} size="large">
+            {isList ? <ViewModule/> : <FormatListBulleted/>}
+          </IconButton>
         </CardContent>
+        
       </Card>
+
     </Box>
   </Box>
-);
+  )
+};
+
+ProductListToolbar.propTypes = {
+  onListType: PropTypes.func
+};
+
 
 export default ProductListToolbar;

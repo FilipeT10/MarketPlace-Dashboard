@@ -6,7 +6,7 @@ import Categorias from './pages/Categorias';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
-import ProductList from './pages/ProductList';
+import Produtos from './pages/Produtos';
 import Register from './pages/Register';
 import Settings from './pages/Settings';
 
@@ -18,7 +18,7 @@ const routes = [
       { path: 'account', element: <Account /> },
       { path: 'customers', element: <Categorias /> },
       { path: 'dashboard', element: <Dashboard /> },
-      { path: 'products', element: <ProductList /> },
+      { path: 'products', element: <Produtos /> },
       { path: 'settings', element: <Settings /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]

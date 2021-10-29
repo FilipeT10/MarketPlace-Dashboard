@@ -8,11 +8,47 @@ import {
 import ProductListToolbar from '../components/product/ProductListToolbar';
 import ProductCard from '../components/product/ProductCard';
 import products from '../__mocks__/products';
+import ProductListResults from 'src/components/product/ProductListResults';
 
-const ProductList = () => (
+import React from 'react';
+import ServiceProdutos from '../services/Produtos'
+
+
+
+class Produtos extends React.Component {
+
+  state = {
+    produtos: [],
+    isList: false
+  };
+
+
+  componentDidMount() {
+
+    this.getProdutos()
+  }
+  getProdutos = () => {
+    ServiceProdutos.getProdutos().then(response => {
+        var produtos = response.data;
+        console.log(produtos)
+        this.setState({produtos})
+      
+    }).catch(error => {
+        console.log(error);
+    });
+  }
+  
+
+  render(){
+
+    const { classes } = this.props;
+    const { produtos, isList} = this.state;
+  
+
+  return(
   <>
     <Helmet>
-      <title>Products | Material Kit</title>
+      <title>Produtos</title>
     </Helmet>
     <Box
       sx={{
@@ -22,9 +58,9 @@ const ProductList = () => (
       }}
     >
       <Container maxWidth={false}>
-        <ProductListToolbar />
+        <ProductListToolbar onListType={() => {isList ?  this.setState({isList: false}) : this.setState({isList: true})}} />
         <Box sx={{ pt: 3 }}>
-          <Grid
+          {isList ? <ProductListResults customers={produtos} /> : <Grid
             container
             spacing={3}
           >
@@ -40,6 +76,7 @@ const ProductList = () => (
               </Grid>
             ))}
           </Grid>
+          }
         </Box>
         <Box
           sx={{
@@ -57,6 +94,8 @@ const ProductList = () => (
       </Container>
     </Box>
   </>
-);
-
-export default ProductList;
+)
+}
+}
+        
+export default Produtos;

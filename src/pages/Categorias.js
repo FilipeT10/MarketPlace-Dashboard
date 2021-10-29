@@ -1,8 +1,8 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
-import CustomerListResults from '../components/customer/CustomerListResults';
-import CustomerListToolbar from '../components/customer/CustomerListToolbar';
+import CategoriasListResults from '../components/categorias/CategoriasListResults';
+import CategoriasListToolbar from '../components/categorias/CategoriasListToolbar';
 import customers from '../__mocks__/customers';
 import ServiceCategorias from '../services/Categorias'
 
@@ -48,9 +48,9 @@ class Categorias extends React.Component {
       }}
     >
       <Container maxWidth={false}>
-        <CustomerListToolbar />
+        <CategoriasListToolbar />
         <Box sx={{ pt: 3 }}>
-          <CustomerListResults customers={categorias} />
+          <CategoriasListResults customers={categorias} />
         </Box>
       </Container>
     </Box>
