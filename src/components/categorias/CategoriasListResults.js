@@ -1,19 +1,23 @@
 import { useState } from 'react';
-import React from "react";
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
   Avatar,
   Box,
+  Button,
   Card,
+  CardContent,
+  CardHeader,
   Checkbox,
+  Divider,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TablePagination,
   TableRow,
+  TextField,
   Typography
 } from '@material-ui/core';
 import getInitials from '../../utils/getInitials';
@@ -21,54 +25,25 @@ import getInitials from '../../utils/getInitials';
 import Edit from "@material-ui/icons/Edit";
 
 import IconButton from "@material-ui/core/IconButton";
-
-import { makeStyles } from '@material-ui/styles';
-import Button from '@material-ui/core/Button';
-import Modal from '@material-ui/core/Modal';
-
-function rand() {
-  return Math.round(Math.random() * 20) - 10;
-}
-
-function getModalStyle() {
-  const top = 50 + rand();
-  const left = 50 + rand();
-  return {
-      top: `${top}%`,
-      left: `${left}%`,
-      transform: `translate(-${top}%, -${left}%)`,
-  };
-}
-
-const useStyles = makeStyles(theme => ({
-  modal: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-  },
-  paper: {
-      position: 'absolute',
-      backgroundColor: theme.palette.background.paper,
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing(2, 4, 3),
-  },
-}));
+import { ArrowBack } from '@material-ui/icons';
 
 const CategoriasListResults = ({ customers, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-  const classes = useStyles();
-  const [modalStyle] = React.useState(getModalStyle);
-  const [open, setOpen] = React.useState(false);
+  const [customerEdit, setCustomerEdit] = useState({})
+  const [isEdit, setIsEdit] = useState(false);
+  const [values, setValues] = useState({
+    nome: ''
+  });
 
-  const handleOpen = () => {
-      setOpen(true);
+  const handleChange = (event) => {
+    setValues({
+      ...values,
+      [event.target.name]: event.target.value
+    });
   };
 
-  const handleClose = () => {
-      setOpen(false);
-  };
   const handleSelectAll = (event) => {
     let newSelectedCustomerIds;
 
@@ -108,25 +83,64 @@ const CategoriasListResults = ({ customers, ...rest }) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
+  const handleEdit = (customer) => {
+    setIsEdit(true);
+    setCustomerEdit(customer)
+  };
 
+  const handleBackEdit = () => {
+    setIsEdit(false);
+  };
+  
 
   return (
     <Card {...rest}>
-      <Modal
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-          open={open}
-          onClose={handleClose}
-       >
-           <div style={modalStyle} className={classes.paper}>
-                <h2>Simple React Modal</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi accumsan odio enim, non pharetra est ultrices et.
-                </p>
-                <Button variant="contained" color="primary" onClick={handleClose}>
-                  Close Modal
-                </Button>
-             </div>
-       </Modal>
+      { isEdit ?
+       <Box sx={{ minWidth: 1050 }}> 
+       <div>
+         <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={()=>{ handleBackEdit()}}>
+                <ArrowBack/>
+        </IconButton>
+      
+      <Card>
+        <CardHeader
+          subheader="Categorias"
+          title="Editar"
+        />
+        <Divider />
+        <CardContent>
+          <TextField
+            fullWidth
+            label="Nome"
+            margin="normal"
+            name="nome"
+            onChange={handleChange}
+            value={values.nome}
+            variant="outlined"
+          />
+        </CardContent>
+        <Divider />
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            p: 2
+          }}
+        >
+          <Button
+            color="primary"
+            variant="contained"
+          >
+            Salvar
+          </Button>
+        </Box>
+      </Card>
+      </div>
+                     </Box>:
+      <div>
       <PerfectScrollbar>
         <Box sx={{ minWidth: 1050 }}>
           <Table>
@@ -187,22 +201,20 @@ const CategoriasListResults = ({ customers, ...rest }) => {
                       {customer.ativo ? 'Ativo': "Desativado"}
                     </TableCell>
                     <TableCell >
-                      
-                     <div>
-                     <IconButton
+                       <IconButton
                        color="inherit"
                        aria-label="open drawer"
-                       onClick={()=>{ handleOpen()}}
+                       onClick={()=>{ handleEdit(customer)
+                      }}
                      >
                        <Edit/>
                      </IconButton>
-
-                    </div>
                      </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
+          
         </Box>
       </PerfectScrollbar>
       <TablePagination
@@ -214,6 +226,8 @@ const CategoriasListResults = ({ customers, ...rest }) => {
         rowsPerPage={limit}
         rowsPerPageOptions={[5, 10, 25]}
       />
+      </div>
+    }
     </Card>
   );
 };

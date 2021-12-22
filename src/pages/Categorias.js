@@ -5,7 +5,6 @@ import CategoriasListResults from '../components/categorias/CategoriasListResult
 import CategoriasListToolbar from '../components/categorias/CategoriasListToolbar';
 import customers from '../__mocks__/customers';
 import ServiceCategorias from '../services/Categorias'
-import CategoriasModalEdit from 'src/components/categorias/CategoriasModalEdit';
 
 
 
@@ -50,7 +49,6 @@ class Categorias extends React.Component {
     >
       <Container maxWidth={false}>
         <CategoriasListToolbar />
-        <CategoriasModalEdit/>
         <Box sx={{ pt: 3 }}>
           <CategoriasListResults customers={categorias} />
         </Box>
