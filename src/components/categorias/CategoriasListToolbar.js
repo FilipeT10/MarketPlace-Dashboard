@@ -42,7 +42,7 @@ const CategoriasListToolbar = (props) => (
                   </InputAdornment>
                 )
               }}
-              placeholder="Search customer"
+              placeholder="Pesquisar categorias"
               variant="outlined"
             />
           </Box>
