@@ -7,10 +7,12 @@ import {
   Box,
   Button,
   Card,
+  Chip,
   CardContent,
   CardHeader,
   Checkbox,
   Divider,
+  Switch,
   Table,
   TableBody,
   TableCell,
@@ -18,7 +20,7 @@ import {
   TablePagination,
   TableRow,
   TextField,
-  Typography
+  Typography, Grid
 } from '@material-ui/core';
 import getInitials from '../../utils/getInitials';
 
@@ -26,6 +28,7 @@ import Edit from "@material-ui/icons/Edit";
 
 import IconButton from "@material-ui/core/IconButton";
 import { ArrowBack } from '@material-ui/icons';
+import ServiceCategorias from 'src/services/Categorias';
 
 const CategoriasListResults = ({ customers, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
@@ -33,6 +36,8 @@ const CategoriasListResults = ({ customers, ...rest }) => {
   const [page, setPage] = useState(0);
   const [customerEdit, setCustomerEdit] = useState({})
   const [isEdit, setIsEdit] = useState(false);
+
+  const [isChecked, setChecked] = useState(false);
   const [values, setValues] = useState({
     nome: ''
   });
@@ -84,6 +89,8 @@ const CategoriasListResults = ({ customers, ...rest }) => {
     setPage(newPage);
   };
   const handleEdit = (customer) => {
+    setChecked(customer.ativo);
+    setValues({nome: customer.name})
     setIsEdit(true);
     setCustomerEdit(customer)
   };
@@ -91,7 +98,22 @@ const CategoriasListResults = ({ customers, ...rest }) => {
   const handleBackEdit = () => {
     setIsEdit(false);
   };
+  const handleAtivoChecked = () => {
+    setChecked(!isChecked);
+  };
   
+  const saveCategoria = (nome, ativo) => {
+    var json = {
+      "name": values.nome,
+      "ativo": isChecked
+    }
+    ServiceCategorias.editCategorias(customerEdit._id, json).then(response => {
+        var categorias = response.data;
+        console.log(categorias)
+    }).catch(error => {
+        console.log(error);
+    });
+  }
 
   return (
     <Card {...rest}>
@@ -121,21 +143,41 @@ const CategoriasListResults = ({ customers, ...rest }) => {
             value={values.nome}
             variant="outlined"
           />
+          
+          <Grid container spacing={2}>
+            <Grid item xs={0}>
+            <Switch
+              checked={isChecked}
+              onChange={handleAtivoChecked}
+              inputProps={{ 'aria-label': 'controlled' }}
+            />
+            </Grid>
+            <Grid item xs={1} style={{marginTop: 10}}>
+                { isChecked ? <Typography
+              color="textPrimary"
+              variant="h5"
+            >
+              Ativo
+            </Typography> : <Typography
+              color="textPrimary"
+              variant="h5"
+            >
+              Inativo
+            </Typography>}
+            </Grid>
+          </Grid>
+          
+        
         </CardContent>
         <Divider />
-        <Box
-          sx={{
+        <Box sx={{
             display: 'flex',
             justifyContent: 'flex-end',
-            p: 2
-          }}
-        >
+            p: 2 }}>
           <Button
             color="primary"
             variant="contained"
-          >
-            Salvar
-          </Button>
+            onClick={() => { console.log('onClick'); saveCategoria(values.nome, isChecked)}}> Salvar</Button>
         </Box>
       </Card>
       </div>
@@ -198,7 +240,15 @@ const CategoriasListResults = ({ customers, ...rest }) => {
                     </Box>
                   </TableCell>
                     <TableCell >
-                      {customer.ativo ? 'Ativo': "Desativado"}
+                      {customer.ativo ? <Chip
+                    color="success"
+                    label={"Ativo"}
+                    size="small"
+                  />: <Chip
+                  color="warning"
+                  label={"Inativo"}
+                  size="small"
+                />}
                     </TableCell>
                     <TableCell >
                        <IconButton

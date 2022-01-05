@@ -16,9 +16,12 @@ api.interceptors.request.use(request => {
         'Access-Control-Allow-Origin' : '*',
     }*/
 
-    /*if (Usuario.token) {
-        request.headers['Authorization'] = Usuario.token;
-    }*/
+    if(request.method == 'patch'){
+
+    request.headers['Authorization'] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpc3MiOiJNYXJrZXRQbGFjZS1BUEktTWFuYWdlciIsImlhdCI6MTYzNDA5MDgzMn0.hjzDcQhdSJjpYOZ77zl4dea4Xx9kOQS5YUrnloHkFZA";
+   
+    console.log('REQUEST Bearer');
+    }
  
     console.log('REQUEST', request);
     return request;
@@ -43,12 +46,19 @@ api.interceptors.response.use((response) => {
             console.log('RESPONSE error : Ocorreu uma situação inesperada. Tente novamente em alguns minutos.');
 
             return Promise.reject('Ocorreu uma situação inesperada. Tente novamente em alguns minutos.');
+        }else{
+
+        console.log('RESPONSE error', error.response.data);
         }
         if (error.response.data.message == 'Invalid request') {
             error.response.data.message = 'Ocorreu uma situação inesperada. Tente novamente em alguns minutos.';
         }
 
         console.log('RESPONSE error', error);
+
+        console.log('RESPONSE error', error.response);
+
+        console.log('RESPONSE error', error.response.message);
         return Promise.reject(error);
     }
 });
