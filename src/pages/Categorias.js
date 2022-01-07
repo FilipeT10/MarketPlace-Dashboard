@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { Box, Container } from '@material-ui/core';
+import { Box, Container, CircularProgress, LinearProgress } from '@material-ui/core';
 import CategoriasListResults from '../components/categorias/CategoriasListResults';
 import CategoriasListToolbar from '../components/categorias/CategoriasListToolbar';
 import customers from '../__mocks__/customers';
@@ -11,7 +11,8 @@ import ServiceCategorias from '../services/Categorias'
 class Categorias extends React.Component {
 
   state = {
-    categorias: []
+    categorias: [],
+    loading: false
   };
 
 
@@ -20,10 +21,11 @@ class Categorias extends React.Component {
     this.getCategoria()
   }
   getCategoria = () => {
+    this.setState({loading: true})
     ServiceCategorias.getCategorias().then(response => {
         var categorias = response.data;
         console.log(categorias)
-        this.setState({categorias})
+        this.setState({categorias, loading: false})
       
     }).catch(error => {
         console.log(error);
@@ -34,7 +36,7 @@ class Categorias extends React.Component {
   render(){
 
     const { classes } = this.props;
-    const { categorias} = this.state;
+    const { categorias, loading} = this.state;
   return (
   <>
     <Helmet>
@@ -50,8 +52,10 @@ class Categorias extends React.Component {
       <Container maxWidth={false}>
         <CategoriasListToolbar />
         <Box sx={{ pt: 3 }}>
+          { loading ? <LinearProgress/> :
           <CategoriasListResults customers={categorias} />
-        </Box>
+          }
+          </Box>
       </Container>
     </Box>
   </>

@@ -7,9 +7,11 @@ import {
   InputAdornment,
   SvgIcon
 } from '@material-ui/core';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Search as SearchIcon } from 'react-feather';
 
 const CategoriasListToolbar = (props) => (
+
   <Box {...props}>
     <Box
       sx={{
@@ -20,6 +22,7 @@ const CategoriasListToolbar = (props) => (
       <Button
         color="primary"
         variant="contained"
+        href="/app/cadastrar-categoria"
       >
         Adicionar categoria
       </Button>
