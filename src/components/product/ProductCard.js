@@ -6,10 +6,12 @@ import {
   CardContent,
   Divider,
   Grid,
+  Chip,
   Typography
 } from '@material-ui/core';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import { MonetizationOn } from '@material-ui/icons';
 
 const ProductCard = ({ product, ...rest }) => (
   <Card
@@ -28,11 +30,11 @@ const ProductCard = ({ product, ...rest }) => (
           pb: 3
         }}
       >
-        <Avatar
+     { /*  <Avatar
           alt="Product"
           src={product.media}
           variant="square"
-        />
+        />*/}
       </Box>
       <Typography
         align="center"
@@ -40,14 +42,14 @@ const ProductCard = ({ product, ...rest }) => (
         gutterBottom
         variant="h4"
       >
-        {product.title}
+        {product.name}
       </Typography>
       <Typography
         align="center"
         color="textPrimary"
         variant="body1"
       >
-        {product.description}
+        {product.ativo}
       </Typography>
     </CardContent>
     <Box sx={{ flexGrow: 1 }} />
@@ -64,15 +66,25 @@ const ProductCard = ({ product, ...rest }) => (
             alignItems: 'center',
             display: 'flex'
           }}
+      
         >
-          <AccessTimeIcon color="action" />
+           {product.ativo ? <Chip
+                    color="success"
+                    label={"Ativo"}
+                    size="small"
+                  />: <Chip
+                  color="warning"
+                  label={"Inativo"}
+                  size="small"
+                />}
           <Typography
             color="textSecondary"
             display="inline"
             sx={{ pl: 1 }}
             variant="body2"
           >
-            Updated 2hr ago
+            {product.quantidade+" "}
+            Unidades
           </Typography>
         </Grid>
         <Grid
@@ -82,16 +94,15 @@ const ProductCard = ({ product, ...rest }) => (
             display: 'flex'
           }}
         >
-          <GetAppIcon color="action" />
+          <MonetizationOn color="action" />
           <Typography
             color="textSecondary"
             display="inline"
             sx={{ pl: 1 }}
             variant="body2"
           >
-            {product.totalDownloads}
-            {' '}
-            Downloads
+            {product.preco}
+            {'R$'}
           </Typography>
         </Grid>
       </Grid>

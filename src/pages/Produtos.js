@@ -3,7 +3,8 @@ import {
   Box,
   Container,
   Grid,
-  Pagination
+  Pagination,
+  LinearProgress
 } from '@material-ui/core';
 import ProductListToolbar from '../components/product/ProductListToolbar';
 import ProductCard from '../components/product/ProductCard';
@@ -19,7 +20,8 @@ class Produtos extends React.Component {
 
   state = {
     produtos: [],
-    isList: false
+    isList: false,
+    loading: false
   };
 
 
@@ -28,10 +30,12 @@ class Produtos extends React.Component {
     this.getProdutos()
   }
   getProdutos = () => {
+
+    this.setState({loading: true})
     ServiceProdutos.getProdutos().then(response => {
         var produtos = response.data;
         console.log(produtos)
-        this.setState({produtos})
+        this.setState({produtos, loading: false})
       
     }).catch(error => {
         console.log(error);
@@ -42,7 +46,7 @@ class Produtos extends React.Component {
   render(){
 
     const { classes } = this.props;
-    const { produtos, isList} = this.state;
+    const { produtos, isList, loading} = this.state;
   
 
   return(
@@ -60,19 +64,20 @@ class Produtos extends React.Component {
       <Container maxWidth={false}>
         <ProductListToolbar onListType={() => {isList ?  this.setState({isList: false}) : this.setState({isList: true})}} />
         <Box sx={{ pt: 3 }}>
-          {isList ? <ProductListResults customers={produtos} /> : <Grid
+        { loading ? <LinearProgress/> :
+          isList ? <ProductListResults customers={produtos} /> : <Grid
             container
             spacing={3}
           >
-            {products.map((product) => (
+            {produtos.map((produto) => (
               <Grid
                 item
-                key={product.id}
+                key={produto._id}
                 lg={4}
                 md={6}
                 xs={12}
               >
-                <ProductCard product={product} />
+                <ProductCard product={produto} />
               </Grid>
             ))}
           </Grid>

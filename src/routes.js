@@ -17,7 +17,7 @@ const routes = [
     element: <DashboardLayout />,
     children: [
       { path: 'account', element: <Account /> },
-      { path: 'customers', element: <Categorias /> },
+      { path: 'categorias', element: <Categorias /> },
       { path: 'cadastrar-categoria', element: <CadastrarCategoria /> },
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'products', element: <Produtos /> },

@@ -36,14 +36,14 @@ const items = [
     title: 'Dashboard'
   },
   {
-    href: '/app/customers',
+    href: '/app/categorias',
     icon: UsersIcon,
-    title: 'Customers'
+    title: 'Categorias'
   },
   {
     href: '/app/products',
     icon: ShoppingBagIcon,
-    title: 'Products'
+    title: 'Produtos'
   },
   {
     href: '/app/account',

@@ -40,6 +40,18 @@ class CadastrarCategoria extends React.Component {
         console.log(error);
     });
   }
+  saveCategoria = () => {
+    var json = {
+      "name": this.state.nome,
+      "ativo": this.state.isChecked
+    }
+    ServiceCategorias.saveCategorias(json).then(response => {
+        var categorias = response.data;
+        console.log(categorias)
+    }).catch(error => {
+        console.log(error);
+    });
+  }
 
    handleChange = (event) => {
     this.setState({
@@ -124,7 +136,7 @@ class CadastrarCategoria extends React.Component {
           <Button
             color="primary"
             variant="contained"
-            onClick={() => { console.log('onClick'); saveCategoria(values.nome, isChecked)}}> Salvar</Button>
+            onClick={() => { console.log('onClick'); this.saveCategoria()}}> Salvar</Button>
         </Box>
       </Card>
       </div>
