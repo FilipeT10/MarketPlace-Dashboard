@@ -7,6 +7,7 @@ import {
   Box,
   Button,
   Card,
+  Chip,
   Checkbox,
   CardContent,
   CardHeader,
@@ -29,6 +30,8 @@ import Edit from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton";
 
 import { ArrowBack } from '@material-ui/icons';
+import TagsInput from '../Other/TagsInput';
+
 
 const ProductListResults = ({ customers, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
@@ -41,6 +44,21 @@ const ProductListResults = ({ customers, ...rest }) => {
   const [values, setValues] = useState({
     nome: ''
   });
+
+  const states = [
+    {
+      value: 'alabama',
+      label: 'Alabama'
+    },
+    {
+      value: 'new-york',
+      label: 'New York'
+    },
+    {
+      value: 'san-francisco',
+      label: 'San Francisco'
+    }
+  ];
 
   const handleSelectAll = (event) => {
     let newSelectedCustomerIds;
@@ -84,7 +102,7 @@ const ProductListResults = ({ customers, ...rest }) => {
 
   const handleEdit = (customer) => {
     setChecked(customer.ativo);
-    setValues({nome: customer.name})
+    setValues({nome: customer.name, preco: customer.preco, quantidade: customer.quantidade})
     setIsEdit(true);
     setCustomerEdit(customer)
   };
@@ -102,6 +120,10 @@ const ProductListResults = ({ customers, ...rest }) => {
   const handleAtivoChecked = () => {
     setChecked(!isChecked);
   };
+
+  const handleSelecetedTags =(items) =>{
+    console.log(items);
+  }
 
 
   return (
@@ -128,11 +150,103 @@ const ProductListResults = ({ customers, ...rest }) => {
                               label="Nome"
                               margin="normal"
                               name="nome"
+                              required
                               onChange={handleChange}
                               value={values.nome}
                               variant="outlined"
                             />
-                            
+                            <TextField
+                              fullWidth
+                              label="Preço"
+                              margin="normal"
+                              name="preco"
+                              required
+                              onChange={handleChange}
+                              value={values.preco}
+                              variant="outlined"
+                            />
+                            <TextField
+                              fullWidth
+                              label="Quantidade"
+                              margin="normal"
+                              required
+                              name="quantidade"
+                              onChange={handleChange}
+                              value={values.quantidade}
+                              variant="outlined"
+                            />
+                            <TextField
+                            fullWidth
+                            label="Categoria"
+                            name="categoria"
+                            margin="normal"
+                            onChange={handleChange}
+                            required
+                            select
+                            SelectProps={{ native: true }}
+                            value={values.states}
+                            variant="outlined"
+                          >
+                            {states.map((option) => (
+                              <option
+                                key={option.value}
+                                value={option.value}
+                              >
+                                {option.label}
+                              </option>
+                            ))}
+                          </TextField>
+                          <TextField
+                            fullWidth
+                            label="Tipo de Produto"
+                            name="tipo"
+                            margin="normal"
+                            onChange={handleChange}
+                            required
+                            select
+                            SelectProps={{ native: true }}
+                            value={values.states}
+                            variant="outlined"
+                          >
+                            {states.map((option) => (
+                              <option
+                                key={option.value}
+                                value={option.value}
+                              >
+                                {option.label}
+                              </option>
+                            ))}
+                          </TextField>
+                          <TagsInput
+                              selectedTags={handleSelecetedTags}
+                              fullWidth
+                              margin="normal"
+                              variant="outlined"
+                              id="tamanhos"
+                              name="tamanhos"
+                              placeholder="Adicionar Tamanho"
+                              label="Tamanhos"
+                            />
+                            <TagsInput
+                              selectedTags={handleSelecetedTags}
+                              fullWidth
+                              margin="normal"
+                              variant="outlined"
+                              id="cores"
+                              name="cores"
+                              placeholder="Adicionar Cores"
+                              label="Cores"
+                            />
+                            <TagsInput
+                              selectedTags={handleSelecetedTags}
+                              fullWidth
+                              margin="normal"
+                              variant="outlined"
+                              id="ingredientes"
+                              name="ingredientes"
+                              placeholder="Adicionar Ingredientes"
+                              label="Ingredientes"
+                            />
                             <Grid container spacing={2}>
                               <Grid item xs={0}>
                               <Switch
@@ -228,7 +342,15 @@ const ProductListResults = ({ customers, ...rest }) => {
                     </Box>
                   </TableCell>
                     <TableCell >
-                      {customer.ativo ? 'Ativo': "Desativado"}
+                    {customer.ativo ? <Chip
+                    color="success"
+                    label={"Ativo"}
+                    size="small"
+                      />: <Chip
+                      color="warning"
+                      label={"Inativo"}
+                      size="small"
+                    />}
                     </TableCell>
                     <TableCell >
                        <IconButton
