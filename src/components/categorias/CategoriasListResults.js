@@ -118,70 +118,70 @@ const CategoriasListResults = ({ customers, ...rest }) => {
   return (
     <Card {...rest}>
       { isEdit ?
-       <Box sx={{ minWidth: 1050 }}> 
-       <div>
-         <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={()=>{ handleBackEdit()}}>
-                <ArrowBack/>
-        </IconButton>
-      
-      <Card>
-        <CardHeader
-          subheader="Categorias"
-          title="Editar"
-        />
-        <Divider />
-        <CardContent>
-          <TextField
-            fullWidth
-            label="Nome"
-            margin="normal"
-            name="nome"
-            onChange={handleChange}
-            value={values.nome}
-            variant="outlined"
-          />
-          
-          <Grid container spacing={2}>
-            <Grid item xs={0}>
-            <Switch
-              checked={isChecked}
-              onChange={handleAtivoChecked}
-              inputProps={{ 'aria-label': 'controlled' }}
-            />
-            </Grid>
-            <Grid item xs={1} style={{marginTop: 10}}>
-                { isChecked ? <Typography
-              color="textPrimary"
-              variant="h5"
-            >
-              Ativo
-            </Typography> : <Typography
-              color="textPrimary"
-              variant="h5"
-            >
-              Inativo
-            </Typography>}
-            </Grid>
-          </Grid>
-          
-        
-        </CardContent>
-        <Divider />
-        <Box sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            p: 2 }}>
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={() => { console.log('onClick'); saveCategoria(values.nome, isChecked)}}> Salvar</Button>
-        </Box>
-      </Card>
-      </div>
-                     </Box>:
+                        <Box sx={{ minWidth: 1050 }}> 
+                        <div>
+                          <IconButton
+                              color="inherit"
+                              aria-label="open drawer"
+                              onClick={()=>{ handleBackEdit()}}>
+                                  <ArrowBack/>
+                          </IconButton>
+                        
+                        <Card>
+                          <CardHeader
+                            subheader="Categorias"
+                            title="Editar"
+                          />
+                          <Divider />
+                          <CardContent>
+                            <TextField
+                              fullWidth
+                              label="Nome"
+                              margin="normal"
+                              name="nome"
+                              onChange={handleChange}
+                              value={values.nome}
+                              variant="outlined"
+                            />
+                            
+                            <Grid container spacing={2}>
+                              <Grid item xs={0}>
+                              <Switch
+                                checked={isChecked}
+                                onChange={handleAtivoChecked}
+                                inputProps={{ 'aria-label': 'controlled' }}
+                              />
+                              </Grid>
+                              <Grid item xs={1} style={{marginTop: 10}}>
+                                  { isChecked ? <Typography
+                                color="textPrimary"
+                                variant="h5"
+                              >
+                                Ativo
+                              </Typography> : <Typography
+                                color="textPrimary"
+                                variant="h5"
+                              >
+                                Inativo
+                              </Typography>}
+                              </Grid>
+                            </Grid>
+                            
+                          
+                          </CardContent>
+                          <Divider />
+                          <Box sx={{
+                              display: 'flex',
+                              justifyContent: 'flex-end',
+                              p: 2 }}>
+                            <Button
+                              color="primary"
+                              variant="contained"
+                              onClick={() => { console.log('onClick'); saveCategoria(values.nome, isChecked)}}> Salvar</Button>
+                          </Box>
+                        </Card>
+                        </div>
+                      </Box>:
       <div>
       <PerfectScrollbar>
         <Box sx={{ minWidth: 1050 }}>

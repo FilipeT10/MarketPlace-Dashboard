@@ -83,6 +83,7 @@ class Produtos extends React.Component {
           </Grid>
           }
         </Box>
+        { loading == false ?
         <Box
           sx={{
             display: 'flex',
@@ -95,7 +96,8 @@ class Produtos extends React.Component {
             count={3}
             size="small"
           />
-        </Box>
+        </Box> : <div/>
+         }
       </Container>
     </Box>
   </>

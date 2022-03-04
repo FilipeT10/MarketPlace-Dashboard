@@ -5,15 +5,22 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
   Avatar,
   Box,
+  Button,
   Card,
   Checkbox,
+  CardContent,
+  CardHeader,
+  Divider,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TablePagination,
   TableRow,
-  Typography
+  TextField,
+  Typography,
+  Grid,
+  Switch
 } from '@material-ui/core';
 import getInitials from '../../utils/getInitials';
 
@@ -21,10 +28,19 @@ import Edit from "@material-ui/icons/Edit";
 
 import IconButton from "@material-ui/core/IconButton";
 
+import { ArrowBack } from '@material-ui/icons';
+
 const ProductListResults = ({ customers, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
+
+  const [customerEdit, setCustomerEdit] = useState({})
+  const [isEdit, setIsEdit] = useState(false);
+  const [isChecked, setChecked] = useState(false);
+  const [values, setValues] = useState({
+    nome: ''
+  });
 
   const handleSelectAll = (event) => {
     let newSelectedCustomerIds;
@@ -66,8 +82,95 @@ const ProductListResults = ({ customers, ...rest }) => {
     setPage(newPage);
   };
 
+  const handleEdit = (customer) => {
+    setChecked(customer.ativo);
+    setValues({nome: customer.name})
+    setIsEdit(true);
+    setCustomerEdit(customer)
+  };
+
+  const handleBackEdit = () => {
+    setIsEdit(false);
+  };
+  const handleChange = (event) => {
+    setValues({
+      ...values,
+      [event.target.name]: event.target.value
+    });
+  };
+
+  const handleAtivoChecked = () => {
+    setChecked(!isChecked);
+  };
+
+
   return (
     <Card {...rest}>
+       { isEdit ?
+                        <Box sx={{ minWidth: 1050 }}> 
+                        <div>
+                          <IconButton
+                              color="inherit"
+                              aria-label="open drawer"
+                              onClick={()=>{ handleBackEdit()}}>
+                                  <ArrowBack/>
+                          </IconButton>
+                        
+                        <Card>
+                          <CardHeader
+                            subheader="Produtos"
+                            title="Editar"
+                          />
+                          <Divider />
+                          <CardContent>
+                            <TextField
+                              fullWidth
+                              label="Nome"
+                              margin="normal"
+                              name="nome"
+                              onChange={handleChange}
+                              value={values.nome}
+                              variant="outlined"
+                            />
+                            
+                            <Grid container spacing={2}>
+                              <Grid item xs={0}>
+                              <Switch
+                                checked={isChecked}
+                                onChange={handleAtivoChecked}
+                                inputProps={{ 'aria-label': 'controlled' }}
+                              />
+                              </Grid>
+                              <Grid item xs={1} style={{marginTop: 10}}>
+                                  { isChecked ? <Typography
+                                color="textPrimary"
+                                variant="h5"
+                              >
+                                Ativo
+                              </Typography> : <Typography
+                                color="textPrimary"
+                                variant="h5"
+                              >
+                                Inativo
+                              </Typography>}
+                              </Grid>
+                            </Grid>
+                            
+                          
+                          </CardContent>
+                          <Divider />
+                          <Box sx={{
+                              display: 'flex',
+                              justifyContent: 'flex-end',
+                              p: 2 }}>
+                            <Button
+                              color="primary"
+                              variant="contained"
+                              onClick={() => { console.log('onClick'); saveCategoria(values.nome, isChecked)}}> Salvar</Button>
+                          </Box>
+                        </Card>
+                        </div>
+                      </Box>:<div>
       <PerfectScrollbar>
         <Box sx={{ minWidth: 1050 }}>
           <Table>
@@ -131,7 +234,7 @@ const ProductListResults = ({ customers, ...rest }) => {
                        <IconButton
                        color="inherit"
                        aria-label="open drawer"
-                       onClick={()=>{ //setIndexEdit(customer.id)
+                       onClick={()=>{ handleEdit(customer)
                       }}
                      >
                        <Edit/>
@@ -143,6 +246,7 @@ const ProductListResults = ({ customers, ...rest }) => {
           </Table>
         </Box>
       </PerfectScrollbar>
+      
       <TablePagination
         component="div"
         count={customers.length}
@@ -152,7 +256,11 @@ const ProductListResults = ({ customers, ...rest }) => {
         rowsPerPage={limit}
         rowsPerPageOptions={[5, 10, 25]}
       />
+
+</div>
+                    }
     </Card>
+    
   );
 };
 
