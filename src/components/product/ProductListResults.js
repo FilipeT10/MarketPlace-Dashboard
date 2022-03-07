@@ -2,6 +2,8 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+
+import ServiceCategorias from '../../services/Categorias'
 import {
   Avatar,
   Box,
@@ -37,7 +39,7 @@ const ProductListResults = ({ customers, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-
+  const [categorias, setCategorias] = useState([])
   const [customerEdit, setCustomerEdit] = useState({})
   const [isEdit, setIsEdit] = useState(false);
   const [isChecked, setChecked] = useState(false);
@@ -45,18 +47,28 @@ const ProductListResults = ({ customers, ...rest }) => {
     nome: ''
   });
 
-  const states = [
+  
+  const getCategorias = () => {
+    ServiceCategorias.getCategorias().then(response => {
+        var categorias = response.data;
+        setCategorias(categorias)
+      
+    }).catch(error => {
+        console.log(error);
+    });
+  }
+  const tipoProdutos = [
     {
-      value: 'alabama',
-      label: 'Alabama'
+      value: 'roupa',
+      label: 'Roupas'
     },
     {
-      value: 'new-york',
-      label: 'New York'
+      value: 'tenis',
+      label: 'Tênis'
     },
     {
-      value: 'san-francisco',
-      label: 'San Francisco'
+      value: 'alimentacao',
+      label: 'Alimentação'
     }
   ];
 
@@ -101,14 +113,23 @@ const ProductListResults = ({ customers, ...rest }) => {
   };
 
   const handleEdit = (customer) => {
+    getCategorias()
     setChecked(customer.ativo);
-    setValues({nome: customer.name, preco: customer.preco, quantidade: customer.quantidade})
+    setValues({nome: customer.name, ...customer})
     setIsEdit(true);
     setCustomerEdit(customer)
   };
 
   const handleBackEdit = () => {
     setIsEdit(false);
+  };
+  const handleChangeCategoria = (event) => {
+    console.log(event.target.value)
+    setValues({
+      ...values,
+      [event.target.name]: event.target.value,
+      categoriaID: event.target.key
+    });
   };
   const handleChange = (event) => {
     setValues({
@@ -175,27 +196,30 @@ const ProductListResults = ({ customers, ...rest }) => {
                               value={values.quantidade}
                               variant="outlined"
                             />
+                            { categorias.length > 0 ?
                             <TextField
                             fullWidth
                             label="Categoria"
                             name="categoria"
                             margin="normal"
-                            onChange={handleChange}
+                            onChange={handleChangeCategoria}
                             required
                             select
                             SelectProps={{ native: true }}
-                            value={values.states}
+                            value={values.categoria}
                             variant="outlined"
                           >
-                            {states.map((option) => (
+                            {categorias.map((option) => (
                               <option
-                                key={option.value}
-                                value={option.value}
+                                key={option._id}
+                                value={option._id}
                               >
-                                {option.label}
+                                {option.name}
                               </option>
                             ))}
                           </TextField>
+                          : <div></div>
+                          }
                           <TextField
                             fullWidth
                             label="Tipo de Produto"
@@ -205,10 +229,11 @@ const ProductListResults = ({ customers, ...rest }) => {
                             required
                             select
                             SelectProps={{ native: true }}
-                            value={values.states}
+                            value={values.tipo}
                             variant="outlined"
                           >
-                            {states.map((option) => (
+                            {
+                            tipoProdutos.map((option) => (
                               <option
                                 key={option.value}
                                 value={option.value}
@@ -225,6 +250,7 @@ const ProductListResults = ({ customers, ...rest }) => {
                               id="tamanhos"
                               name="tamanhos"
                               placeholder="Adicionar Tamanho"
+                              tags={values.tamanhos}
                               label="Tamanhos"
                             />
                             <TagsInput
@@ -235,6 +261,7 @@ const ProductListResults = ({ customers, ...rest }) => {
                               id="cores"
                               name="cores"
                               placeholder="Adicionar Cores"
+                              tags={values.cores}
                               label="Cores"
                             />
                             <TagsInput
@@ -245,6 +272,7 @@ const ProductListResults = ({ customers, ...rest }) => {
                               id="ingredientes"
                               name="ingredientes"
                               placeholder="Adicionar Ingredientes"
+                              tags={values.ingredientes}
                               label="Ingredientes"
                             />
                             <Grid container spacing={2}>
