@@ -20,26 +20,11 @@ import { ArrowBack } from '@material-ui/icons';
 class CadastrarCategoria extends React.Component {
 
   state = {
-    categorias: [],
     isChecked: true,
     nome: ''
   };
 
 
-  componentDidMount() {
-
-    this.getCategoria()
-  }
-  getCategoria = () => {
-    ServiceCategorias.getCategorias().then(response => {
-        var categorias = response.data;
-        console.log(categorias)
-        this.setState({categorias})
-      
-    }).catch(error => {
-        console.log(error);
-    });
-  }
   saveCategoria = () => {
     var json = {
       "name": this.state.nome,
@@ -66,8 +51,6 @@ class CadastrarCategoria extends React.Component {
 
   render(){
 
-    const { classes } = this.props;
-    const { categorias} = this.state;
   return (
   <>
     <Helmet>

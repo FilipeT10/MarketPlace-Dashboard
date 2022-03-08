@@ -7,10 +7,12 @@ import {
   InputAdornment,
   SvgIcon
 } from '@material-ui/core';
+
+import PropTypes from 'prop-types';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Search as SearchIcon } from 'react-feather';
 
-const CategoriasListToolbar = (props) => (
+const CategoriasListToolbar = ({onTextHandle, props}) => (
 
   <Box {...props}>
     <Box
@@ -33,6 +35,7 @@ const CategoriasListToolbar = (props) => (
           <Box sx={{ maxWidth: 500 }}>
             <TextField
               fullWidth
+              onChange={onTextHandle}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -54,5 +57,7 @@ const CategoriasListToolbar = (props) => (
     </Box>
   </Box>
 );
-
+CategoriasListToolbar.propTypes = {
+  onTextHandle: PropTypes.func
+};
 export default CategoriasListToolbar;

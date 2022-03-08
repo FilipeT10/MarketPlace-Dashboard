@@ -20,6 +20,7 @@ class Produtos extends React.Component {
 
   state = {
     produtos: [],
+    searchText: "",
     isList: false,
     loading: false
   };
@@ -42,11 +43,14 @@ class Produtos extends React.Component {
     });
   }
   
+  handleChange = (event) => {
+    this.setState({searchText: event.target.value})
+  };
 
   render(){
 
     const { classes } = this.props;
-    const { produtos, isList, loading} = this.state;
+    const { produtos, isList, loading, searchText} = this.state;
   
 
   return(
@@ -62,14 +66,18 @@ class Produtos extends React.Component {
       }}
     >
       <Container maxWidth={false}>
-        <ProductListToolbar onListType={() => {isList ?  this.setState({isList: false}) : this.setState({isList: true})}} />
+        <ProductListToolbar onTextHandle={this.handleChange}  onListType={() => {isList ?  this.setState({isList: false}) : this.setState({isList: true})}} />
         <Box sx={{ pt: 3 }}>
         { loading ? <LinearProgress/> :
-          isList ? <ProductListResults customers={produtos} /> : <Grid
+          isList ? <ProductListResults customers={produtos.filter(function(item){
+            return item.name.includes(searchText) || item.name.includes(searchText.toLowerCase()) || item.name.includes(searchText.toUpperCase()) || item.name.includes(searchText.charAt(0).toUpperCase()+searchText.slice(1))
+          })} /> : <Grid
             container
             spacing={3}
           >
-            {produtos.map((produto) => (
+            {produtos.filter(function(item){
+            return item.name.includes(searchText) || item.name.includes(searchText.toLowerCase()) || item.name.includes(searchText.toUpperCase()) || item.name.includes(searchText.charAt(0).toUpperCase()+searchText.slice(1))
+          }).map((produto) => (
               <Grid
                 item
                 key={produto._id}
@@ -91,11 +99,6 @@ class Produtos extends React.Component {
             pt: 3
           }}
         >
-          <Pagination
-            color="primary"
-            count={3}
-            size="small"
-          />
         </Box> : <div/>
          }
       </Container>

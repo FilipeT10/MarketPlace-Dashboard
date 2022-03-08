@@ -12,6 +12,7 @@ class Categorias extends React.Component {
 
   state = {
     categorias: [],
+    searchText: "",
     loading: false
   };
 
@@ -31,12 +32,14 @@ class Categorias extends React.Component {
         console.log(error);
     });
   }
-  
+  handleChange = (event) => {
+    this.setState({searchText: event.target.value})
+  };
 
   render(){
 
     const { classes } = this.props;
-    const { categorias, loading} = this.state;
+    const { categorias, loading, searchText} = this.state;
   return (
   <>
     <Helmet>
@@ -50,10 +53,12 @@ class Categorias extends React.Component {
       }}
     >
       <Container maxWidth={false}>
-        <CategoriasListToolbar />
+        <CategoriasListToolbar onTextHandle={this.handleChange} />
         <Box sx={{ pt: 3 }}>
           { loading ? <LinearProgress/> :
-          <CategoriasListResults customers={categorias} />
+          <CategoriasListResults customers={categorias.filter(function(item){
+            return item.name.includes(searchText) || item.name.includes(searchText.toLowerCase()) || item.name.includes(searchText.toUpperCase()) || item.name.includes(searchText.charAt(0).toUpperCase()+searchText.slice(1))
+          })} />
           }
           </Box>
       </Container>

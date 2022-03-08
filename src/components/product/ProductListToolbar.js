@@ -16,7 +16,7 @@ import PropTypes from 'prop-types';
 
 import { FormatListBulleted, Reorder, ViewModule } from '@material-ui/icons';
 
-const ProductListToolbar = ({ onListType, props}) => {
+const ProductListToolbar = ({ onListType, onTextHandle, props}) => {
 
   const [isList, setList] = useState(false);
 
@@ -28,15 +28,10 @@ const ProductListToolbar = ({ onListType, props}) => {
         justifyContent: 'flex-end'
       }}
     >
-      <Button>
-        Import
-      </Button>
-      <Button sx={{ mx: 1 }}>
-        Export
-      </Button>
       <Button
         color="primary"
         variant="contained"
+        href="/app/cadastrar-produto"
       >
         Add product
       </Button>
@@ -48,6 +43,7 @@ const ProductListToolbar = ({ onListType, props}) => {
           <Box sx={{ maxWidth: 500 }}>
             <TextField
               fullWidth
+              onChange={onTextHandle}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -77,7 +73,8 @@ const ProductListToolbar = ({ onListType, props}) => {
 };
 
 ProductListToolbar.propTypes = {
-  onListType: PropTypes.func
+  onListType: PropTypes.func,
+  onTextHandle: PropTypes.func
 };
 
 

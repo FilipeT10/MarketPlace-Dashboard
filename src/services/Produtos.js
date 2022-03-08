@@ -11,6 +11,8 @@ api.get("users/tgmarinho")
 class ServiceProdutos  {
     
     static getProdutos = () => api.get(`produtos?loja=61663f593ad92700047d5e1f`)
+
+    static saveProdutos = (json) => api.post(`produtos`, json)
   
 }
 

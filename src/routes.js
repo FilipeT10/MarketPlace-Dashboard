@@ -10,6 +10,7 @@ import Produtos from './pages/Produtos';
 import Register from './pages/Register';
 import Settings from './pages/Settings';
 import CadastrarCategoria from './pages/CadastrarCategoria';
+import CadastrarProduto from './pages/CadastrarProduto';
 
 const routes = [
   {
@@ -19,6 +20,7 @@ const routes = [
       { path: 'account', element: <Account /> },
       { path: 'categorias', element: <Categorias /> },
       { path: 'cadastrar-categoria', element: <CadastrarCategoria /> },
+      { path: 'cadastrar-produto', element: <CadastrarProduto /> },
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'products', element: <Produtos /> },
       { path: 'settings', element: <Settings /> },
