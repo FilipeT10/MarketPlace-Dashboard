@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 import {
   Avatar,
   Box,
@@ -6,14 +7,24 @@ import {
   CardContent,
   Divider,
   Grid,
+  IconButton,
   Chip,
   Typography
 } from '@material-ui/core';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import { MonetizationOn } from '@material-ui/icons';
+import { MonetizationOn, Preview, RemoveRedEye } from '@material-ui/icons';
+import Edit from "@material-ui/icons/Edit";
 
-const ProductCard = ({ product, ...rest }) => (
+import ServiceCategorias from '../../services/Categorias'
+
+import ProductEdit from './ProductEdit';
+
+const ProductCard = ({ product, onHandleEdit, ...rest }) => {
+
+
+  
+  return(
   <Card
     sx={{
       display: 'flex',
@@ -101,17 +112,49 @@ const ProductCard = ({ product, ...rest }) => (
             sx={{ pl: 1 }}
             variant="body2"
           >
+            {'R$:'}
             {product.preco}
-            {'R$'}
           </Typography>
         </Grid>
       </Grid>
     </Box>
+    <Box sx={{ p: 2 }}>
+      <Grid
+        container
+        spacing={2}
+        sx={{ 
+          alignItems: 'center', justifyContent: 'space-between' }}
+      >
+        <Grid
+          item
+          sx={{
+            display: 'flex'
+          }}> 
+        <IconButton
+        color="inherit"
+        aria-label="open drawer"
+        onClick={onHandleEdit}
+      >
+        <Edit/>
+      </IconButton>
+      <IconButton
+        color="inherit"
+        aria-label="open drawer"
+        onClick={onHandleEdit }
+      >
+        <RemoveRedEye/>
+      </IconButton>
+        </Grid>
+        
+      </Grid>
+    </Box>
   </Card>
-);
+)
+        }
 
 ProductCard.propTypes = {
-  product: PropTypes.object.isRequired
+  product: PropTypes.object.isRequired,
+  onHandleEdit: PropTypes.func
 };
 
 export default ProductCard;

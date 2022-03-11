@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet';
 import {
   Box,
+  Card,
   Container,
   Grid,
   Pagination,
@@ -8,12 +9,14 @@ import {
 } from '@material-ui/core';
 import ProductListToolbar from '../components/product/ProductListToolbar';
 import ProductCard from '../components/product/ProductCard';
+import ProductEdit from '../components/product/ProductEdit';
 import products from '../__mocks__/products';
 import ProductListResults from 'src/components/product/ProductListResults';
 
 import React from 'react';
 import ServiceProdutos from '../services/Produtos'
 
+import ServiceCategorias from '../services/Categorias'
 
 
 class Produtos extends React.Component {
@@ -22,7 +25,10 @@ class Produtos extends React.Component {
     produtos: [],
     searchText: "",
     isList: false,
-    loading: false
+    loading: false,
+    categorias: [],
+    isEdit: false,
+    values: {}
   };
 
 
@@ -43,6 +49,26 @@ class Produtos extends React.Component {
     });
   }
   
+  getCategorias = () => {
+    ServiceCategorias.getCategorias().then(response => {
+        var categorias = response.data;
+        this.setState({categorias})
+      
+    }).catch(error => {
+        console.log(error);
+    });
+  }
+
+
+  
+  handleBackEdit = () => {
+    this.setState({isEdit: false})
+  };
+  handleEdit = (customer) => {
+    this.getCategorias()
+    this.setState({values:{nome: customer.name, ...customer}, isEdit: true})
+  };
+
   handleChange = (event) => {
     this.setState({searchText: event.target.value})
   };
@@ -50,7 +76,7 @@ class Produtos extends React.Component {
   render(){
 
     const { classes } = this.props;
-    const { produtos, isList, loading, searchText} = this.state;
+    const { produtos, isList, loading, searchText, values, isEdit, categorias} = this.state;
   
 
   return(
@@ -75,9 +101,17 @@ class Produtos extends React.Component {
             container
             spacing={3}
           >
-            {produtos.filter(function(item){
+            {isEdit ? 
+             <Card sx={{
+              backgroundColor: 'background.default',
+              marginLeft: 3,
+              marginTop: 3,
+              marginRight: 3
+            }}><ProductEdit product={values} categorias={categorias} onBackEdit={this.handleBackEdit}/></Card>
+            : produtos.filter(function(item){
             return item.name.includes(searchText) || item.name.includes(searchText.toLowerCase()) || item.name.includes(searchText.toUpperCase()) || item.name.includes(searchText.charAt(0).toUpperCase()+searchText.slice(1))
           }).map((produto) => (
+
               <Grid
                 item
                 key={produto._id}
@@ -85,8 +119,8 @@ class Produtos extends React.Component {
                 md={6}
                 xs={12}
               >
-                <ProductCard product={produto} />
-              </Grid>
+                <ProductCard product={produto} onHandleEdit={ () => this.handleEdit(produto)} />
+              </Grid> 
             ))}
           </Grid>
           }
