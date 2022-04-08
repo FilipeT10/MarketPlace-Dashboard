@@ -5,23 +5,21 @@ import axios from "axios";
 // http://localhost:3000
 
 const api = axios.create({
-  baseURL: "https://marketplace-base.herokuapp.com/"
+ // baseURL: "http://[::]:3000"
+    baseURL: "https://marketplace-base.herokuapp.com"
 });
 
 api.interceptors.request.use(request => {
-   /* request.headers = {/*
-        'Accept': 'application/json, text/plain',
-        'Accept-Encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin' : '*',
-    }*/
+   request.headers = {
+        'Content-Type': 'application/json'
+    }
 
-    if(request.method == 'patch'){
+    /*if(request.method == 'post'){
 
     request.headers['Authorization'] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpc3MiOiJNYXJrZXRQbGFjZS1BUEktTWFuYWdlciIsImlhdCI6MTYzNDA5MDgzMn0.hjzDcQhdSJjpYOZ77zl4dea4Xx9kOQS5YUrnloHkFZA";
    
     console.log('REQUEST Bearer');
-    }
+    }*/
  
     console.log('REQUEST', request);
     return request;

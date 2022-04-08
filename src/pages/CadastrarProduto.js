@@ -19,9 +19,13 @@ import { ArrowBack } from '@material-ui/icons';
 
 import TagsInput from '../components/Other/TagsInput';
 
+var tamanhos = []
 
+var cores = []
+
+var ingredientes = []
 class CadastrarProduto extends React.Component {
-
+  
   state = {
     isChecked: true,
     nome: '',
@@ -47,15 +51,56 @@ class CadastrarProduto extends React.Component {
       label: 'Alimentação'
     }
   ];
-  handleSelecetedTags =(items) =>{
-    console.log(items);
+   handleSelecetedTamanhos =(items) =>{
+    tamanhos = items
+    console.log("tamanhos "+tamanhos);
   }
-  handleChangeCategoria = (event) => {
-    this.setState({values:{
+  handleSelecetedCores =(items) =>{
+    cores = items
+    console.log("cores "+cores);
+  }
+  handleSelecetedIngredientes =(items) =>{
+    ingredientes = items
+    console.log("ingredientes "+ingredientes);
+  }
+  saveProdutos = () => {
+    
+    var json = {
       ...this.state.values,
-      [event.target.name]: event.target.value,
-      categoriaID: event.target.key
-    }});
+      "loja": "61663f593ad92700047d5e1f",
+      "tamanhos": tamanhos,
+      "cores": cores,
+      "ingredientes": ingredientes,
+      "ativo": this.state.isChecked
+    }
+    ServiceProdutos.saveProdutos(json).then(response => {
+        var categorias = response.data;
+        console.log(categorias)
+    }).catch(error => {
+        console.log(error);
+    });
+  }
+
+
+  handleChangeCategoria = (event) => {
+    this.setState({
+      values:
+      {...this.state.values,
+        [event.target.name]: event.target.value
+        }
+      });
+
+    console.log(this.state.values)
+  };
+   handleChange = (event) => {
+    this.setState({
+      values:
+      {...this.state.values,
+        [event.target.name]: event.target.value
+        }
+      });
+
+    console.log(this.state.values)
   };
   getCategorias = () => {
     ServiceCategorias.getCategorias().then(response => {
@@ -67,24 +112,7 @@ class CadastrarProduto extends React.Component {
     });
   }
 
-  saveProdutos = () => {
-    var json = {
-      "name": this.state.nome,
-      "ativo": this.state.isChecked
-    }
-    ServiceProdutos.saveProdutos(json).then(response => {
-        var categorias = response.data;
-        console.log(categorias)
-    }).catch(error => {
-        console.log(error);
-    });
-  }
-
-   handleChange = (event) => {
-    this.setState({
-      nome: event.target.value
-    });
-  };
+  
    handleAtivoChecked = () => {
     this.setState({
       isChecked: !this.state.isChecked
@@ -124,10 +152,10 @@ class CadastrarProduto extends React.Component {
                               fullWidth
                               label="Nome"
                               margin="normal"
-                              name="nome"
+                              name="name"
                               required
                               onChange={this.handleChange}
-                              value={values.nome}
+                              value={values.name}
                               variant="outlined"
                             />
                             <TextField
@@ -197,7 +225,7 @@ class CadastrarProduto extends React.Component {
                             ))}
                           </TextField>
                           <TagsInput
-                              selectedTags={this.handleSelecetedTags}
+                              selectedTags={this.handleSelecetedTamanhos}
                               fullWidth
                               margin="normal"
                               variant="outlined"
@@ -208,7 +236,7 @@ class CadastrarProduto extends React.Component {
                               label="Tamanhos"
                             />
                             <TagsInput
-                              selectedTags={this.handleSelecetedTags}
+                              selectedTags={this.handleSelecetedCores}
                               fullWidth
                               margin="normal"
                               variant="outlined"
@@ -219,7 +247,7 @@ class CadastrarProduto extends React.Component {
                               label="Cores"
                             />
                             <TagsInput
-                              selectedTags={this.handleSelecetedTags}
+                              selectedTags={this.handleSelecetedIngredientes}
                               fullWidth
                               margin="normal"
                               variant="outlined"

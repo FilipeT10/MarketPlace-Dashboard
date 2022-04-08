@@ -3,6 +3,7 @@
   "author": "DeviasIO",
   "licence": "MIT",
   "version": "1.0.0",
+  "proxy": "https://marketplace-base.herokuapp.com",
   "private": false,
   "scripts": {
     "eslint": "eslint ./src",

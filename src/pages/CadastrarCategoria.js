@@ -28,6 +28,7 @@ class CadastrarCategoria extends React.Component {
   saveCategoria = () => {
     var json = {
       "name": this.state.nome,
+      "loja": "61663f593ad92700047d5e1f",
       "ativo": this.state.isChecked
     }
     ServiceCategorias.saveCategorias(json).then(response => {

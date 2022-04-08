@@ -13,9 +13,24 @@ import {
 } from '@material-ui/core';
 import FacebookIcon from '../icons/Facebook';
 import GoogleIcon from '../icons/Google';
+import ServiceUser from 'src/services/User';
 
 const Login = () => {
   const navigate = useNavigate();
+
+  const logar = () => {
+    var json = {
+      "email": "cliente@gmail.com",
+      "password": "abc123"
+    }
+    
+    ServiceUser.authenticate(json).then(response => {
+        console.log(response)
+    }).catch(error => {
+        console.log(error);
+    });
+  }
+
 
   return (
     <>
@@ -42,6 +57,7 @@ const Login = () => {
               password: Yup.string().max(255).required('Password is required')
             })}
             onSubmit={() => {
+              logar()
               navigate('/app/dashboard', { replace: true });
             }}
           >

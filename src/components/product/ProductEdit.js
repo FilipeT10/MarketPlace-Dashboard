@@ -2,8 +2,7 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-
-import ServiceCategorias from '../../services/Categorias'
+import ServiceProdutos from '../../services/Produtos'
 import {
   Avatar,
   Box,
@@ -34,6 +33,13 @@ import IconButton from "@material-ui/core/IconButton";
 import { ArrowBack } from '@material-ui/icons';
 import TagsInput from '../Other/TagsInput';
 
+
+var tamanhos = []
+
+var cores = []
+
+var ingredientes = []
+
 const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
   const [isChecked, setChecked] = useState(product.ativo);
   const [values, setValues] = useState(product);
@@ -54,13 +60,43 @@ const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
     }
   ];
 
+  const handleSelecetedTamanhos =(items) =>{
+    tamanhos = items
+    console.log("tamanhos "+tamanhos);
+  }
+  const handleSelecetedCores =(items) =>{
+    cores = items
+    console.log("cores "+cores);
+  }
+  const handleSelecetedIngredientes =(items) =>{
+    ingredientes = items
+    console.log("ingredientes "+ingredientes);
+  }
+  const editProduto = () => {
+    
+    var json = {
+      ...values,
+      "tamanhos": tamanhos,
+      "cores": cores,
+      "ingredientes": ingredientes,
+      "ativo": isChecked
+    }
+    ServiceProdutos.editProdutos(product._id, json).then(response => {
+        var categorias = response.data;
+        console.log(categorias)
+    }).catch(error => {
+        console.log(error);
+    });
+  }
+
+
+
 
   
   const handleChangeCategoria = (event) => {
     setValues({
       ...values,
-      [event.target.name]: event.target.value,
-      categoriaID: event.target.key
+      [event.target.name]: event.target.value
     });
   };
   const handleChange = (event) => {
@@ -74,9 +110,6 @@ const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
     setChecked(!isChecked);
   };
 
-  const handleSelecetedTags =(items) =>{
-    console.log(items);
-  }
 
   return(
   <Box sx={{ minWidth: 1050 }}> 
@@ -99,10 +132,10 @@ const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
                               fullWidth
                               label="Nome"
                               margin="normal"
-                              name="nome"
+                              name="name"
                               required
                               onChange={handleChange}
-                              value={values.nome}
+                              value={values.name}
                               variant="outlined"
                             />
                             <TextField
@@ -172,7 +205,7 @@ const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
                             ))}
                           </TextField>
                           <TagsInput
-                              selectedTags={handleSelecetedTags}
+                              selectedTags={handleSelecetedTamanhos}
                               fullWidth
                               margin="normal"
                               variant="outlined"
@@ -183,7 +216,7 @@ const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
                               label="Tamanhos"
                             />
                             <TagsInput
-                              selectedTags={handleSelecetedTags}
+                              selectedTags={handleSelecetedCores}
                               fullWidth
                               margin="normal"
                               variant="outlined"
@@ -194,7 +227,7 @@ const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
                               label="Cores"
                             />
                             <TagsInput
-                              selectedTags={handleSelecetedTags}
+                              selectedTags={handleSelecetedIngredientes}
                               fullWidth
                               margin="normal"
                               variant="outlined"
@@ -237,7 +270,7 @@ const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
                             <Button
                               color="primary"
                               variant="contained"
-                              onClick={() => { console.log('onClick'); saveCategoria(values.nome, isChecked)}}> Salvar</Button>
+                              onClick={() => { editProduto()}}> Salvar</Button>
                           </Box>
                         </Card>
                         </div>

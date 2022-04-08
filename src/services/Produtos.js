@@ -12,6 +12,7 @@ class ServiceProdutos  {
     
     static getProdutos = () => api.get(`produtos?loja=61663f593ad92700047d5e1f`)
 
+    static editProdutos = (id, json) => api.patch(`produtos/${id}`, json)
     static saveProdutos = (json) => api.post(`produtos`, json)
   
 }
