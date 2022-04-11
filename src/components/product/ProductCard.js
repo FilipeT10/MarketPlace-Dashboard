@@ -149,8 +149,7 @@ const ProductCard = ({ product, onHandleEdit, ...rest }) => {
         
       </Grid>
     </Box>
-    <ModalSuccess success title={"Sucesso"} subTitle={"Sucesso subtitle"} />
-  </Card>
+    </Card>
 )
         }
 

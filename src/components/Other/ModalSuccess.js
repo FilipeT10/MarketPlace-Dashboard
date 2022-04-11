@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from '@material-ui/styles';
 import Button from '@material-ui/core/Button';
 
 import PropTypes from "prop-types";
 import Modal from '@material-ui/core/Modal';
-import { IconButton, Typography } from "@material-ui/core";
-
+import { IconButton, Typography, Grid } from "@material-ui/core";
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Close, RemoveRedEye } from '@material-ui/icons';
 
 
@@ -40,10 +40,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function ModalSuccess({...props}) {
+
+    const navigate = useNavigate();
     const classes = useStyles();
     const [modalStyle] = React.useState(getModalStyle);
-    const [open, setOpen] = React.useState(false);
-    var that = this; 
+    const [open, setOpen] = React.useState(props.open);
+    
+    useEffect(() => {
+        setOpen(props.open);
+      }, [props.open]);
 
     const handleOpen = () => {
         setOpen(true);
@@ -51,12 +56,13 @@ export default function ModalSuccess({...props}) {
 
     const handleClose = () => {
         setOpen(false);
+        console.log(props.redirect)
+        if(props.redirect){
+            navigate(props.redirect, { replace: true });
+        }
     };
     return (
         <div>
-            <Button variant="contained" color="primary" onClick={handleOpen}>
-                Open Modal
-            </Button>
 
             <Modal style={{outline:'none'}}
                 open={open}
@@ -93,6 +99,41 @@ export default function ModalSuccess({...props}) {
                         </Typography>
                     <br/>
                     <br/>
+                    <Grid
+                    container
+                    spacing={2}
+                    sx={{ justifyContent: 'space-between' }}
+                    >
+                        <Grid
+                        item
+                        sx={{
+                            alignItems: 'center',
+                            display: 'flex'
+                        }}
+                    
+                        >
+                                    {props.neutralButton ? 
+                        <Button variant="contained" color="info" onClick={handleClose} style={{marginRight: 10}}>
+                            Voltar
+                        </Button>
+                        : null}
+                        </Grid>
+                        <Grid
+                        item
+                        sx={{
+                            alignItems: 'center',
+                            display: 'flex'
+                        }}
+                    
+                        >
+                        {props.confirmationButton ? 
+                        <Button variant="contained" color="primary" onClick={handleClose} >
+                            Confirmar
+                        </Button>
+                        : null}
+                        </Grid>
+                        </Grid>
+                    
                     
                 </div>
             </Modal>
@@ -101,7 +142,11 @@ export default function ModalSuccess({...props}) {
 }
 
 ModalSuccess.propTypes = {
+    open: PropTypes.bool,
+    neutralButton: PropTypes.bool,
+    confirmationButton: PropTypes.bool,
     success: PropTypes.bool,
     title: PropTypes.string,
+    redirect: PropTypes.string,
     subTitle: PropTypes.string,
   };

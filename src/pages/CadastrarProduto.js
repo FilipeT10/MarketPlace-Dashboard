@@ -18,6 +18,8 @@ import IconButton from "@material-ui/core/IconButton";
 import { ArrowBack } from '@material-ui/icons';
 import TagsInput from '../components/Other/TagsInput';
 
+import ModalSuccess from 'src/components/Other/ModalSuccess';
+
 var tamanhos = []
 
 var cores = []
@@ -36,7 +38,8 @@ class CadastrarProduto extends React.Component {
     errorText: 'Campo obrigatório',
     nome: '',
     categorias: [], 
-    values: {}
+    values: {},
+    modalSucesso: false
   };
 
   componentDidMount() {
@@ -126,6 +129,7 @@ class CadastrarProduto extends React.Component {
       ServiceProdutos.saveProdutos(json).then(response => {
           var categorias = response.data;
 
+          this.setState({modalSucesso: true})
           console.log(categorias)
       }).catch(error => {
           console.log(error);
@@ -355,6 +359,8 @@ class CadastrarProduto extends React.Component {
                      </Box>
           </Box>
       </Container>
+      <ModalSuccess open={this.state.modalSucesso} success redirect={'/app/products'} title={"Sucesso"} subTitle={"Cadastro efetuado."} />
+    
     </Box>
   </>
   );

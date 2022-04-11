@@ -14,6 +14,7 @@ import {
 } from '@material-ui/core';
 import IconButton from "@material-ui/core/IconButton";
 import { ArrowBack } from '@material-ui/icons';
+import ModalSuccess from 'src/components/Other/ModalSuccess';
 
 
 class CadastrarCategoria extends React.Component {
@@ -22,7 +23,8 @@ class CadastrarCategoria extends React.Component {
   state = {
     isChecked: true,
     nome: '',
-    errorNome: false
+    errorNome: false,
+    modalSucesso: false
   };
 
 
@@ -38,7 +40,8 @@ class CadastrarCategoria extends React.Component {
       }
       ServiceCategorias.saveCategorias(json).then(response => {
           var categorias = response.data;
-          console.log(categorias)
+
+          this.setState({modalSucesso: true})
       }).catch(error => {
           console.log(error);
       });
@@ -134,11 +137,14 @@ class CadastrarCategoria extends React.Component {
             variant="contained"
             onClick={() => { console.log('onClick'); this.saveCategoria()}}> Salvar</Button>
         </Box>
+        <ModalSuccess open={this.state.modalSucesso} success redirect={'/app/categorias'} title={"Sucesso"} subTitle={"Cadastro efetuado."} />
+    
       </Card>
       </div>
                      </Box>
           </Box>
       </Container>
+          
     </Box>
   </>
   );
