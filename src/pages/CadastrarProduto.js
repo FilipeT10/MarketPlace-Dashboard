@@ -16,7 +16,6 @@ import {
 } from '@material-ui/core';
 import IconButton from "@material-ui/core/IconButton";
 import { ArrowBack } from '@material-ui/icons';
-
 import TagsInput from '../components/Other/TagsInput';
 
 var tamanhos = []
@@ -24,10 +23,17 @@ var tamanhos = []
 var cores = []
 
 var ingredientes = []
+
 class CadastrarProduto extends React.Component {
   
+
+
   state = {
     isChecked: true,
+    errorNome: false,
+    errorPreco: false,
+    errorQtd: false,
+    errorText: 'Campo obrigatório',
     nome: '',
     categorias: [], 
     values: {}
@@ -64,21 +70,67 @@ class CadastrarProduto extends React.Component {
     console.log("ingredientes "+ingredientes);
   }
   saveProdutos = () => {
-    
-    var json = {
-      ...this.state.values,
-      "loja": "61663f593ad92700047d5e1f",
-      "tamanhos": tamanhos,
-      "cores": cores,
-      "ingredientes": ingredientes,
-      "ativo": this.state.isChecked
+
+    var possuiError = false
+    if(this.state.values.name != undefined){
+      if(this.state.values.name.lenght == 0){
+        this.setState({errorNome: true})
+        possuiError = true
+      }
+    }else{
+      this.setState({errorNome: true})
+      possuiError = true
     }
-    ServiceProdutos.saveProdutos(json).then(response => {
-        var categorias = response.data;
-        console.log(categorias)
-    }).catch(error => {
-        console.log(error);
-    });
+
+    if(this.state.values.preco != undefined){
+      if(this.state.values.preco.lenght == 0){
+        this.setState({errorPreco: true})
+        possuiError = true
+      }
+    }else{
+      this.setState({errorPreco: true})
+      possuiError = true
+    }
+    if(this.state.values.quantidade != undefined){
+      if(this.state.values.quantidade.lenght == 0){
+        this.setState({errorQtd: true})
+        possuiError = true
+      }
+    }else{
+      this.setState({errorQtd: true})
+      possuiError = true
+    }
+    var categoria = this.state.values.categoria
+
+    if(categoria == undefined){
+      categoria = this.state.categorias[0]._id
+    }
+    var tipo = this.state.values.tipo
+
+    if(tipo == undefined){
+      tipo = this.tipoProdutos[0].value
+    }
+
+    if(possuiError == false){
+      this.setState({errorQtd: true, errorNome: false, errorPreco: false})
+      var json = {
+        ...this.state.values,
+        "loja": "61663f593ad92700047d5e1f",
+        "tamanhos": tamanhos,
+        "cores": cores,
+        "ingredientes": ingredientes,
+        "categoria": categoria,
+        "tipo": tipo,
+        "ativo": this.state.isChecked
+      }
+      ServiceProdutos.saveProdutos(json).then(response => {
+          var categorias = response.data;
+
+          console.log(categorias)
+      }).catch(error => {
+          console.log(error);
+      });
+    }
   }
 
 
@@ -121,7 +173,7 @@ class CadastrarProduto extends React.Component {
  
   render(){
 
-    const { values, categorias, isChecked} = this.state;
+    const { values, categorias, isChecked, errorNome, errorPreco, errorQtd, errorText} = this.state;
   return (
 
   <>
@@ -154,6 +206,8 @@ class CadastrarProduto extends React.Component {
                               margin="normal"
                               name="name"
                               required
+                              error={errorNome}
+                              helperText={errorNome ? errorText : ''}
                               onChange={this.handleChange}
                               value={values.name}
                               variant="outlined"
@@ -164,6 +218,8 @@ class CadastrarProduto extends React.Component {
                               margin="normal"
                               name="preco"
                               required
+                              error={errorPreco}
+                              helperText={errorPreco ? errorText : ''}
                               onChange={this.handleChange}
                               value={values.preco}
                               variant="outlined"
@@ -174,6 +230,8 @@ class CadastrarProduto extends React.Component {
                               margin="normal"
                               required
                               name="quantidade"
+                              error={errorQtd}
+                              helperText={errorQtd ? errorText : ''}
                               onChange={this.handleChange}
                               value={values.quantidade}
                               variant="outlined"

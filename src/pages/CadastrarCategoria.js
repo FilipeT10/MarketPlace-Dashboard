@@ -16,27 +16,36 @@ import IconButton from "@material-ui/core/IconButton";
 import { ArrowBack } from '@material-ui/icons';
 
 
-
 class CadastrarCategoria extends React.Component {
+
 
   state = {
     isChecked: true,
-    nome: ''
+    nome: '',
+    errorNome: false
   };
 
 
-  saveCategoria = () => {
-    var json = {
-      "name": this.state.nome,
-      "loja": "61663f593ad92700047d5e1f",
-      "ativo": this.state.isChecked
+   saveCategoria = () => {
+
+    if(this.state.nome != ""){
+
+      this.setState({errorNome: false})
+      var json = {
+        "name": this.state.nome,
+        "loja": "61663f593ad92700047d5e1f",
+        "ativo": this.state.isChecked
+      }
+      ServiceCategorias.saveCategorias(json).then(response => {
+          var categorias = response.data;
+          console.log(categorias)
+      }).catch(error => {
+          console.log(error);
+      });
+    }else{
+
+      this.setState({errorNome: true})
     }
-    ServiceCategorias.saveCategorias(json).then(response => {
-        var categorias = response.data;
-        console.log(categorias)
-    }).catch(error => {
-        console.log(error);
-    });
   }
 
    handleChange = (event) => {
@@ -82,6 +91,9 @@ class CadastrarCategoria extends React.Component {
             label="Nome"
             margin="normal"
             name="nome"
+            required
+            error={this.state.errorNome}
+            helperText={this.state.errorNome ? "Campo obrigatório" : ''}
             onChange={this.handleChange}
             value={this.state.nome}
             variant="outlined"

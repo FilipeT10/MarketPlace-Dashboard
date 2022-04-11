@@ -18,14 +18,16 @@ import ServiceUser from 'src/services/User';
 const Login = () => {
   const navigate = useNavigate();
 
-  const logar = () => {
+  const logar = (email, password) => {
     var json = {
-      "email": "cliente@gmail.com",
-      "password": "abc123"
+      "email": email,
+      "password": password
     }
     
     ServiceUser.authenticate(json).then(response => {
         console.log(response)
+
+        navigate('/app/dashboard', { replace: true });
     }).catch(error => {
         console.log(error);
     });
@@ -35,7 +37,7 @@ const Login = () => {
   return (
     <>
       <Helmet>
-        <title>Login | Material Kit</title>
+        <title>Login</title>
       </Helmet>
       <Box
         sx={{
@@ -49,16 +51,15 @@ const Login = () => {
         <Container maxWidth="sm">
           <Formik
             initialValues={{
-              email: 'demo@devias.io',
-              password: 'Password123'
+              email: 'cliente@gmail.com',
+              password: 'abc123'
             }}
             validationSchema={Yup.object().shape({
               email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
               password: Yup.string().max(255).required('Password is required')
             })}
-            onSubmit={() => {
-              logar()
-              navigate('/app/dashboard', { replace: true });
+            onSubmit={(values) => {
+              logar(values.email, values.password)
             }}
           >
             {({
