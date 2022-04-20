@@ -19,7 +19,6 @@ import Edit from "@material-ui/icons/Edit";
 import ServiceCategorias from '../../services/Categorias'
 
 import ProductEdit from './ProductEdit';
-import ModalSuccess from '../Other/ModalSuccess';
 
 const ProductCard = ({ product, onHandleEdit, ...rest }) => {
 

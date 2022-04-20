@@ -13,8 +13,8 @@ import {
   Typography, Grid
 } from '@material-ui/core';
 import IconButton from "@material-ui/core/IconButton";
-import { ArrowBack } from '@material-ui/icons';
-import ModalSuccess from 'src/components/Other/ModalSuccess';
+import { ArrowBack, TryRounded } from '@material-ui/icons';
+import ModalFeedback from 'src/components/Other/ModalFeedback';
 
 
 class CadastrarCategoria extends React.Component {
@@ -24,7 +24,8 @@ class CadastrarCategoria extends React.Component {
     isChecked: true,
     nome: '',
     errorNome: false,
-    modalSucesso: false
+    modalVisible: false,
+    modalSuccess: true
   };
 
 
@@ -41,8 +42,10 @@ class CadastrarCategoria extends React.Component {
       ServiceCategorias.saveCategorias(json).then(response => {
           var categorias = response.data;
 
-          this.setState({modalSucesso: true})
+          this.setState({modalVisible: true, modalSuccess: true})
       }).catch(error => {
+
+          this.setState({modalVisible: true, modalSuccess: false})
           console.log(error);
       });
     }else{
@@ -63,7 +66,7 @@ class CadastrarCategoria extends React.Component {
   };
 
   render(){
-
+    const {modalVisible, modalSuccess} = this.state
   return (
   <>
     <Helmet>
@@ -137,7 +140,9 @@ class CadastrarCategoria extends React.Component {
             variant="contained"
             onClick={() => { console.log('onClick'); this.saveCategoria()}}> Salvar</Button>
         </Box>
-        <ModalSuccess open={this.state.modalSucesso} success redirect={'/app/categorias'} title={"Sucesso"} subTitle={"Cadastro efetuado."} />
+
+        <ModalFeedback open={modalVisible} success={modalSuccess} redirect={modalSuccess ? '/app/categorias' : ''} title={ modalSuccess ? "Sucesso" : "Falhou"} subTitle={ modalSuccess ? "Cadastro realizado com sucesso." : "Não foi possível realizar o cadastro, tente novamente mais tarde."} />
+                     
     
       </Card>
       </div>

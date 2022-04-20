@@ -29,13 +29,15 @@ import Edit from "@material-ui/icons/Edit";
 import IconButton from "@material-ui/core/IconButton";
 import { ArrowBack } from '@material-ui/icons';
 import ServiceCategorias from 'src/services/Categorias';
+import ModalFeedback from '../Other/ModalFeedback';
 
 const CategoriasListResults = ({ customers, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [customerEdit, setCustomerEdit] = useState({})
   const [isEdit, setIsEdit] = useState(false);
-
+  const [modalVisible, setModalVisible] = useState(false)
+  const [modalSuccess, setModalSuccess] = useState(true)
   const [isChecked, setChecked] = useState(false);
   const [values, setValues] = useState({
     nome: ''
@@ -75,9 +77,13 @@ const CategoriasListResults = ({ customers, ...rest }) => {
       "ativo": isChecked
     }
     ServiceCategorias.editCategorias(customerEdit._id, json).then(response => {
+        setModalSuccess(true)
+        setModalVisible(true)
         var categorias = response.data;
         console.log(categorias)
     }).catch(error => {
+        setModalSuccess(false)
+        setModalVisible(true)
         console.log(error);
     });
   }
@@ -144,10 +150,11 @@ const CategoriasListResults = ({ customers, ...rest }) => {
                             <Button
                               color="primary"
                               variant="contained"
-                              onClick={() => { console.log('onClick'); saveCategoria(values.nome, isChecked)}}> Salvar</Button>
+                              onClick={() => { saveCategoria(values.nome, isChecked)}}> Salvar</Button>
                           </Box>
                         </Card>
                         </div>
+                      <ModalFeedback open={modalVisible} success={modalSuccess} redirect={modalSuccess ? '/app/dashboard' : ''} title={ modalSuccess ? "Sucesso" : "Falhou"} subTitle={ modalSuccess ? "Categoria editada com sucesso." : "Não foi possível editar a categoria, tente novamente mais tarde."} />
                       </Box>:
       <div>
       <PerfectScrollbar>

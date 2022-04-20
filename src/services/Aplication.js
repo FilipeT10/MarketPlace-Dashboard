@@ -1,12 +1,5 @@
 
 import api from './api'
-/*
-// Buscando usuários do github
-api.get("users/tgmarinho")
-      .then((response) => doSomething(response.data))
-      .catch((err) => {
-        console.error("ops! ocorreu um erro" + err);
-     });*/
 
 class Aplication  {
     

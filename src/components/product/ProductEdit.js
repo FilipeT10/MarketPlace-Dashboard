@@ -30,8 +30,9 @@ import Edit from "@material-ui/icons/Edit";
 
 import IconButton from "@material-ui/core/IconButton";
 
-import { ArrowBack } from '@material-ui/icons';
+import { ArrowBack, TrendingUpOutlined } from '@material-ui/icons';
 import TagsInput from '../Other/TagsInput';
+import ModalFeedback from '../Other/ModalFeedback';
 
 
 var tamanhos = []
@@ -44,6 +45,8 @@ const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
   const [isChecked, setChecked] = useState(product.ativo);
   const [values, setValues] = useState(product);
 
+  const [modalVisible, setModalVisible] = useState(false)
+  const [modalSuccess, setModalSuccess] = useState(true)
   
   const tipoProdutos = [
     {
@@ -82,9 +85,13 @@ const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
       "ativo": isChecked
     }
     ServiceProdutos.editProdutos(product._id, json).then(response => {
+        setModalSuccess(true)
+        setModalVisible(true)
         var categorias = response.data;
         console.log(categorias)
-    }).catch(error => {
+      }).catch(error => {
+        setModalSuccess(false)
+        setModalVisible(true)
         console.log(error);
     });
   }
@@ -274,6 +281,8 @@ const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
                           </Box>
                         </Card>
                         </div>
+                          
+                        <ModalFeedback open={modalVisible} success={modalSuccess} redirect={modalSuccess ? '/app/dashboard' : ''} title={ modalSuccess ? "Sucesso" : "Falhou"} subTitle={ modalSuccess ? "Produto editado com sucesso." : "Não foi possível editar o produto, tente novamente mais tarde."} />
                       </Box>
   )
  }

@@ -39,7 +39,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function ModalSuccess({...props}) {
+export default function ModalFeedback({...props}) {
 
     const navigate = useNavigate();
     const classes = useStyles();
@@ -141,7 +141,7 @@ export default function ModalSuccess({...props}) {
     );
 }
 
-ModalSuccess.propTypes = {
+ModalFeedback.propTypes = {
     open: PropTypes.bool,
     neutralButton: PropTypes.bool,
     confirmationButton: PropTypes.bool,
