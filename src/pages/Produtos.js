@@ -45,6 +45,7 @@ class Produtos extends React.Component {
         this.setState({produtos, loading: false})
       
     }).catch(error => {
+        alert('Falha ao carregar os produtos, tente novamente mais tarde.');
         console.log(error);
     });
   }
@@ -55,6 +56,7 @@ class Produtos extends React.Component {
         this.setState({categorias})
       
     }).catch(error => {
+        alert('Falha ao carregar as categorias, tente novamente mais tarde.');
         console.log(error);
     });
   }

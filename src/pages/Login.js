@@ -14,9 +14,12 @@ import {
 import FacebookIcon from '../icons/Facebook';
 import GoogleIcon from '../icons/Google';
 import ServiceUser from 'src/services/User';
+import { useState } from 'react';
 
 const Login = () => {
   const navigate = useNavigate();
+
+  const [buttonDisable, setButtonDisable] = useState(false);
 
   const logar = (email, password) => {
     var json = {
@@ -25,10 +28,10 @@ const Login = () => {
     }
     
     ServiceUser.authenticate(json).then(response => {
-        console.log(response)
-
         navigate('/app/dashboard', { replace: true });
     }).catch(error => {
+        alert("Não foi possível efetuar o Login")
+        setButtonDisable(false)
         console.log(error);
     });
   }
@@ -51,14 +54,15 @@ const Login = () => {
         <Container maxWidth="sm">
           <Formik
             initialValues={{
-              email: 'cliente@gmail.com',
-              password: 'abc123'
+              email: '',
+              password: ''
             }}
             validationSchema={Yup.object().shape({
               email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
               password: Yup.string().max(255).required('Password is required')
             })}
             onSubmit={(values) => {
+              setButtonDisable(true)
               logar(values.email, values.password)
             }}
           >
@@ -85,56 +89,6 @@ const Login = () => {
                     variant="body2"
                   >
                     Sign in on the internal platform
-                  </Typography>
-                </Box>
-                <Grid
-                  container
-                  spacing={3}
-                >
-                  <Grid
-                    item
-                    xs={12}
-                    md={6}
-                  >
-                    <Button
-                      color="primary"
-                      fullWidth
-                      startIcon={<FacebookIcon />}
-                      onClick={handleSubmit}
-                      size="large"
-                      variant="contained"
-                    >
-                      Login with Facebook
-                    </Button>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    md={6}
-                  >
-                    <Button
-                      fullWidth
-                      startIcon={<GoogleIcon />}
-                      onClick={handleSubmit}
-                      size="large"
-                      variant="contained"
-                    >
-                      Login with Google
-                    </Button>
-                  </Grid>
-                </Grid>
-                <Box
-                  sx={{
-                    pb: 1,
-                    pt: 3
-                  }}
-                >
-                  <Typography
-                    align="center"
-                    color="textSecondary"
-                    variant="body1"
-                  >
-                    or login with email address
                   </Typography>
                 </Box>
                 <TextField
@@ -166,7 +120,7 @@ const Login = () => {
                 <Box sx={{ py: 2 }}>
                   <Button
                     color="primary"
-                    disabled={isSubmitting}
+                    disabled={buttonDisable}
                     fullWidth
                     size="large"
                     type="submit"

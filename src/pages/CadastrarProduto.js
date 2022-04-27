@@ -168,6 +168,8 @@ class CadastrarProduto extends React.Component {
         this.setState({categorias})
       
     }).catch(error => {
+
+        alert('Falha ao carregar as categorias, tente novamente mais tarde.');
         console.log(error);
     });
   }

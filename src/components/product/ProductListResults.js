@@ -52,6 +52,7 @@ const ProductListResults = ({ customers, ...rest }) => {
         setCategorias(categorias)
       
     }).catch(error => {
+        alert('Falha ao carregar as categorias, tente novamente mais tarde.');
         console.log(error);
     });
   }
