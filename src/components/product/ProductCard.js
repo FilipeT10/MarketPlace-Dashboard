@@ -41,11 +41,8 @@ const ProductCard = ({ product, onHandleEdit, ...rest }) => {
           pb: 3
         }}
       >
-     { /*  <Avatar
-          alt="Product"
-          src={product.media}
-          variant="square"
-        />*/}
+     
+     {product.imagens[0]  ? <img src={product.imagens[0].base}/> : null}
       </Box>
       <Typography
         align="center"
