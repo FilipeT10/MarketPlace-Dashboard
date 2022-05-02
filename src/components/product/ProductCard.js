@@ -20,6 +20,8 @@ import ServiceCategorias from '../../services/Categorias'
 
 import ProductEdit from './ProductEdit';
 
+import Carousel from 'react-material-ui-carousel'
+
 const ProductCard = ({ product, onHandleEdit, ...rest }) => {
 
 
@@ -41,8 +43,13 @@ const ProductCard = ({ product, onHandleEdit, ...rest }) => {
           pb: 3
         }}
       >
+      
+      <Carousel animation='slide' sx={{width: '80%'}}>
+            {
+                product.imagens.map( (item, i) => <img style={{justifyContent: 'center', width: '100%'}} src={product.imagens[i].base}/> )
+            }
+        </Carousel>
      
-     {product.imagens[0]  ? <img src={product.imagens[0].base}/> : null}
       </Box>
       <Typography
         align="center"

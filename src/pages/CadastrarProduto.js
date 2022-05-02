@@ -19,6 +19,7 @@ import { ArrowBack } from '@material-ui/icons';
 import TagsInput from '../components/Other/TagsInput';
 
 import ModalFeedback from 'src/components/Other/ModalFeedback';
+import InputImages from 'src/components/Other/InputImages';
 
 var tamanhos = []
 
@@ -40,13 +41,36 @@ class CadastrarProduto extends React.Component {
     categorias: [], 
     values: {},
     modalVisible: false,
-    modalSuccess: true
+    modalSuccess: true,
+    images: [],
+    imageURLs: [],
+    selectedFile: ''
   };
+  
 
   componentDidMount() {
 
     this.getCategorias()
   }
+
+   
+
+  handleInputChange = (event) => {
+      let files = event.target.files;
+      let reader = new FileReader();
+      reader.readAsDataURL(files[0]);
+
+      reader.onload = (e) => {
+        console.log(e.target.result)
+        this.saveImage(e.target.result)
+      }
+
+  }
+  saveImage(image){
+
+    this.setState({images: [...this.state.images, image]})
+  }
+
   tipoProdutos = [
     {
       value: 'roupa',
@@ -325,6 +349,18 @@ class CadastrarProduto extends React.Component {
                               tags={values.ingredientes}
                               label="Ingredientes"
                             />
+                            <InputImages 
+
+                            selectedTags={this.handleSelecetedIngredientes}
+                            fullWidth
+                            margin="normal"
+                            variant="outlined"
+                            id="images"
+                            name="images"
+                            placeholder="Adicionar Imagens"
+                            tags={values.ingredientes}
+                            label="Imagens"
+                            />
                             <Grid container spacing={2}>
                               <Grid item xs={0}>
                               <Switch
@@ -333,6 +369,8 @@ class CadastrarProduto extends React.Component {
                                 inputProps={{ 'aria-label': 'controlled' }}
                               />
                               </Grid>
+                            
+
                               <Grid item xs={1} style={{marginTop: 10}}>
                                   { isChecked ? <Typography
                                 color="textPrimary"
