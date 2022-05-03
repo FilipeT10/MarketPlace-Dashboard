@@ -7,9 +7,10 @@ import TextField from "@material-ui/core/TextField";
 import Downshift from "downshift";
 
 import Edit from "@material-ui/icons/Edit";
-import { Button, IconButton } from "@material-ui/core";
+import { Button, IconButton, List, ListItem, Typography } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 
+import PerfectScrollbar from 'react-perfect-scrollbar';
 
 const useStyles = makeStyles(theme => ({
   chip: {
@@ -31,7 +32,6 @@ export default function InputImages({ ...props }) {
 
   function handleInputChange(event) {
 
-    console.log('entroy')
     let files = event.target.files;
     let reader = new FileReader();
     reader.readAsDataURL(files[0]);
@@ -105,41 +105,44 @@ export default function InputImages({ ...props }) {
           });
           
           return (
-            <div>
-              <TextField
-                InputProps={{
-                  startAdornment: selectedItem.map(item => (
-                    <div>
-                      <IconButton
-                        style={{ justifySelf: 'right', marginTop: 10, marginLeft: 100, backgroundColor: "#ffffff"}}
-                        color="error"
-                        onClick={handleDelete(item)}
-                      >
-                        <Delete/>
-                      </IconButton>
-                      <img style={{height: 150, width: 150, padding: 20, paddingTop: 0, marginTop: -20}} src={item} />
-                  </div>
-                  )),
-                  endAdornment: ( 
+            <div style={{width: '100%', border: '2px solid rgba(0, 0, 0, 0.15)', borderRadius: 5}}>
+            {/*selectedItem.length == 0 && <Typography
+              style={{marginTop: 20, textAlign: 'center'}}
+              color="textSecondary"
+              variant="h6"
+            >
+              Carregue as fotos do produto
+            </Typography>*/}
+            <PerfectScrollbar>
+              <div style={{ display: 'flex', flexDirection: 'row', padding: 20 }}>
+                {selectedItem.map(item => (
+                      <div>
+                        
+                        <img style={{height: 150, width: 150, marginLeft: 10}} src={item} />
+                        <IconButton
+                          style={{ justifySelf: 'flex-end', marginLeft: -10, backgroundColor: "#ffffff"}}
+                          color="error"
+                          onClick={handleDelete(item)}
+                        >
+                          <Delete/>
+                        </IconButton>
+                    </div>
+                    ))}
+              </div>
+              </PerfectScrollbar>
+             
                   <Button
-                    variant="contained"
+                    variant="outlined"
                     component="label"
-                    style={{width: 120}}
+                    style={{width: '100%'}}
                   >
-                    Carregar
+                    Carregar Imagens
                     <input
                       type="file"
                       multiple accept="image/*" onChange={handleInputChange}
                       hidden
                     />
-                  </Button>),
-                  onBlur,
-                  onChange,
-                  onFocus
-                }}
-                {...other}
-                {...inputProps}
-              />
+                  </Button>
               
             </div>
           );
