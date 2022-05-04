@@ -27,6 +27,8 @@ var cores = []
 
 var ingredientes = []
 
+var imagens = []
+
 class CadastrarProduto extends React.Component {
   
 
@@ -42,8 +44,6 @@ class CadastrarProduto extends React.Component {
     values: {},
     modalVisible: false,
     modalSuccess: true,
-    images: [],
-    imageURLs: [],
     selectedFile: ''
   };
   
@@ -97,6 +97,10 @@ class CadastrarProduto extends React.Component {
     ingredientes = items
     console.log("ingredientes "+ingredientes);
   }
+  handleSelecetedImagens =(items) =>{
+    imagens = items
+    console.log("imagens "+imagens);
+  }
   saveProdutos = () => {
 
     var possuiError = false
@@ -147,6 +151,7 @@ class CadastrarProduto extends React.Component {
         "tamanhos": tamanhos,
         "cores": cores,
         "ingredientes": ingredientes,
+        "imagens": imagens,
         "categoria": categoria,
         "tipo": tipo,
         "ativo": this.state.isChecked
@@ -350,15 +355,14 @@ class CadastrarProduto extends React.Component {
                               label="Ingredientes"
                             />
                             <InputImages 
-
-                            selectedTags={this.handleSelecetedIngredientes}
+                            selectedTags={this.handleSelecetedImagens}
                             fullWidth
                             margin="normal"
                             variant="outlined"
-                            id="images"
-                            name="images"
+                            id="imagens"
+                            name="imagens"
                             placeholder="Adicionar Imagens"
-                            tags={values.ingredientes}
+                            tags={values.imagens}
                             label="Imagens"
                             />
                             <Grid container spacing={2}>

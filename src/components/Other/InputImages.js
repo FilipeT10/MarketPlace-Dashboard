@@ -43,46 +43,14 @@ export default function InputImages({ ...props }) {
   }
   function saveImage(image){
 
-    let newSelectedItem = [...selectedItem, image];
+    let newSelectedItem = [...selectedItem, {"base": image}];
     setSelectedItem(newSelectedItem);
 
     console.log(newSelectedItem)
   }
 
-  function handleKeyDown(event) {
-    if (event.key === "Enter") {
-      const newSelectedItem = [...selectedItem];
-      const duplicatedValues = newSelectedItem.indexOf(
-        event.target.value.trim()
-      );
-
-      if (duplicatedValues !== -1) {
-        setInputValue("");
-        return;
-      }
-      if (!event.target.value.replace(/\s/g, "").length) return;
-
-      newSelectedItem.push(event.target.value.trim());
-      setSelectedItem(newSelectedItem);
-      setInputValue("");
-    }
-    if (
-      selectedItem.length &&
-      !inputValue.length &&
-      event.key === "Backspace"
-    ) {
-      setSelectedItem(selectedItem.slice(0, selectedItem.length - 1));
-    }
-  }
-  function handleChange(item) {
-    let newSelectedItem = [...selectedItem];
-    if (newSelectedItem.indexOf(item) === -1) {
-      newSelectedItem = [...newSelectedItem, item];
-    }
-    setInputValue("");
-    setSelectedItem(newSelectedItem);
-  }
-
+  
+  
   const handleDelete = item => () => {
     const newSelectedItem = [...selectedItem];
     newSelectedItem.splice(newSelectedItem.indexOf(item), 1);
@@ -95,12 +63,10 @@ export default function InputImages({ ...props }) {
       <Downshift
         id="downshift-multiple"
         inputValue={inputValue}
-        onChange={handleChange}
         selectedItem={selectedItem}
       >
         {({ getInputProps }) => {
           const { onBlur, onChange, onFocus, ...inputProps } = getInputProps({
-            onKeyDown: handleKeyDown,
             placeholder
           });
           
@@ -118,7 +84,7 @@ export default function InputImages({ ...props }) {
                 {selectedItem.map(item => (
                       <div>
                         
-                        <img style={{height: 150, width: 150, marginLeft: 10}} src={item} />
+                        <img style={{height: 150, width: 150, marginLeft: 10}} src={item.base} />
                         <IconButton
                           style={{ justifySelf: 'flex-end', marginLeft: -10, backgroundColor: "#ffffff"}}
                           color="error"
