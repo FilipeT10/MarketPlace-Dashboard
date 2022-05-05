@@ -22,7 +22,8 @@ import {
   TextField,
   Typography,
   Grid,
-  Switch
+  Switch,
+  Alert
 } from '@material-ui/core';
 import getInitials from '../../utils/getInitials';
 
@@ -33,6 +34,7 @@ import IconButton from "@material-ui/core/IconButton";
 import { ArrowBack, TrendingUpOutlined } from '@material-ui/icons';
 import TagsInput from '../Other/TagsInput';
 import ModalFeedback from '../Other/ModalFeedback';
+import InputImages from '../Other/InputImages';
 
 
 var tamanhos = []
@@ -41,12 +43,16 @@ var cores = []
 
 var ingredientes = []
 
+var imagens = []
+
 const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
   const [isChecked, setChecked] = useState(product.ativo);
   const [values, setValues] = useState(product);
 
   const [modalVisible, setModalVisible] = useState(false)
   const [modalSuccess, setModalSuccess] = useState(true)
+
+  const [errorImagem, setErrorImagem] = useState(false)
   
   const tipoProdutos = [
     {
@@ -75,13 +81,22 @@ const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
     ingredientes = items
     console.log("ingredientes "+ingredientes);
   }
+  const handleSelecetedImagens =(items) =>{
+    imagens = items
+    console.log("imagens "+imagens);
+  }
   const editProduto = () => {
+   if(imagens.length < 1){
+     setErrorImagem(true)
+     return
+   }
     
     var json = {
       ...values,
       "tamanhos": tamanhos,
       "cores": cores,
       "ingredientes": ingredientes,
+      "imagens": imagens,
       "ativo": isChecked
     }
     ServiceProdutos.editProdutos(product._id, json).then(response => {
@@ -243,6 +258,18 @@ const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
                               placeholder="Adicionar Ingredientes"
                               tags={values.ingredientes}
                               label="Ingredientes"
+                            />
+                            <InputImages 
+                              error={errorImagem}
+                              selectedTags={handleSelecetedImagens}
+                              fullWidth
+                              margin="normal"
+                              variant="outlined"
+                              id="imagens"
+                              name="imagens"
+                              placeholder="Adicionar Imagens"
+                              tags={values.imagens}
+                              label="Imagens"
                             />
                             <Grid container spacing={2}>
                               <Grid item xs={0}>

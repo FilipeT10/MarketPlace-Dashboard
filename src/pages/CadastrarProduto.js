@@ -44,7 +44,8 @@ class CadastrarProduto extends React.Component {
     values: {},
     modalVisible: false,
     modalSuccess: true,
-    selectedFile: ''
+    selectedFile: '',
+    errorImagem: false
   };
   
 
@@ -141,6 +142,11 @@ class CadastrarProduto extends React.Component {
 
     if(tipo == undefined){
       tipo = this.tipoProdutos[0].value
+    }
+
+    if(imagens.length < 1){
+      this.setState({errorImagem: true})
+      possuiError = true
     }
 
     if(possuiError == false){
@@ -355,6 +361,7 @@ class CadastrarProduto extends React.Component {
                               label="Ingredientes"
                             />
                             <InputImages 
+                            error={this.state.errorImagem}
                             selectedTags={this.handleSelecetedImagens}
                             fullWidth
                             margin="normal"

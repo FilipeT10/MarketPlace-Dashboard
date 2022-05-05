@@ -23,6 +23,11 @@ export default function InputImages({ ...props }) {
   const { selectedTags, placeholder, tags, ...other } = props;
   const [inputValue, setInputValue] = React.useState("");
   const [selectedItem, setSelectedItem] = React.useState([]);
+  const [error, setError] = React.useState(props.error);
+  
+  useEffect(() => {
+      setError(props.error);
+    }, [props.error]);
   useEffect(() => {
     setSelectedItem(tags);
   }, [tags]);
@@ -33,20 +38,34 @@ export default function InputImages({ ...props }) {
   function handleInputChange(event) {
 
     let files = event.target.files;
-    let reader = new FileReader();
-    reader.readAsDataURL(files[0]);
 
-    reader.onload = (e) => {
-      saveImage(e.target.result)
+    let filesSave = []
+
+    var reader = new FileReader();  
+    function readFile(index) {
+      if( index >= files.length ) return;
+      var file = files[index];
+      reader.onload = function(e) {  
+        // get file content  
+
+        filesSave.push({"base": e.target.result})
+        if(index+1 >= files.length){
+          saveImage(filesSave)
+        }
+        
+        // do sth with bin
+        readFile(index+1)
+      }
+      reader.readAsDataURL(file);
     }
-
+    readFile(0)
   }
-  function saveImage(image){
 
-    let newSelectedItem = [...selectedItem, {"base": image}];
+  function saveImage(image){
+    setError(false)
+    let newSelectedItem = [...selectedItem, ...image];
     setSelectedItem(newSelectedItem);
 
-    console.log(newSelectedItem)
   }
 
   
@@ -54,6 +73,9 @@ export default function InputImages({ ...props }) {
   const handleDelete = item => () => {
     const newSelectedItem = [...selectedItem];
     newSelectedItem.splice(newSelectedItem.indexOf(item), 1);
+    if(newSelectedItem.length == 0){
+      setError(true)
+    }
     setSelectedItem(newSelectedItem);
   };
 
@@ -71,14 +93,14 @@ export default function InputImages({ ...props }) {
           });
           
           return (
-            <div style={{width: '100%', border: '2px solid rgba(0, 0, 0, 0.15)', borderRadius: 5}}>
-            {/*selectedItem.length == 0 && <Typography
+            <div style={{width: '100%', border: error ? '2px solid rgba(255, 0, 0, 0.15)' : '2px solid rgba(0, 0, 0, 0.15)', borderRadius: 5}}>
+            {error && <Typography
               style={{marginTop: 20, textAlign: 'center'}}
-              color="textSecondary"
+              color="red"
               variant="h6"
             >
               Carregue as fotos do produto
-            </Typography>*/}
+            </Typography>}
             <PerfectScrollbar>
               <div style={{ display: 'flex', flexDirection: 'row', padding: 20 }}>
                 {selectedItem.map(item => (
@@ -118,9 +140,11 @@ export default function InputImages({ ...props }) {
   );
 }
 InputImages.defaultProps = {
-  tags: []
+  tags: [],
+  error: false
 };
 InputImages.propTypes = {
+  error: PropTypes.bool,
   selectedTags: PropTypes.func.isRequired,
   tags: PropTypes.arrayOf(PropTypes.string)
 };

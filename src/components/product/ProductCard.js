@@ -46,7 +46,7 @@ const ProductCard = ({ product, onHandleEdit, ...rest }) => {
       
       <Carousel sx={{width: '80%'}}>
             {
-                product.imagens.map( (item, i) => <img style={{justifyContent: 'center', width: '100%', height: 300}} src={product.imagens[i].base}/> )
+                product.imagens.map( (item, i) => <img style={{justifyContent: 'center', width: '100%', height: 250}} src={product.imagens[i].base}/> )
             }
         </Carousel>
      
