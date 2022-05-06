@@ -91,7 +91,7 @@ const CategoriasListResults = ({ customers, ...rest }) => {
   return (
     <Card {...rest}>
       { isEdit ?
-                        <Box sx={{ minWidth: 1050 }}> 
+                        <Box sx={{ }}> 
                         <div>
                           <IconButton
                               color="inherit"
@@ -158,7 +158,7 @@ const CategoriasListResults = ({ customers, ...rest }) => {
                       </Box>:
       <div>
       <PerfectScrollbar>
-        <Box sx={{ minWidth: 1050 }}>
+        <Box sx={{  }}>
           <Table>
             <TableHead>
               <TableRow>

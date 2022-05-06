@@ -86,7 +86,7 @@ const ProductListResults = ({ customers, ...rest }) => {
        { isEdit ? <ProductEdit product={values} categorias={categorias} onBackEdit={handleBackEdit}/>
                        :<div>
       <PerfectScrollbar>
-        <Box sx={{ minWidth: 1050 }}>
+        <Box sx={{  }}>
           <Table>
             <TableHead>
               <TableRow>

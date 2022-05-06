@@ -81,7 +81,7 @@ class CadastrarCategoria extends React.Component {
     >
       <Container maxWidth={false}>
         <Box sx={{ pt: 3 }}>
-        <Box sx={{ minWidth: 1050 }}> 
+        <Box sx={{ }}> 
        <div>
          
       

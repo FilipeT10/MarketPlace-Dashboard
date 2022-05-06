@@ -134,7 +134,7 @@ const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
 
 
   return(
-  <Box sx={{ minWidth: 1050 }}> 
+  <Box sx={{  }}> 
                         <div>
                           <IconButton
                               color="inherit"
