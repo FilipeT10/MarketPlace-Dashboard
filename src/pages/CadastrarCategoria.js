@@ -15,6 +15,7 @@ import {
 import IconButton from "@material-ui/core/IconButton";
 import { ArrowBack, TryRounded } from '@material-ui/icons';
 import ModalFeedback from 'src/components/Other/ModalFeedback';
+import AppConfig from 'src/AppConfig';
 
 
 class CadastrarCategoria extends React.Component {
@@ -70,7 +71,7 @@ class CadastrarCategoria extends React.Component {
   return (
   <>
     <Helmet>
-      <title>Cadastrar Categoria</title>
+      <title>{'Cadastrar Categoria | '+AppConfig.sigla}</title>
     </Helmet>
     <Box
       sx={{

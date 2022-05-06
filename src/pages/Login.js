@@ -23,7 +23,7 @@ const Login = () => {
   const [buttonDisable, setButtonDisable] = useState(false);
 
   const logar = (email, password) => {
-    var json = {
+   /* var json = {
       "email": email,
       "password": password
     }
@@ -34,14 +34,14 @@ const Login = () => {
         alert("Não foi possível efetuar o Login")
         setButtonDisable(false)
         console.log(error);
-    });
+    });*/
   }
 
 
   return (
     <>
       <Helmet>
-        <title>Login</title>
+        <title>{'Login | '+AppConfig.sigla}</title>
       </Helmet>
       <Box
         sx={{

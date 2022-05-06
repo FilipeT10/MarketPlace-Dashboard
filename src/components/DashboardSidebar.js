@@ -25,8 +25,8 @@ import NavItem from './NavItem';
 
 const user = {
   avatar: '/static/images/avatars/avatar_6.png',
-  jobTitle: 'Senior Developer',
-  name: 'Katarina Smith'
+  jobTitle: 'Developer',
+  name: 'Katarina'
 };
 
 const items = [
@@ -41,19 +41,19 @@ const items = [
     title: 'Categorias'
   },
   {
-    href: '/app/products',
+    href: '/app/produtos',
     icon: ShoppingBagIcon,
     title: 'Produtos'
   },
   {
-    href: '/app/account',
+    href: '/app/perfil',
     icon: UserIcon,
-    title: 'Account'
+    title: 'Perfil'
   },
   {
-    href: '/app/settings',
+    href: '/app/configuracoes',
     icon: SettingsIcon,
-    title: 'Settings'
+    title: 'Configurações'
   },
   {
     href: '/login',
@@ -61,9 +61,9 @@ const items = [
     title: 'Login'
   },
   {
-    href: '/register',
+    href: '/cadastro',
     icon: UserPlusIcon,
-    title: 'Register'
+    title: 'Cadastro'
   },
   {
     href: '/404',

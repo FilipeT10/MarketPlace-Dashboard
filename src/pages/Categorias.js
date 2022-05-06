@@ -5,6 +5,7 @@ import CategoriasListResults from '../components/categorias/CategoriasListResult
 import CategoriasListToolbar from '../components/categorias/CategoriasListToolbar';
 import customers from '../__mocks__/customers';
 import ServiceCategorias from '../services/Categorias'
+import AppConfig from 'src/AppConfig';
 
 
 
@@ -44,7 +45,7 @@ class Categorias extends React.Component {
   return (
   <>
     <Helmet>
-      <title>Categorias</title>
+      <title>{'Categorias | '+AppConfig.sigla}</title>
     </Helmet>
     <Box
       sx={{

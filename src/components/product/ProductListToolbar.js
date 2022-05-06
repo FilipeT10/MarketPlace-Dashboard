@@ -33,7 +33,7 @@ const ProductListToolbar = ({ onListType, onTextHandle, props}) => {
         variant="contained"
         href="/app/cadastrar-produto"
       >
-        Add product
+        Adicionar Produto
       </Button>
     </Box>
     <Box sx={{ mt: 3 }}>
@@ -56,7 +56,7 @@ const ProductListToolbar = ({ onListType, onTextHandle, props}) => {
                   </InputAdornment>
                 )
               }}
-              placeholder="Search product"
+              placeholder="Pesquisar produtos"
               variant="outlined"
             />
           </Box>

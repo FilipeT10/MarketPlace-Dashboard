@@ -11,7 +11,7 @@ import AppConfig from 'src/AppConfig';
 const Account = () => (
   <>
     <Helmet>
-      <title>{'Account | '+AppConfig.sigla}</title>
+      <title>{'Perfil | '+AppConfig.sigla}</title>
     </Helmet>
     <Box
       sx={{

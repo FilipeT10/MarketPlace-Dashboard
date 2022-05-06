@@ -20,6 +20,7 @@ import TagsInput from '../components/Other/TagsInput';
 
 import ModalFeedback from 'src/components/Other/ModalFeedback';
 import InputImages from 'src/components/Other/InputImages';
+import AppConfig from 'src/AppConfig';
 
 var tamanhos = []
 
@@ -28,6 +29,7 @@ var cores = []
 var ingredientes = []
 
 var imagens = []
+
 
 class CadastrarProduto extends React.Component {
   
@@ -223,7 +225,7 @@ class CadastrarProduto extends React.Component {
 
   <>
     <Helmet>
-      <title>Cadastrar Produto</title>
+      <title>{'Cadastrar Produto | '+AppConfig.sigla}</title>
     </Helmet>
     <Box
       sx={{

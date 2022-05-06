@@ -17,6 +17,7 @@ import React from 'react';
 import ServiceProdutos from '../services/Produtos'
 
 import ServiceCategorias from '../services/Categorias'
+import AppConfig from 'src/AppConfig';
 
 
 class Produtos extends React.Component {
@@ -84,7 +85,7 @@ class Produtos extends React.Component {
   return(
   <>
     <Helmet>
-      <title>Produtos</title>
+      <title>{'Produtos | '+AppConfig.sigla}</title>
     </Helmet>
     <Box
       sx={{

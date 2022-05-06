@@ -17,13 +17,13 @@ const routes = [
     path: 'app',
     element: <DashboardLayout />,
     children: [
-      { path: 'account', element: <Account /> },
+      { path: 'perfil', element: <Account /> },
       { path: 'categorias', element: <Categorias /> },
       { path: 'cadastrar-categoria', element: <CadastrarCategoria /> },
       { path: 'cadastrar-produto', element: <CadastrarProduto /> },
       { path: 'dashboard', element: <Dashboard /> },
-      { path: 'products', element: <Produtos /> },
-      { path: 'settings', element: <Settings /> },
+      { path: 'produtos', element: <Produtos /> },
+      { path: 'configuracoes', element: <Settings /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   },
@@ -32,7 +32,7 @@ const routes = [
     element: <MainLayout />,
     children: [
       { path: 'login', element: <Login /> },
-      { path: 'register', element: <Register /> },
+      { path: 'cadastro', element: <Register /> },
       { path: '404', element: <NotFound /> },
       { path: '/', element: <Navigate to="/app/dashboard" /> },
       { path: '*', element: <Navigate to="/404" /> }
