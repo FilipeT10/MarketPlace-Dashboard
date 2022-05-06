@@ -4,11 +4,12 @@ import {
   Container,
   Typography
 } from '@material-ui/core';
+import AppConfig from 'src/AppConfig';
 
 const NotFound = () => (
   <>
     <Helmet>
-      <title>404 | Material Kit</title>
+      <title>{'Not Found | '+AppConfig.sigla}</title>
     </Helmet>
     <Box
       sx={{

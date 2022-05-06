@@ -8,11 +8,13 @@ import TasksProgress from '../components/dashboard/TasksProgress';
 import TotalCustomers from '../components/dashboard/TotalCustomers';
 import TotalProfit from '../components/dashboard/TotalProfit';
 import TrafficByDevice from '../components/dashboard/TrafficByDevice';
+import AppConfig from 'src/AppConfig';
+
 
 const Dashboard = () => (
   <>
     <Helmet>
-      <title>Dashboard | Material Kit</title>
+      <title>{'Dashboard | '+AppConfig.sigla}</title>
     </Helmet>
     <Box
       sx={{

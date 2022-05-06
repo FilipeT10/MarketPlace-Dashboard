@@ -15,6 +15,7 @@ import FacebookIcon from '../icons/Facebook';
 import GoogleIcon from '../icons/Google';
 import ServiceUser from 'src/services/User';
 import { useState } from 'react';
+import AppConfig from 'src/AppConfig';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -78,24 +79,19 @@ const Login = () => {
               <form onSubmit={handleSubmit}>
                 <Box sx={{ mb: 3 }}>
                   <Typography
-                    color="textPrimary"
+                    color="primary"
                     variant="h2"
                   >
-                    Sign in
+                    {AppConfig.nome}
                   </Typography>
-                  <Typography
-                    color="textSecondary"
-                    gutterBottom
-                    variant="body2"
-                  >
-                    Sign in on the internal platform
-                  </Typography>
+                  
                 </Box>
+
                 <TextField
                   error={Boolean(touched.email && errors.email)}
                   fullWidth
                   helperText={touched.email && errors.email}
-                  label="Email Address"
+                  label="Email"
                   margin="normal"
                   name="email"
                   onBlur={handleBlur}
@@ -108,7 +104,7 @@ const Login = () => {
                   error={Boolean(touched.password && errors.password)}
                   fullWidth
                   helperText={touched.password && errors.password}
-                  label="Password"
+                  label="Senha"
                   margin="normal"
                   name="password"
                   onBlur={handleBlur}
@@ -126,10 +122,10 @@ const Login = () => {
                     type="submit"
                     variant="contained"
                   >
-                    Sign in now
+                    Entrar
                   </Button>
                 </Box>
-                <Typography
+                {/*<Typography
                   color="textSecondary"
                   variant="body1"
                 >
@@ -138,7 +134,7 @@ const Login = () => {
                   <Link component={RouterLink} to="/register" variant="h6" underline="hover">
                     Sign up
                   </Link>
-                </Typography>
+                </Typography> */}
               </form>
             )}
           </Formik>

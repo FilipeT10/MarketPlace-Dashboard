@@ -18,7 +18,7 @@ const Sales = (props) => {
   const data = {
     datasets: [
       {
-        backgroundColor: colors.indigo[500],
+        backgroundColor: theme.palette.primary.main,
         barPercentage: 0.5,
         barThickness: 12,
         borderRadius: 4,

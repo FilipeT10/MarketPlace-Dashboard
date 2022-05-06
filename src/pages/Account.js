@@ -6,11 +6,12 @@ import {
 } from '@material-ui/core';
 import AccountProfile from '../components/account/AccountProfile';
 import AccountProfileDetails from '../components/account/AccountProfileDetails';
+import AppConfig from 'src/AppConfig';
 
 const Account = () => (
   <>
     <Helmet>
-      <title>Account | Material Kit</title>
+      <title>{'Account | '+AppConfig.sigla}</title>
     </Helmet>
     <Box
       sx={{

@@ -12,6 +12,8 @@ import {
   TextField,
   Typography
 } from '@material-ui/core';
+import AppConfig from 'src/AppConfig';
+
 
 const Register = () => {
   const navigate = useNavigate();
@@ -19,7 +21,7 @@ const Register = () => {
   return (
     <>
       <Helmet>
-        <title>Register | Material Kit</title>
+        <title>{'Register | '+AppConfig.sigla}</title>
       </Helmet>
       <Box
         sx={{
