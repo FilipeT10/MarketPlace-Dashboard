@@ -56,12 +56,7 @@ const items = [
     title: 'Configurações'
   },
   {
-    href: '/login',
-    icon: LockIcon,
-    title: 'Login'
-  },
-  {
-    href: '/cadastro',
+    href: '/app/cadastro',
     icon: UserPlusIcon,
     title: 'Cadastro'
   },

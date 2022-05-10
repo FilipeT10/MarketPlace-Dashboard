@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink , useNavigate} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
   AppBar,
@@ -13,9 +13,20 @@ import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import InputIcon from '@material-ui/icons/Input';
 import Logo from './Logo';
+import { logout } from 'src/services/auth';
+
+
 
 const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
+
+  const navigate = useNavigate();
   const [notifications] = useState([]);
+
+  const signOut = () => {
+    logout()
+
+    navigate('/', { replace: true });
+  }
 
   return (
     <AppBar
@@ -37,7 +48,7 @@ const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
               <NotificationsIcon />
             </Badge>
           </IconButton>
-          <IconButton color="inherit" size="large">
+          <IconButton color="inherit" size="large" onClick={() => signOut()}>
             <InputIcon />
           </IconButton>
         </Hidden>

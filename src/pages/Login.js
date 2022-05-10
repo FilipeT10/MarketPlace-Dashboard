@@ -16,6 +16,8 @@ import GoogleIcon from '../icons/Google';
 import ServiceUser from 'src/services/User';
 import { useState } from 'react';
 import AppConfig from 'src/AppConfig';
+import { login } from 'src/services/auth';
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -23,18 +25,19 @@ const Login = () => {
   const [buttonDisable, setButtonDisable] = useState(false);
 
   const logar = (email, password) => {
-   /* var json = {
+    var json = {
       "email": email,
       "password": password
     }
     
     ServiceUser.authenticate(json).then(response => {
-        navigate('/app/painel', { replace: true });
+      login(response.data.accessToken);
+      navigate('/app/painel', { replace: true });
     }).catch(error => {
         alert("Não foi possível efetuar o Login")
         setButtonDisable(false)
         console.log(error);
-    });*/
+    });
   }
 
 

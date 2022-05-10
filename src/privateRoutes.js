@@ -12,17 +12,31 @@ import Settings from './pages/Settings';
 import CadastrarCategoria from './pages/CadastrarCategoria';
 import CadastrarProduto from './pages/CadastrarProduto';
 
-const routes = [
+const privateRoutes = [
+  {
+    path: 'app',
+    element: <DashboardLayout />,
+    children: [
+      { path: 'perfil', element: <Account /> },
+      { path: 'categorias', element: <Categorias /> },
+      { path: 'cadastrar-categoria', element: <CadastrarCategoria /> },
+      { path: 'cadastrar-produto', element: <CadastrarProduto /> },
+      { path: 'painel', element: <Dashboard /> },
+      { path: 'produtos', element: <Produtos /> },
+      { path: 'configuracoes', element: <Settings /> },
+      { path: 'cadastro', element: <Register /> },
+      { path: '*', element: <Navigate to="/404" /> }
+    ]
+  },
   {
     path: '/',
     element: <MainLayout />,
     children: [
-      { path: 'login', element: <Login /> },
       { path: '404', element: <NotFound /> },
-      { path: '/', element: <Navigate to="/login" /> },
+      { path: '/', element: <Navigate to="/app/painel" /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   }
 ];
 
-export default routes;
+export default privateRoutes;
