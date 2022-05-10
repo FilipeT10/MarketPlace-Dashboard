@@ -1,5 +1,6 @@
 import axios from "axios";
 
+import { getToken } from "./auth";
 
 // Pode ser algum servidor executando localmente: 
 // http://localhost:3000
@@ -10,7 +11,15 @@ const api = axios.create({
   baseURL: "https://markbaseservice.onrender.com"
 });
 
-api.interceptors.request.use(request => {
+api.interceptors.request.use(async config => {
+    const token = getToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
+
+/*api.interceptors.request.use(request => {
    request.headers = {
         'Content-Type': 'application/json'
     }
@@ -20,11 +29,11 @@ api.interceptors.request.use(request => {
     request.headers['Authorization'] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJpc3MiOiJNYXJrZXRQbGFjZS1BUEktTWFuYWdlciIsImlhdCI6MTYzNDA5MDgzMn0.hjzDcQhdSJjpYOZ77zl4dea4Xx9kOQS5YUrnloHkFZA";
    
     console.log('REQUEST Bearer');
-    }*/
+    }
  
     console.log('REQUEST', request);
     return request;
-});
+})*/
 
 api.interceptors.response.use((response) => {
     console.log('RESPONSE', response);
