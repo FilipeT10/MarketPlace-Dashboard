@@ -14,7 +14,7 @@ import AppConfig from 'src/AppConfig';
 const Dashboard = () => (
   <>
     <Helmet>
-      <title>{'Dashboard | '+AppConfig.sigla}</title>
+      <title>{'Painel | '+AppConfig.sigla}</title>
     </Helmet>
     <Box
       sx={{

@@ -309,7 +309,7 @@ const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
                         </Card>
                         </div>
                           
-                        <ModalFeedback open={modalVisible} success={modalSuccess} redirect={modalSuccess ? '/app/dashboard' : ''} title={ modalSuccess ? "Sucesso" : "Falhou"} subTitle={ modalSuccess ? "Produto editado com sucesso." : "Não foi possível editar o produto, tente novamente mais tarde."} />
+                        <ModalFeedback open={modalVisible} success={modalSuccess} redirect={modalSuccess ? '/app/painel' : ''} title={ modalSuccess ? "Sucesso" : "Falhou"} subTitle={ modalSuccess ? "Produto editado com sucesso." : "Não foi possível editar o produto, tente novamente mais tarde."} />
                       </Box>
   )
  }

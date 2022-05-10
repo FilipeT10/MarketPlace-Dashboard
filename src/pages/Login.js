@@ -29,7 +29,7 @@ const Login = () => {
     }
     
     ServiceUser.authenticate(json).then(response => {
-        navigate('/app/dashboard', { replace: true });
+        navigate('/app/painel', { replace: true });
     }).catch(error => {
         alert("Não foi possível efetuar o Login")
         setButtonDisable(false)

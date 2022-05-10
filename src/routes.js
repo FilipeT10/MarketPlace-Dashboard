@@ -21,7 +21,7 @@ const routes = [
       { path: 'categorias', element: <Categorias /> },
       { path: 'cadastrar-categoria', element: <CadastrarCategoria /> },
       { path: 'cadastrar-produto', element: <CadastrarProduto /> },
-      { path: 'dashboard', element: <Dashboard /> },
+      { path: 'painel', element: <Dashboard /> },
       { path: 'produtos', element: <Produtos /> },
       { path: 'configuracoes', element: <Settings /> },
       { path: '*', element: <Navigate to="/404" /> }
@@ -34,7 +34,7 @@ const routes = [
       { path: 'login', element: <Login /> },
       { path: 'cadastro', element: <Register /> },
       { path: '404', element: <NotFound /> },
-      { path: '/', element: <Navigate to="/app/dashboard" /> },
+      { path: '/', element: <Navigate to="/app/painel" /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   }

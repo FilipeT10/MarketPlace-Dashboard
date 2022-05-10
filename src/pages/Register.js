@@ -51,7 +51,7 @@ const Register = () => {
             })
           }
             onSubmit={() => {
-              navigate('/app/dashboard', { replace: true });
+              navigate('/app/painel', { replace: true });
             }}
           >
             {({

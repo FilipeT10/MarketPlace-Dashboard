@@ -103,7 +103,8 @@ const CategoriasListResults = ({ customers, ...rest }) => {
 
   return (
     <div>
-      { isEdit ?
+      { isEdit ?        
+                      <Card sx={{ backgroundColor: 'background.default'}}>
                         <Box sx={{ }}> 
                         <div>
                           <IconButton
@@ -167,8 +168,10 @@ const CategoriasListResults = ({ customers, ...rest }) => {
                           </Box>
                         </Card>
                         </div>
-                      <ModalFeedback open={modalVisible} success={modalSuccess} redirect={modalSuccess ? '/app/dashboard' : ''} title={ modalSuccess ? "Sucesso" : "Falhou"} subTitle={ modalSuccess ? "Categoria editada com sucesso." : "Não foi possível editar a categoria, tente novamente mais tarde."} />
-                      </Box>:
+                      <ModalFeedback open={modalVisible} success={modalSuccess} redirect={modalSuccess ? '/app/painel' : ''} title={ modalSuccess ? "Sucesso" : "Falhou"} subTitle={ modalSuccess ? "Categoria editada com sucesso." : "Não foi possível editar a categoria, tente novamente mais tarde."} />
+                      </Box>
+                      </Card>
+                      :
       <div>
 
      
