@@ -65,11 +65,6 @@ const items = [
     icon: UserPlusIcon,
     title: 'Cadastro'
   },
-  {
-    href: '/404',
-    icon: AlertCircleIcon,
-    title: 'Error'
-  }
 ];
 
 const DashboardSidebar = ({ onMobileClose, openMobile }) => {
