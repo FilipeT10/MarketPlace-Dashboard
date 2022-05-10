@@ -7,6 +7,7 @@ import {
 import AccountProfile from '../components/account/AccountProfile';
 import AccountProfileDetails from '../components/account/AccountProfileDetails';
 import AppConfig from 'src/AppConfig';
+import SettingsPassword from 'src/components/settings/SettingsPassword';
 
 const Account = () => (
   <>
@@ -42,7 +43,14 @@ const Account = () => (
             <AccountProfileDetails />
           </Grid>
         </Grid>
+
+        <Box sx={{ pt: 3 }}>
+          <SettingsPassword />
+        </Box>
       </Container>
+
+      
+    
     </Box>
   </>
 );

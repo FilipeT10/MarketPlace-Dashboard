@@ -11,12 +11,12 @@ import {
 } from '@material-ui/core';
 
 const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  city: 'Los Angeles',
-  country: 'USA',
-  jobTitle: 'Senior Developer',
-  name: 'Katarina Smith',
-  timezone: 'GTM-7'
+  avatar: '/static/images/avatars/avatar.png',
+  city: 'São Paulo',
+  country: 'BR',
+  jobTitle: 'Sênior Developer',
+  name: 'Filipe',
+  timezone: 'GMT-3'
 };
 
 const AccountProfile = (props) => (
@@ -29,11 +29,18 @@ const AccountProfile = (props) => (
           flexDirection: 'column'
         }}
       >
-        <Avatar
+        { /*<Avatar
           src={user.avatar}
           sx={{
             height: 100,
             width: 100
+          }}
+        /> */}
+        <Avatar
+          src={user.avatar}
+          sx={{
+            height: 248,
+            width: 250
           }}
         />
         <Typography
@@ -53,7 +60,7 @@ const AccountProfile = (props) => (
           color="textSecondary"
           variant="body1"
         >
-          {`${moment().format('hh:mm A')} ${user.timezone}`}
+          {`${user.jobTitle}`}
         </Typography>
       </Box>
     </CardContent>
