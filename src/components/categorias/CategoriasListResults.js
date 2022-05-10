@@ -20,7 +20,7 @@ import {
   TablePagination,
   TableRow,
   TextField,
-  Typography, Grid
+  Typography, Grid, Container
 } from '@material-ui/core';
 import getInitials from '../../utils/getInitials';
 
@@ -30,6 +30,7 @@ import IconButton from "@material-ui/core/IconButton";
 import { ArrowBack } from '@material-ui/icons';
 import ServiceCategorias from 'src/services/Categorias';
 import ModalFeedback from '../Other/ModalFeedback';
+import CategoriasListToolbar from './CategoriasListToolbar';
 
 const CategoriasListResults = ({ customers, ...rest }) => {
   const [limit, setLimit] = useState(10);
@@ -42,7 +43,19 @@ const CategoriasListResults = ({ customers, ...rest }) => {
   const [values, setValues] = useState({
     nome: ''
   });
+  
+  const [categorias, setCategorias] = useState(customers)
+  const [searchText, setSearchText] = useState("");
+  
 
+  const handleChangeSearch = (event) => {
+    let value = event.target.value
+    setSearchText(value)
+    let categoriasFilter = customers.filter(function(item){
+      return item.name.includes(value) || item.name.includes(value.toLowerCase()) || item.name.includes(value.toUpperCase()) || item.name.includes(value.charAt(0).toUpperCase()+value.slice(1))
+    })
+    setCategorias(categoriasFilter)
+  };
   const handleChange = (event) => {
     setValues({
       ...values,
@@ -89,7 +102,7 @@ const CategoriasListResults = ({ customers, ...rest }) => {
   }
 
   return (
-    <Card {...rest}>
+    <div>
       { isEdit ?
                         <Box sx={{ }}> 
                         <div>
@@ -157,13 +170,19 @@ const CategoriasListResults = ({ customers, ...rest }) => {
                       <ModalFeedback open={modalVisible} success={modalSuccess} redirect={modalSuccess ? '/app/dashboard' : ''} title={ modalSuccess ? "Sucesso" : "Falhou"} subTitle={ modalSuccess ? "Categoria editada com sucesso." : "Não foi possível editar a categoria, tente novamente mais tarde."} />
                       </Box>:
       <div>
+
+     
+      
+      <CategoriasListToolbar onTextHandle={handleChangeSearch} />
+        
+      <Card style={{marginTop: 20}}>
       <PerfectScrollbar>
         <Box sx={{  }}>
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>
-                  Name
+                  Nome
                 </TableCell>
                 <TableCell>
                   Ativo
@@ -174,7 +193,7 @@ const CategoriasListResults = ({ customers, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.slice(0, limit).map((customer) => (
+              {categorias.slice(0, limit).map((customer) => (
                 <TableRow
                   hover
                   key={customer.id}
@@ -221,7 +240,10 @@ const CategoriasListResults = ({ customers, ...rest }) => {
           </Table>
           
         </Box>
+        
       </PerfectScrollbar>
+
+        
       <TablePagination
         component="div"
         count={customers.length}
@@ -231,9 +253,10 @@ const CategoriasListResults = ({ customers, ...rest }) => {
         rowsPerPage={limit}
         rowsPerPageOptions={[5, 10, 25]}
       />
+      </Card>
       </div>
     }
-    </Card>
+    </div>
   );
 };
 

@@ -34,16 +34,33 @@ import IconButton from "@material-ui/core/IconButton";
 import { ArrowBack } from '@material-ui/icons';
 import TagsInput from '../Other/TagsInput';
 import ProductEdit from './ProductEdit';
+import ProductListToolbar from './ProductListToolbar';
 
 
-const ProductListResults = ({ customers, ...rest }) => {
+const ProductListResults = ({ onListType, customers, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [categorias, setCategorias] = useState([])
   const [isEdit, setIsEdit] = useState(false);
+
+  const [isList, setIsList] = useState(true);
   const [values, setValues] = useState({
     nome: ''
   });
+  
+
+  const [produtos, setProdutos] = useState(customers)
+  const [searchText, setSearchText] = useState("");
+  
+
+  const handleChangeSearch = (event) => {
+    let value = event.target.value
+    setSearchText(value)
+    let produtosFilter = customers.filter(function(item){
+      return item.name.includes(value) || item.name.includes(value.toLowerCase()) || item.name.includes(value.toUpperCase()) || item.name.includes(value.charAt(0).toUpperCase()+value.slice(1))
+    })
+    setProdutos(produtosFilter)
+  };
 
   
   const getCategorias = () => {
@@ -82,16 +99,23 @@ const ProductListResults = ({ customers, ...rest }) => {
   };
 
   return (
-    <Card {...rest}>
-       { isEdit ? <ProductEdit product={values} categorias={categorias} onBackEdit={handleBackEdit}/>
+    <div>
+       { isEdit ? <Card sx={{ backgroundColor: 'background.default'}}>
+                    <ProductEdit product={values} categorias={categorias} onBackEdit={handleBackEdit}/>
+                  </Card>
                        :<div>
+
+      <ProductListToolbar onTextHandle={handleChangeSearch}  onListType={() => onListType()} list />
+
+      <Card style={{marginTop: 20}}>
       <PerfectScrollbar>
+        
         <Box sx={{  }}>
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>
-                  Name
+                  Nome
                 </TableCell>
                 <TableCell>
                   Ativo
@@ -103,7 +127,7 @@ const ProductListResults = ({ customers, ...rest }) => {
             </TableHead>
             <TableBody>
               { Number.isNaN(page*limit) ?  
-              customers.slice(0, customers.lenght).map((customer) => (
+              produtos.slice(0, produtos.lenght).map((customer) => (
                 <TableRow
                   hover
                   key={customer.id}
@@ -147,7 +171,7 @@ const ProductListResults = ({ customers, ...rest }) => {
                 </TableRow>
               ))
               :
-              customers.slice(page*limit, (page*limit)+limit).map((customer) => (
+              produtos.slice(page*limit, (page*limit)+limit).map((customer) => (
                 <TableRow
                   hover
                   key={customer.id}
@@ -197,22 +221,24 @@ const ProductListResults = ({ customers, ...rest }) => {
       
       <TablePagination
         component="div"
-        count={customers.length}
+        count={produtos.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}
         rowsPerPage={limit}
         rowsPerPageOptions={[5, 10, "All"]}
       />
+      </Card>
 
 </div>
                     }
-    </Card>
+    </div>
     
   );
 };
 
 ProductListResults.propTypes = {
+  onListType: PropTypes.func,
   customers: PropTypes.array.isRequired
 };
 

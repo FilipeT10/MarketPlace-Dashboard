@@ -34,9 +34,6 @@ class Categorias extends React.Component {
         console.log(error);
     });
   }
-  handleChange = (event) => {
-    this.setState({searchText: event.target.value})
-  };
 
   render(){
 
@@ -55,14 +52,9 @@ class Categorias extends React.Component {
       }}
     >
       <Container maxWidth={false}>
-        <CategoriasListToolbar onTextHandle={this.handleChange} />
-        <Box sx={{ pt: 3 }}>
           { loading ? <LinearProgress/> :
-          <CategoriasListResults customers={categorias.filter(function(item){
-            return item.name.includes(searchText) || item.name.includes(searchText.toLowerCase()) || item.name.includes(searchText.toUpperCase()) || item.name.includes(searchText.charAt(0).toUpperCase()+searchText.slice(1))
-          })} />
+          <CategoriasListResults customers={categorias} />
           }
-          </Box>
       </Container>
     </Box>
   </>

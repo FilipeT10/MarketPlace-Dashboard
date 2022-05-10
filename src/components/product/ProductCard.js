@@ -18,7 +18,6 @@ import Edit from "@material-ui/icons/Edit";
 
 import ServiceCategorias from '../../services/Categorias'
 
-import ProductEdit from './ProductEdit';
 
 import Carousel from 'react-material-ui-carousel'
 

@@ -10,16 +10,16 @@ import {
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 
 import { FormatListBulleted, Reorder, ViewModule } from '@material-ui/icons';
 
-const ProductListToolbar = ({ onListType, onTextHandle, props}) => {
+const ProductListToolbar = ({ onListType, onTextHandle, list, props}) => {
 
-  const [isList, setList] = useState(false);
-
+  const [isList, setList] = useState(list);
+  
   return (
   <Box {...props}>
     <Box
@@ -73,6 +73,7 @@ const ProductListToolbar = ({ onListType, onTextHandle, props}) => {
 };
 
 ProductListToolbar.propTypes = {
+  list: PropTypes.bool,
   onListType: PropTypes.func,
   onTextHandle: PropTypes.func
 };

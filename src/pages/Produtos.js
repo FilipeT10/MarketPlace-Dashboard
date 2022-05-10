@@ -95,27 +95,27 @@ class Produtos extends React.Component {
       }}
     >
       <Container maxWidth={false}>
-        <ProductListToolbar onTextHandle={this.handleChange}  onListType={() => {isList ?  this.setState({isList: false}) : this.setState({isList: true})}} />
-        <Box sx={{ pt: 3 }}>
+        {!isEdit && !isList && 
+        <ProductListToolbar onTextHandle={this.handleChange} onListType={() => {isList ?  this.setState({isList: false}) : this.setState({isList: true})}} />
+          }
+        <div>
         { loading ? <LinearProgress/> :
-          isList ? <ProductListResults customers={produtos.filter(function(item){
-            return item.name.includes(searchText) || item.name.includes(searchText.toLowerCase()) || item.name.includes(searchText.toUpperCase()) || item.name.includes(searchText.charAt(0).toUpperCase()+searchText.slice(1))
-          })} /> : <Grid
+          isList ? <ProductListResults customers={produtos}  onListType={() => {isList ?  this.setState({isList: false}) : this.setState({isList: true})}} /> : <Grid
             container
             spacing={3}
           >
             {isEdit ? 
-             <Card sx={{
-              backgroundColor: 'background.default',
-              marginLeft: 3,
-              marginTop: 3,
-              marginRight: 3
-            }}><ProductEdit product={values} categorias={categorias} onBackEdit={this.handleBackEdit}/></Card>
-            : produtos.filter(function(item){
-            return item.name.includes(searchText) || item.name.includes(searchText.toLowerCase()) || item.name.includes(searchText.toUpperCase()) || item.name.includes(searchText.charAt(0).toUpperCase()+searchText.slice(1))
-          }).map((produto) => (
+              <Card sx={{ backgroundColor: 'background.default', marginLeft: 3, marginTop: 3, width: '100%'}}>
+                <ProductEdit product={values} categorias={categorias} onBackEdit={this.handleBackEdit}/>
+              </Card>
+            :
+            
+            produtos.filter(function(item){
+              return item.name.includes(searchText) || item.name.includes(searchText.toLowerCase()) || item.name.includes(searchText.toUpperCase()) || item.name.includes(searchText.charAt(0).toUpperCase()+searchText.slice(1))
+             }).map((produto) => (
 
               <Grid
+                style={{marginTop: 20}}
                 item
                 key={produto._id}
                 lg={4}
@@ -127,7 +127,7 @@ class Produtos extends React.Component {
             ))}
           </Grid>
           }
-        </Box>
+        </div>
         { loading == false ?
         <Box
           sx={{
