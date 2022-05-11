@@ -22,12 +22,10 @@ import {
   Users as UsersIcon
 } from 'react-feather';
 import NavItem from './NavItem';
+import { getNome, getProfile } from 'src/services/auth';
 
-const user = {
-  avatar: '/static/images/avatars/avatar.png',
-  jobTitle: 'Sênior Developer',
-  name: 'Filipe'
-};
+
+
 
 const items = [
   {
@@ -63,6 +61,13 @@ const items = [
 ];
 
 const DashboardSidebar = ({ onMobileClose, openMobile }) => {
+
+  const user = {
+    avatar: '/static/images/avatars/avatar.png',
+    jobTitle: getProfile() == 'admin' ? 'Administrador' : getProfile() == 'sysAdminMktPlc' ? 'Sistema' : '' ,
+    name: getNome()
+  };
+  
   const location = useLocation();
 
   useEffect(() => {

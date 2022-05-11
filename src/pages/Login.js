@@ -31,7 +31,7 @@ const Login = () => {
     }
     
     ServiceUser.authenticate(json).then(response => {
-      login(response.data.accessToken);
+      login(response.data.accessToken, response.data.id, response.data.name, response.data.profile);
       navigate('/app/painel', { replace: true });
     }).catch(error => {
         alert("Não foi possível efetuar o Login")

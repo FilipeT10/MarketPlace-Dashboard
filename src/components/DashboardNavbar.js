@@ -38,7 +38,7 @@ const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
           <Logo />
           </div>
         <Box sx={{ flexGrow: 1 }} />
-        <Hidden xlDown>
+        <Hidden >
           <IconButton color="inherit" size="large">
             <Badge
               badgeContent={notifications.length}
