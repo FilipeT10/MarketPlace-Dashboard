@@ -16,7 +16,7 @@ import GoogleIcon from '../icons/Google';
 import ServiceUser from 'src/services/User';
 import { useState } from 'react';
 import AppConfig from 'src/AppConfig';
-import { login } from 'src/services/auth';
+import { login, setLoja } from 'src/daos/auth';
 
 
 const Login = () => {
@@ -32,6 +32,8 @@ const Login = () => {
     
     ServiceUser.authenticate(json).then(response => {
       login(response.data.accessToken, response.data.id, response.data.name, response.data.profile);
+      setLoja(response.data.loja)
+      //if tem mais de uma loja
       navigate('/app/painel', { replace: true });
     }).catch(error => {
         alert("Não foi possível efetuar o Login")

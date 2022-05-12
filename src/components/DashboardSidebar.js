@@ -22,7 +22,7 @@ import {
   Users as UsersIcon
 } from 'react-feather';
 import NavItem from './NavItem';
-import { getNome, getProfile } from 'src/services/auth';
+import { getNome, getProfile } from 'src/daos/auth';
 
 
 

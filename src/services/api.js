@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { getToken } from "./auth";
+import { getToken } from "../daos/auth";
 
 // Pode ser algum servidor executando localmente: 
 // http://localhost:3000

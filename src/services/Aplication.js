@@ -1,9 +1,10 @@
 
+import { getLoja } from 'src/daos/auth';
 import api from './api'
 
 class Aplication  {
     
-    static getAplicationInfo = () => api.get(`/lojas/61663f593ad92700047d5e1f`)
+    static getAplicationInfo = () => api.get(`/lojas/`+getLoja())
   
 }
 

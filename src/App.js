@@ -5,7 +5,7 @@ import GlobalStyles from './components/GlobalStyles';
 import theme from './theme';
 import routes from './routes';
 
-import { isAuthenticated } from "./services/auth";
+import { isAuthenticated } from "./daos/auth";
 
 
 import privateRoutes from './privateRoutes';

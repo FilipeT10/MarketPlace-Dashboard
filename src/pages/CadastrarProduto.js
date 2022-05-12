@@ -21,6 +21,7 @@ import TagsInput from '../components/Other/TagsInput';
 import ModalFeedback from 'src/components/Other/ModalFeedback';
 import InputImages from 'src/components/Other/InputImages';
 import AppConfig from 'src/AppConfig';
+import { getLoja } from 'src/daos/auth';
 
 var tamanhos = []
 
@@ -155,7 +156,7 @@ class CadastrarProduto extends React.Component {
       this.setState({errorQtd: true, errorNome: false, errorPreco: false})
       var json = {
         ...this.state.values,
-        "loja": "61663f593ad92700047d5e1f",
+        "loja": getLoja(),
         "tamanhos": tamanhos,
         "cores": cores,
         "ingredientes": ingredientes,

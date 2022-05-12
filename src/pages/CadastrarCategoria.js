@@ -16,6 +16,7 @@ import IconButton from "@material-ui/core/IconButton";
 import { ArrowBack, TryRounded } from '@material-ui/icons';
 import ModalFeedback from 'src/components/Other/ModalFeedback';
 import AppConfig from 'src/AppConfig';
+import { getLoja } from 'src/daos/auth';
 
 
 class CadastrarCategoria extends React.Component {
@@ -37,7 +38,7 @@ class CadastrarCategoria extends React.Component {
       this.setState({errorNome: false})
       var json = {
         "name": this.state.nome,
-        "loja": "61663f593ad92700047d5e1f",
+        "loja": getLoja(),
         "ativo": this.state.isChecked
       }
       ServiceCategorias.saveCategorias(json).then(response => {
