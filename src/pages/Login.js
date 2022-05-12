@@ -31,10 +31,15 @@ const Login = () => {
     }
     
     ServiceUser.authenticate(json).then(response => {
-      login(response.data.accessToken, response.data.id, response.data.name, response.data.profile);
-      setLoja(response.data.loja)
-      //if tem mais de uma loja
-      navigate('/app/painel', { replace: true });
+      if(!response.data.loja && response.data.profile == 'admin'){
+        alert("Seu usuário não tem vínculo com nenhuma loja, por favor entre em contato com o administrador do sistema.")
+        setButtonDisable(false)
+      }else{
+        login(response.data.accessToken, response.data.id, response.data.name, response.data.profile);
+        setLoja(response.data.loja)
+        //if tem mais de uma loja
+        navigate('/app/painel', { replace: true });
+      }
     }).catch(error => {
         alert("Não foi possível efetuar o Login")
         setButtonDisable(false)

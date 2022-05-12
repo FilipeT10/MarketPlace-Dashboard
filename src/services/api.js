@@ -8,7 +8,7 @@ import { getToken } from "../daos/auth";
 const api = axios.create({
   //baseURL: "http://[::]:3000"
  //   baseURL: "https://marketplace-base.herokuapp.com"
-  baseURL: "https://markbaseservice.onrender.com"
+    baseURL: "https://markbaseservice.onrender.com"
 });
 
 api.interceptors.request.use(async config => {
