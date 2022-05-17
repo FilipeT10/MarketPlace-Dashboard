@@ -5,21 +5,24 @@ import GlobalStyles from './components/GlobalStyles';
 import theme from './theme';
 import routes from './routes';
 
-import { isAuthenticated } from "./daos/auth";
+import { isAdmin, isAuthenticated } from "./daos/auth";
 
 
 import privateRoutes from './privateRoutes';
+import adminRoutes from './adminRoutes';
 
 const App = () => {
   const content = useRoutes(routes);
 
   const privateContent = useRoutes(privateRoutes);
 
+  const adminContent = useRoutes(adminRoutes);
+
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
         <GlobalStyles />
-        {isAuthenticated() ? privateContent : content}
+        {isAuthenticated() ? isAdmin() ? adminContent :  privateContent : content}
       </ThemeProvider>
     </StyledEngineProvider>
   );

@@ -4,6 +4,7 @@ export const NOME_KEY = "@markbase-Nome";
 export const LOJA_KEY = "@markbase-Loja";
 export const PROFILE_KEY = "@markbase-Profile";
 export const isAuthenticated = () => localStorage.getItem(TOKEN_KEY) !== null;
+export const isAdmin = () => localStorage.getItem(PROFILE_KEY) === "sysAdminMktPlc";
 export const getToken = () => localStorage.getItem(TOKEN_KEY);
 export const getId = () => localStorage.getItem(ID_KEY);
 export const getNome = () => localStorage.getItem(NOME_KEY);

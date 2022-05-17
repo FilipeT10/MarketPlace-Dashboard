@@ -19,12 +19,12 @@ import {
   ShoppingBag as ShoppingBagIcon,
   User as UserIcon,
   UserPlus as UserPlusIcon,
-  Users as UsersIcon
+  Users as UsersIcon,
+  Bell as BellIcon
 } from 'react-feather';
 import NavItem from './NavItem';
-import { getNome, getProfile } from 'src/daos/auth';
-
-
+import { getNome, getProfile, isAdmin } from 'src/daos/auth';
+import { NotificationsOutlined} from '@material-ui/icons';
 
 
 const items = [
@@ -59,6 +59,46 @@ const items = [
     title: 'Cadastro'
   },
 ];
+
+const itemsAdm = [
+  {
+    href: '/adm/painel',
+    icon: BarChartIcon,
+    title: 'Painel'
+  },
+  {
+    href: '/adm/usuarios',
+    icon: UsersIcon,
+    title: 'Usuários'
+  },
+  {
+    href: '/adm/lojas',
+    icon: ShoppingBagIcon,
+    title: 'Lojas'
+  },
+  {
+    href: '/adm/extratos',
+    icon: ShoppingBagIcon,
+    title: 'Extrato'
+  },
+  {
+    href: '/adm/avisos',
+    icon: BellIcon,
+    title: 'Avisos'
+  },
+  {
+    href: '/adm/perfil',
+    icon: UserIcon,
+    title: 'Perfil'
+  },
+  {
+    href: '/app/configuracoes',
+    icon: SettingsIcon,
+    title: 'Configurações'
+  },
+  
+];
+
 
 const DashboardSidebar = ({ onMobileClose, openMobile }) => {
 
@@ -118,7 +158,17 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
       <Divider />
       <Box sx={{ p: 2 }}>
         <List>
-          {items.map((item) => (
+          { isAdmin() ? 
+            itemsAdm.map((item) => (
+              <NavItem
+                href={item.href}
+                key={item.title}
+                title={item.title}
+                icon={item.icon}
+              />
+            ))
+          :
+          items.map((item) => (
             <NavItem
               href={item.href}
               key={item.title}

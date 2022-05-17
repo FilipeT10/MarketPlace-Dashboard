@@ -38,7 +38,11 @@ const Login = () => {
         login(response.data.accessToken, response.data.id, response.data.name, response.data.profile);
         setLoja(response.data.loja)
         //if tem mais de uma loja
-        navigate('/app/painel', { replace: true });
+        if(response.data.profile == "sysAdminMktPlc"){
+          navigate('/adm/painel', { replace: true });
+        }else{
+          navigate('/app/painel', { replace: true });
+        }
       }
     }).catch(error => {
         alert("Não foi possível efetuar o Login")
