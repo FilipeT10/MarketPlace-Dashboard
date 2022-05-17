@@ -17,6 +17,7 @@ const privateRoutes = [
     path: 'app',
     element: <DashboardLayout />,
     children: [
+      { path: '/', element: <Navigate to="/app/painel" /> },
       { path: 'perfil', element: <Account /> },
       { path: 'categorias', element: <Categorias /> },
       { path: 'cadastrar-categoria', element: <CadastrarCategoria /> },

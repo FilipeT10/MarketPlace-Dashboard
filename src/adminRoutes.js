@@ -11,14 +11,16 @@ import Register from './pages/Register';
 import Settings from './pages/Settings';
 import CadastrarCategoria from './pages/CadastrarCategoria';
 import CadastrarProduto from './pages/CadastrarProduto';
+import Lojas from './pages/adm/Lojas';
 
 const adminRoutes = [
   {
     path: 'adm',
     element: <DashboardLayout />,
     children: [
+      { path: '/', element: <Navigate to="/adm/painel" /> },
       { path: 'perfil', element: <Account /> },
-      { path: 'lojas', element: <Categorias /> },
+      { path: 'lojas', element: <Lojas /> },
       { path: 'cadastrar-lojas', element: <CadastrarCategoria /> },
       { path: 'usuarios', element: <CadastrarProduto /> },
       { path: 'painel', element: <Dashboard /> },
@@ -34,7 +36,7 @@ const adminRoutes = [
     element: <MainLayout />,
     children: [
       { path: '404', element: <NotFound /> },
-      { path: '/', element: <Navigate to="/app/painel" /> },
+      { path: '/', element: <Navigate to="/adm/painel" /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   }

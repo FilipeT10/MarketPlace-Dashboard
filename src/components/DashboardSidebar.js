@@ -20,7 +20,8 @@ import {
   User as UserIcon,
   UserPlus as UserPlusIcon,
   Users as UsersIcon,
-  Bell as BellIcon
+  Bell as BellIcon,
+  Archive
 } from 'react-feather';
 import NavItem from './NavItem';
 import { getNome, getProfile, isAdmin } from 'src/daos/auth';
@@ -78,7 +79,7 @@ const itemsAdm = [
   },
   {
     href: '/adm/extratos',
-    icon: ShoppingBagIcon,
+    icon: Archive,
     title: 'Extrato'
   },
   {
