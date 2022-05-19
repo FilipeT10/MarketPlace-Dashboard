@@ -27,7 +27,7 @@ import getInitials from '../../utils/getInitials';
 import Edit from "@material-ui/icons/Edit";
 
 import IconButton from "@material-ui/core/IconButton";
-import { ArrowBack } from '@material-ui/icons';
+import { Android, ArrowBack, Language } from '@material-ui/icons';
 import ServiceLojas from 'src/services/Lojas';
 import ModalFeedback from '../Other/ModalFeedback';
 import LojasListToolbar from './LojasListToolbar';
@@ -41,7 +41,8 @@ const LojasListResults = ({ customers, ...rest }) => {
   const [modalSuccess, setModalSuccess] = useState(true)
   const [isChecked, setChecked] = useState(false);
   const [values, setValues] = useState({
-    nome: ''
+    nome: '',
+    tipo: ''
   });
 
   
@@ -73,7 +74,7 @@ const LojasListResults = ({ customers, ...rest }) => {
   };
   const handleEdit = (customer) => {
     setChecked(customer.ativo);
-    setValues({nome: customer.name})
+    setValues({nome: customer.name, tipo: customer.tipoLoja})
     setIsEdit(true);
     setCustomerEdit(customer)
   };
@@ -88,6 +89,7 @@ const LojasListResults = ({ customers, ...rest }) => {
   const saveLoja = (nome, ativo) => {
     var json = {
       "name": values.nome,
+      "tipoLoja": values.tipo,
       "ativo": isChecked
     }
     ServiceLojas.editLojas(customerEdit._id, json).then(response => {
@@ -129,6 +131,15 @@ const LojasListResults = ({ customers, ...rest }) => {
                               name="nome"
                               onChange={handleChange}
                               value={values.nome}
+                              variant="outlined"
+                            />
+                            <TextField
+                              fullWidth
+                              label="Tipo da Loja"
+                              margin="normal"
+                              name="tipo"
+                              onChange={handleChange}
+                              value={values.tipo}
                               variant="outlined"
                             />
                             
@@ -189,6 +200,12 @@ const LojasListResults = ({ customers, ...rest }) => {
                   Nome
                 </TableCell>
                 <TableCell>
+                  Tipo
+                </TableCell>
+                <TableCell>
+                  Aplicações
+                </TableCell>
+                <TableCell>
                   Ativo
                 </TableCell>
                 <TableCell>
@@ -215,6 +232,42 @@ const LojasListResults = ({ customers, ...rest }) => {
                       >
                         {customer.name}
                       </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box
+                      sx={{
+                        alignItems: 'center',
+                        display: 'flex'
+                      }}
+                    >
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {customer.tipoLoja}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box
+                      sx={{
+                        alignItems: 'center',
+                        display: 'flex'
+                      }}
+                    >
+                      {customer.aplications.map((aplication) => (
+                        
+                        <IconButton
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={()=> { } }
+                      >
+                        {aplication.tipo == 'App' ? <Android color={aplication.ativo ? 'primary' : 'disabled'}/> : <Language color={aplication.ativo ? 'primary' : 'disabled'}/> }
+                      </IconButton>
+                      
+                      ))}
+                      
                     </Box>
                   </TableCell>
                     <TableCell >

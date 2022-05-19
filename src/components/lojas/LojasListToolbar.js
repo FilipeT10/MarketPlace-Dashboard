@@ -24,7 +24,7 @@ const LojasListToolbar = ({onTextHandle, props}) => (
       <Button
         color="primary"
         variant="contained"
-        href="/app/cadastrar-loja"
+        href="/adm/cadastrar-loja"
       >
         Adicionar loja
       </Button>
