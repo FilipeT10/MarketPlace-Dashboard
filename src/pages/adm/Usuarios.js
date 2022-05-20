@@ -5,12 +5,14 @@ import UsuariosListResults from '../../components/usuarios/UsuariosListResults';
 import UsuariosListToolbar from '../../components/usuarios/UsuariosListToolbar';
 import ServiceUsuarios from '../../services/Usuarios'
 import AppConfig from 'src/AppConfig';
+import ServiceLojas from 'src/services/Lojas';
 
 
 class Usuarios extends React.Component {
 
   state = {
     usuarios: [],
+    lojas: [],
     searchText: "",
     loading: false
   };
@@ -24,8 +26,16 @@ class Usuarios extends React.Component {
     this.setState({loading: true})
     ServiceUsuarios.getUsuarios().then(response => {
         var usuarios = response.data.items;
-        console.log("Users", usuarios)
-        this.setState({usuarios, loading: false})
+
+        ServiceLojas.getLojas().then(response => {
+          var lojas = response.data.items;
+          this.setState({usuarios, lojas, loading: false})
+          
+        }).catch(error => {
+    
+            alert('Falha ao carregar as lojas, tente novamente mais tarde.');
+            console.log(error);
+        });
       
     }).catch(error => {
         alert('Falha ao carregar as usuarios, tente novamente mais tarde.');
@@ -36,7 +46,7 @@ class Usuarios extends React.Component {
   render(){
 
     const { classes } = this.props;
-    const { usuarios, loading, searchText} = this.state;
+    const { usuarios, loading, searchText, lojas} = this.state;
   return (
   <>
     <Helmet>
@@ -51,7 +61,7 @@ class Usuarios extends React.Component {
     >
       <Container maxWidth={false}>
           { loading ? <LinearProgress/> :
-          <UsuariosListResults customers={usuarios} />
+          <UsuariosListResults customers={usuarios} lojas={lojas} />
           }
       </Container>
     </Box>

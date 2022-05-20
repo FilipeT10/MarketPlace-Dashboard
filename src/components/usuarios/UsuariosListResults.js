@@ -32,7 +32,7 @@ import ServiceUsuarios from 'src/services/Usuarios';
 import ModalFeedback from '../Other/ModalFeedback';
 import UsuariosListToolbar from './UsuariosListToolbar';
 
-const UsuariosListResults = ({ customers, ...rest }) => {
+const UsuariosListResults = ({ customers, lojas, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [customerEdit, setCustomerEdit] = useState({})
@@ -47,6 +47,9 @@ const UsuariosListResults = ({ customers, ...rest }) => {
 
   
   const [usuarios, setUsuarios] = useState(customers)
+
+  
+
   const [searchText, setSearchText] = useState("");
   
 
@@ -58,6 +61,23 @@ const UsuariosListResults = ({ customers, ...rest }) => {
     })
     setUsuarios(usuariosFilter)
   };
+
+  const filterLojaFromId = (id) => {
+    console.log(id)
+    console.log(lojas)
+    if(lojas.length == 0 || id == undefined){
+      return ''
+    }else{
+    let usuariosFilter = lojas.filter(function(item){
+      return item._id == id
+    })
+    console.log(usuariosFilter)
+    if(usuariosFilter.length == 0){
+      return "Loja não encontrada"
+    }
+    return usuariosFilter[0].name
+  }
+  }
   const handleChange = (event) => {
     setValues({
       ...values,
@@ -293,7 +313,7 @@ const UsuariosListResults = ({ customers, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {customer.loja}
+                        {filterLojaFromId(customer.loja)}
                       </Typography>
                     </Box>
                   </TableCell>
@@ -345,7 +365,8 @@ const UsuariosListResults = ({ customers, ...rest }) => {
 };
 
 UsuariosListResults.propTypes = {
-  customers: PropTypes.array.isRequired
+  customers: PropTypes.array.isRequired,
+  lojas: PropTypes.array.isRequired
 };
 
 export default UsuariosListResults;

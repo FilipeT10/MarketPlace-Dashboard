@@ -31,6 +31,10 @@ import { Android, ArrowBack, Language } from '@material-ui/icons';
 import ServiceLojas from 'src/services/Lojas';
 import ModalFeedback from '../Other/ModalFeedback';
 import LojasListToolbar from './LojasListToolbar';
+import InputImages from '../Other/InputImages';
+
+
+var imagens = []
 
 const LojasListResults = ({ customers, ...rest }) => {
   const [limit, setLimit] = useState(10);
@@ -45,6 +49,8 @@ const LojasListResults = ({ customers, ...rest }) => {
     tipo: ''
   });
 
+  const [errorImagem, setErrorImagem] = useState(false)
+  
   
   const [lojas, setLojas] = useState(customers)
   const [searchText, setSearchText] = useState("");
@@ -74,21 +80,36 @@ const LojasListResults = ({ customers, ...rest }) => {
   };
   const handleEdit = (customer) => {
     setChecked(customer.ativo);
-    setValues({nome: customer.name, tipo: customer.tipoLoja})
+    if(customer.logo && customer.logo.base){
+      setValues({nome: customer.name, tipo: customer.tipoLoja, imagens: [customer.logo]})
+    }else{
+      setValues({nome: customer.name, tipo: customer.tipoLoja, imagens: []})
+    }
     setIsEdit(true);
     setCustomerEdit(customer)
   };
 
   const handleBackEdit = () => {
     setIsEdit(false);
+    setErrorImagem(false)
   };
   const handleAtivoChecked = () => {
     setChecked(!isChecked);
   };
+  const handleSelecetedImagens =(items) =>{
+    imagens = items
+    console.log("imagens "+imagens);
+  }
   
   const saveLoja = (nome, ativo) => {
+    if(imagens.length < 1){
+      setErrorImagem(true)
+      return
+    }
+
     var json = {
       "name": values.nome,
+      "logo": imagens[0],
       "tipoLoja": values.tipo,
       "ativo": isChecked
     }
@@ -143,6 +164,18 @@ const LojasListResults = ({ customers, ...rest }) => {
                               variant="outlined"
                             />
                             
+                            <InputImages 
+                              error={errorImagem}
+                              selectedTags={handleSelecetedImagens}
+                              fullWidth
+                              margin="normal"
+                              variant="outlined"
+                              id="imagens"
+                              name="imagens"
+                              placeholder="Adicionar Imagens"
+                              tags={values.imagens}
+                              label="Imagens"
+                            />
                             <Grid container spacing={2}>
                               <Grid item xs={0}>
                               <Switch
@@ -196,6 +229,10 @@ const LojasListResults = ({ customers, ...rest }) => {
           <Table>
             <TableHead>
               <TableRow>
+
+                <TableCell>
+                  Logo
+                </TableCell>
                 <TableCell>
                   Nome
                 </TableCell>
@@ -219,6 +256,10 @@ const LojasListResults = ({ customers, ...rest }) => {
                   hover
                   key={customer.id}
                 >
+                  <TableCell>
+                    { customer.logo != undefined && <img style={{justifyContent: 'center', width: 50, height: 50}} src={customer.logo.base}/> }
+                   
+                  </TableCell>
                   <TableCell>
                     <Box
                       sx={{

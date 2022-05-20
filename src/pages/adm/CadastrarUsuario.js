@@ -17,6 +17,7 @@ import {
 import ModalFeedback from 'src/components/Other/ModalFeedback';
 import InputImages from 'src/components/Other/InputImages';
 import AppConfig from 'src/AppConfig';
+import ServiceLojas from 'src/services/Lojas';
 
 
 var imagens = []
@@ -36,7 +37,7 @@ class CadastrarUsuario extends React.Component {
     errorText: 'Campo obrigatório',
     errorTextEmail: 'Campo obrigatório',
     nome: '',
-    categorias: [], 
+    lojas: [], 
     values: {},
     modalVisible: false,
     modalSuccess: true,
@@ -49,10 +50,21 @@ class CadastrarUsuario extends React.Component {
   
 
   componentDidMount() {
-
+    this.getLojas()
   }
 
-   
+  getLojas = () => {
+    ServiceLojas.getLojas().then(response => {
+        var lojas = response.data;
+        this.setState({lojas})
+      
+    }).catch(error => {
+
+        alert('Falha ao carregar as lojas, tente novamente mais tarde.');
+        console.log(error);
+    });
+  }
+
 
   handleInputChange = (event) => {
       let files = event.target.files;
@@ -160,6 +172,16 @@ class CadastrarUsuario extends React.Component {
     if(tipo == undefined){
       tipo = this.tipoUsuarios[0].value
     }
+    var loja = this.state.values.loja
+
+    if(loja == undefined && tipo == 'admin'){
+      loja = this.state.lojas.items[0]._id
+    }
+
+    if(tipo != 'admin'){
+      loja = undefined
+    }
+
     var gender = this.state.values.gender
 
     if(gender == undefined){
@@ -180,6 +202,7 @@ class CadastrarUsuario extends React.Component {
         ...this.state.values,
         //"imagens": imagens,
         "profiles": [tipo],
+        "loja": loja,
         "gender": gender,
       }
       ServiceUsuarios.saveUsuarios(json).then(response => {
@@ -230,7 +253,7 @@ class CadastrarUsuario extends React.Component {
  
   render(){
 
-    const { values, categorias, isChecked, isCheckedSite, errorTextEmail, isCheckedApp, errorNome, errorPreco, errorQtd, errorText, modalVisible, modalSuccess, errorEmail, errorPassword, errorPasswordConfirm} = this.state;
+    const { values, lojas, isChecked, isCheckedSite, errorTextEmail, isCheckedApp, errorNome, errorPreco, errorQtd, errorText, modalVisible, modalSuccess, errorEmail, errorPassword, errorPasswordConfirm} = this.state;
   return (
 
   <>
@@ -338,22 +361,22 @@ class CadastrarUsuario extends React.Component {
                           {values.tipo == 'admin' && <TextField
                             fullWidth
                             label="Loja"
-                            name="tipo"
+                            name="loja"
                             margin="normal"
                             onChange={this.handleChange}
                             required
                             select
                             SelectProps={{ native: true }}
-                            value={values.tipo}
+                            value={values.loja}
                             variant="outlined"
                           >
                             {
-                            this.tipoUsuarios.map((option) => (
+                            lojas.items.map((option) => (
                               <option
-                                key={option.value}
-                                value={option.value}
+                                key={option._id}
+                                value={option._id}
                               >
-                                {option.label}
+                                {option.name}
                               </option>
                             ))}
                           </TextField>}

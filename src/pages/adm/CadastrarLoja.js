@@ -105,16 +105,16 @@ class CadastrarLoja extends React.Component {
       tipo = this.tipoLojas[0].value
     }
 
-    /*if(imagens.length < 1){
+    if(imagens.length < 1){
       this.setState({errorImagem: true})
       possuiError = true
-    }*/
+    }
 
     if(possuiError == false){
       this.setState({errorQtd: true, errorNome: false, errorPreco: false})
       var json = {
         ...this.state.values,
-        //"imagens": imagens,
+        "logo": imagens[0],
         "tipoLoja": tipo,
         "ativo": this.state.isChecked,
         "aplications": [
@@ -281,7 +281,7 @@ class CadastrarLoja extends React.Component {
                               </Grid>
                             </Grid>
                          
-                           {/* <InputImages 
+                            <InputImages 
                             error={this.state.errorImagem}
                             selectedTags={this.handleSelecetedImagens}
                             fullWidth
@@ -293,7 +293,7 @@ class CadastrarLoja extends React.Component {
                             tags={values.imagens}
                             label="Imagens"
                             />
-                            */}
+                            
                             <Grid container spacing={1}>
                               <Grid item xs={0}>
                               <Switch
