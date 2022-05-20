@@ -108,8 +108,10 @@ class CadastrarProduto extends React.Component {
   saveProdutos = () => {
 
     var possuiError = false
+    this.setState({errorQtd: true, errorNome: false, errorPreco: false})
+      
     if(this.state.values.name != undefined){
-      if(this.state.values.name.lenght == 0){
+      if(this.state.values.name.length == 0){
         this.setState({errorNome: true})
         possuiError = true
       }
@@ -119,7 +121,7 @@ class CadastrarProduto extends React.Component {
     }
 
     if(this.state.values.preco != undefined){
-      if(this.state.values.preco.lenght == 0){
+      if(this.state.values.preco.length == 0){
         this.setState({errorPreco: true})
         possuiError = true
       }
@@ -128,7 +130,7 @@ class CadastrarProduto extends React.Component {
       possuiError = true
     }
     if(this.state.values.quantidade != undefined){
-      if(this.state.values.quantidade.lenght == 0){
+      if(this.state.values.quantidade.length == 0){
         this.setState({errorQtd: true})
         possuiError = true
       }

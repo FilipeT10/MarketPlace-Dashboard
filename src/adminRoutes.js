@@ -13,6 +13,8 @@ import CadastrarCategoria from './pages/CadastrarCategoria';
 import CadastrarProduto from './pages/CadastrarProduto';
 import Lojas from './pages/adm/Lojas';
 import CadastrarLoja from './pages/adm/CadastrarLoja';
+import Usuarios from './pages/adm/Usuarios';
+import CadastrarUsuario from './pages/adm/CadastrarUsuario';
 
 const adminRoutes = [
   {
@@ -23,7 +25,8 @@ const adminRoutes = [
       { path: 'perfil', element: <Account /> },
       { path: 'lojas', element: <Lojas /> },
       { path: 'cadastrar-loja', element: <CadastrarLoja /> },
-      { path: 'usuarios', element: <CadastrarProduto /> },
+      { path: 'cadastrar-usuario', element: <CadastrarUsuario /> },
+      { path: 'usuarios', element: <Usuarios /> },
       { path: 'painel', element: <Dashboard /> },
       { path: 'extratos', element: <Produtos /> },
       { path: 'configuracoes', element: <Settings /> },

@@ -89,7 +89,7 @@ class CadastrarLoja extends React.Component {
 
     var possuiError = false
     if(this.state.values.name != undefined){
-      if(this.state.values.name.lenght == 0){
+      if(this.state.values.name.length == 0){
         this.setState({errorNome: true})
         possuiError = true
       }

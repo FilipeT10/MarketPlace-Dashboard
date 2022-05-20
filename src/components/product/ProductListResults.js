@@ -78,7 +78,7 @@ const ProductListResults = ({ onListType, customers, ...rest }) => {
   const handleLimitChange = (event) => {
     setPage(0);
     if(event.target.value == "All"){
-      setLimit(customers.lenght);
+      setLimit(customers.length);
     }else{
     setLimit(event.target.value);
     }
@@ -127,7 +127,7 @@ const ProductListResults = ({ onListType, customers, ...rest }) => {
             </TableHead>
             <TableBody>
               { Number.isNaN(page*limit) ?  
-              produtos.slice(0, produtos.lenght).map((customer) => (
+              produtos.slice(0, produtos.length).map((customer) => (
                 <TableRow
                   hover
                   key={customer.id}
