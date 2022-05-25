@@ -27,12 +27,12 @@ import getInitials from '../../utils/getInitials';
 import Edit from "@material-ui/icons/Edit";
 
 import IconButton from "@material-ui/core/IconButton";
-import { Android, ArrowBack, Language } from '@material-ui/icons';
-import ServiceUsuarios from 'src/services/Usuarios';
+import { ArrowBack } from '@material-ui/icons';
+import ServiceSubCategorias from 'src/services/SubCategorias';
 import ModalFeedback from '../Other/ModalFeedback';
-import UsuariosListToolbar from './UsuariosListToolbar';
+import SubCategoriasListToolbar from './SubCategoriasListToolbar';
 
-const UsuariosListResults = ({ customers, lojas, ...rest }) => {
+const SubCategoriasListResults = ({ customers, categorias, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [customerEdit, setCustomerEdit] = useState({})
@@ -41,43 +41,21 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
   const [modalSuccess, setModalSuccess] = useState(true)
   const [isChecked, setChecked] = useState(false);
   const [values, setValues] = useState({
-    nome: '',
-    tipo: ''
+    nome: ''
   });
-
   
-  const [usuarios, setUsuarios] = useState(customers)
-
-  
-
+  const [subcategorias, setSubCategorias] = useState(customers)
   const [searchText, setSearchText] = useState("");
   
 
   const handleChangeSearch = (event) => {
     let value = event.target.value
     setSearchText(value)
-    let usuariosFilter = customers.filter(function(item){
-      return item.name.includes(value) || item.name.includes(value.toLowerCase()) || item.name.includes(value.toUpperCase()) || item.name.includes(value.charAt(0).toUpperCase()+value.slice(1)) || item.cpf?.includes(value) || item.email?.includes(value)
+    let subcategoriasFilter = customers.filter(function(item){
+      return item.name.includes(value) || item.name.includes(value.toLowerCase()) || item.name.includes(value.toUpperCase()) || item.name.includes(value.charAt(0).toUpperCase()+value.slice(1))
     })
-    setUsuarios(usuariosFilter)
+    setSubCategorias(subcategoriasFilter)
   };
-
-  const filterLojaFromId = (id) => {
-    console.log(id)
-    console.log(lojas)
-    if(lojas.length == 0 || id == undefined){
-      return ''
-    }else{
-      let usuariosFilter = lojas.filter(function(item){
-        return item._id == id
-      })
-      console.log(usuariosFilter)
-      if(usuariosFilter.length == 0){
-        return "Loja não encontrada"
-      }
-      return usuariosFilter[0].name
-    }
-  }
   const handleChange = (event) => {
     setValues({
       ...values,
@@ -85,6 +63,19 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
     });
   };
 
+  const filterCategoriaFromId = (id) => {
+    if(categorias.length == 0 || id == undefined){
+      return ''
+    }else{
+      let usuariosFilter = categorias.filter(function(item){
+        return item._id == id
+      })
+      if(usuariosFilter.length == 0){
+        return "Categoria não encontrada"
+      }
+      return usuariosFilter[0].name
+    }
+  }
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
   };
@@ -94,7 +85,7 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
   };
   const handleEdit = (customer) => {
     setChecked(customer.ativo);
-    setValues({nome: customer.name, tipo: customer.tipoUsuario})
+    setValues({nome: customer.name, categoria: customer.categoria})
     setIsEdit(true);
     setCustomerEdit(customer)
   };
@@ -105,18 +96,24 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
   const handleAtivoChecked = () => {
     setChecked(!isChecked);
   };
+  const handleChangeCategoria = (event) => {
+    setValues({
+      ...values,
+      [event.target.name]: event.target.value
+    });
+  };
   
-  const saveUsuario = (nome, ativo) => {
+  const saveSubCategoria = (nome, ativo) => {
     var json = {
       "name": values.nome,
-      "tipoUsuario": values.tipo,
+      "categoria": values.categoria,
       "ativo": isChecked
     }
-    ServiceUsuarios.editUsuarios(customerEdit._id, json).then(response => {
+    ServiceSubCategorias.editSubCategorias(customerEdit._id, json).then(response => {
         setModalSuccess(true)
         setModalVisible(true)
-        var usuarios = response.data;
-        console.log(usuarios)
+        var subcategorias = response.data;
+        console.log(subcategorias)
     }).catch(error => {
         setModalSuccess(false)
         setModalVisible(true)
@@ -126,7 +123,7 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
 
   return (
     <div>
-      { isEdit ?   null  /*    
+      { isEdit ?        
                       <Card sx={{ backgroundColor: 'background.default'}}>
                         <Box sx={{ }}> 
                         <div>
@@ -139,7 +136,7 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
                         
                         <Card>
                           <CardHeader
-                            subheader="Usuarios"
+                            subheader="Subcategorias"
                             title="Editar"
                           />
                           <Divider />
@@ -153,15 +150,30 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
                               value={values.nome}
                               variant="outlined"
                             />
+                            { categorias.length > 0 ?
                             <TextField
-                              fullWidth
-                              label="Tipo da Usuario"
-                              margin="normal"
-                              name="tipo"
-                              onChange={handleChange}
-                              value={values.tipo}
-                              variant="outlined"
-                            />
+                            fullWidth
+                            label="Categoria"
+                            name="categoria"
+                            margin="normal"
+                            onChange={handleChangeCategoria}
+                            required
+                            select
+                            SelectProps={{ native: true }}
+                            value={values.categoria}
+                            variant="outlined"
+                          >
+                            {categorias.map((option) => (
+                              <option
+                                key={option._id}
+                                value={option._id}
+                              >
+                                {option.name}
+                              </option>
+                            ))}
+                          </TextField>
+                          : <div></div>
+                          }
                             
                             <Grid container spacing={2}>
                               <Grid item xs={0}>
@@ -196,19 +208,19 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
                             <Button
                               color="primary"
                               variant="contained"
-                              onClick={() => { saveUsuario(values.nome, isChecked)}}> Salvar</Button>
+                              onClick={() => { saveSubCategoria(values.nome, isChecked)}}> Salvar</Button>
                           </Box>
                         </Card>
                         </div>
-                      <ModalFeedback open={modalVisible} success={modalSuccess} redirect={modalSuccess ? '/adm/painel' : ''} title={ modalSuccess ? "Sucesso" : "Falhou"} subTitle={ modalSuccess ? "Usuario editada com sucesso." : "Não foi possível editar a usuario, tente novamente mais tarde."} />
+                      <ModalFeedback open={modalVisible} success={modalSuccess} redirect={modalSuccess ? '/app/painel' : ''} title={ modalSuccess ? "Sucesso" : "Falhou"} subTitle={ modalSuccess ? "Subcategoria editada com sucesso." : "Não foi possível editar, tente novamente mais tarde."} />
                       </Box>
                       </Card>
-                    */  :
+                      :
       <div>
 
      
       
-      <UsuariosListToolbar onTextHandle={handleChangeSearch} />
+      <SubCategoriasListToolbar onTextHandle={handleChangeSearch} />
         
       <Card style={{marginTop: 20}}>
       <PerfectScrollbar>
@@ -220,27 +232,21 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
                   Nome
                 </TableCell>
                 <TableCell>
-                  CPF
+                  Categoria
                 </TableCell>
                 <TableCell>
-                  Email
+                  Ativo
                 </TableCell>
                 <TableCell>
-                  Sexo
-                </TableCell>
-                <TableCell>
-                  Loja
-                </TableCell>
-                <TableCell>
-                  Perfil
+                  Ações
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {usuarios.slice(0, limit).map((customer) => (
+              {subcategorias.slice(0, limit).map((customer) => (
                 <TableRow
                   hover
-                  key={customer._id}
+                  key={customer.id}
                 >
                   <TableCell>
                     <Box
@@ -268,76 +274,31 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {customer.cpf}
+                        {filterCategoriaFromId(customer.categoria)}
                       </Typography>
                     </Box>
                   </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
+                    <TableCell >
+                      {customer.ativo ? <Chip
+                    color="success"
+                    label={"Ativo"}
+                    size="small"
+                  />: <Chip
+                  color="warning"
+                  label={"Inativo"}
+                  size="small"
+                />}
+                    </TableCell>
+                    <TableCell >
+                       <IconButton
+                       color="inherit"
+                       aria-label="open drawer"
+                       onClick={()=>{ handleEdit(customer)
                       }}
-                    >
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {customer.email}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {customer.gender == "Male" ? "Masculino" : customer.gender == 'Female' ? "Feminino" : ''}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {filterLojaFromId(customer.loja)}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      {customer.profiles.map((user) => (
-                        
-                        <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {user == "sysAdminMktPlc" ? 'sistema' : user}
-                      </Typography>
-                      
-                      ))}
-                     
-                    </Box>
-                  </TableCell>
-                  
+                     >
+                       <Edit/>
+                     </IconButton>
+                     </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -364,9 +325,9 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
   );
 };
 
-UsuariosListResults.propTypes = {
+SubCategoriasListResults.propTypes = {
   customers: PropTypes.array.isRequired,
-  lojas: PropTypes.array.isRequired
+  categorias: PropTypes.array.isRequired
 };
 
-export default UsuariosListResults;
+export default SubCategoriasListResults;

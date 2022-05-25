@@ -11,6 +11,8 @@ import Register from './pages/Register';
 import Settings from './pages/Settings';
 import CadastrarCategoria from './pages/CadastrarCategoria';
 import CadastrarProduto from './pages/CadastrarProduto';
+import SubSubCategorias from './pages/SubCategorias';
+import CadastrarSubCategoria from './pages/CadastrarSubCategoria';
 
 const privateRoutes = [
   {
@@ -21,6 +23,8 @@ const privateRoutes = [
       { path: 'perfil', element: <Account /> },
       { path: 'categorias', element: <Categorias /> },
       { path: 'cadastrar-categoria', element: <CadastrarCategoria /> },
+      { path: 'subcategorias', element: <SubSubCategorias /> },
+      { path: 'cadastrar-subcategoria', element: <CadastrarSubCategoria /> },
       { path: 'cadastrar-produto', element: <CadastrarProduto /> },
       { path: 'painel', element: <Dashboard /> },
       { path: 'produtos', element: <Produtos /> },

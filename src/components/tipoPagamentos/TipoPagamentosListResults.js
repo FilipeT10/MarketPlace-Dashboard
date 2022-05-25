@@ -28,11 +28,15 @@ import Edit from "@material-ui/icons/Edit";
 
 import IconButton from "@material-ui/core/IconButton";
 import { Android, ArrowBack, Language } from '@material-ui/icons';
-import ServiceUsuarios from 'src/services/Usuarios';
+import ServiceTipoPagamentos from 'src/services/TipoPagamentos';
 import ModalFeedback from '../Other/ModalFeedback';
-import UsuariosListToolbar from './UsuariosListToolbar';
+import TipoPagamentosListToolbar from './TipoPagamentosListToolbar';
+import InputImages from '../Other/InputImages';
 
-const UsuariosListResults = ({ customers, lojas, ...rest }) => {
+
+var imagens = []
+
+const TipoPagamentosListResults = ({ customers, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [customerEdit, setCustomerEdit] = useState({})
@@ -45,39 +49,21 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
     tipo: ''
   });
 
+  const [errorImagem, setErrorImagem] = useState(false)
   
-  const [usuarios, setUsuarios] = useState(customers)
-
   
-
+  const [tipoPagamentos, setTipoPagamentos] = useState(customers)
   const [searchText, setSearchText] = useState("");
   
 
   const handleChangeSearch = (event) => {
     let value = event.target.value
     setSearchText(value)
-    let usuariosFilter = customers.filter(function(item){
-      return item.name.includes(value) || item.name.includes(value.toLowerCase()) || item.name.includes(value.toUpperCase()) || item.name.includes(value.charAt(0).toUpperCase()+value.slice(1)) || item.cpf?.includes(value) || item.email?.includes(value)
+    let tipoPagamentosFilter = customers.filter(function(item){
+      return item.name.includes(value) || item.name.includes(value.toLowerCase()) || item.name.includes(value.toUpperCase()) || item.name.includes(value.charAt(0).toUpperCase()+value.slice(1))
     })
-    setUsuarios(usuariosFilter)
+    setTipoPagamentos(tipoPagamentosFilter)
   };
-
-  const filterLojaFromId = (id) => {
-    console.log(id)
-    console.log(lojas)
-    if(lojas.length == 0 || id == undefined){
-      return ''
-    }else{
-      let usuariosFilter = lojas.filter(function(item){
-        return item._id == id
-      })
-      console.log(usuariosFilter)
-      if(usuariosFilter.length == 0){
-        return "Loja não encontrada"
-      }
-      return usuariosFilter[0].name
-    }
-  }
   const handleChange = (event) => {
     setValues({
       ...values,
@@ -94,29 +80,39 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
   };
   const handleEdit = (customer) => {
     setChecked(customer.ativo);
-    setValues({nome: customer.name, tipo: customer.tipoUsuario})
+    if(customer.logo && customer.logo.base){
+      setValues({nome: customer.name, tipo: customer.tipoTipoPagamento, imagens: [customer.logo]})
+    }else{
+      setValues({nome: customer.name, tipo: customer.tipoTipoPagamento, imagens: []})
+    }
     setIsEdit(true);
     setCustomerEdit(customer)
   };
 
   const handleBackEdit = () => {
     setIsEdit(false);
+    setErrorImagem(false)
   };
   const handleAtivoChecked = () => {
     setChecked(!isChecked);
   };
+  const handleSelecetedImagens =(items) =>{
+    imagens = items
+    console.log("imagens "+imagens);
+  }
   
-  const saveUsuario = (nome, ativo) => {
+  const saveTipoPagamento = (nome, ativo) => {
+  
+
     var json = {
       "name": values.nome,
-      "tipoUsuario": values.tipo,
       "ativo": isChecked
     }
-    ServiceUsuarios.editUsuarios(customerEdit._id, json).then(response => {
+    ServiceTipoPagamentos.editTipoPagamentos(customerEdit._id, json).then(response => {
         setModalSuccess(true)
         setModalVisible(true)
-        var usuarios = response.data;
-        console.log(usuarios)
+        var tipoPagamentos = response.data;
+        console.log(tipoPagamentos)
     }).catch(error => {
         setModalSuccess(false)
         setModalVisible(true)
@@ -126,7 +122,7 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
 
   return (
     <div>
-      { isEdit ?   null  /*    
+      { isEdit ?        
                       <Card sx={{ backgroundColor: 'background.default'}}>
                         <Box sx={{ }}> 
                         <div>
@@ -139,7 +135,7 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
                         
                         <Card>
                           <CardHeader
-                            subheader="Usuarios"
+                            subheader="TipoPagamentos"
                             title="Editar"
                           />
                           <Divider />
@@ -151,15 +147,6 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
                               name="nome"
                               onChange={handleChange}
                               value={values.nome}
-                              variant="outlined"
-                            />
-                            <TextField
-                              fullWidth
-                              label="Tipo da Usuario"
-                              margin="normal"
-                              name="tipo"
-                              onChange={handleChange}
-                              value={values.tipo}
                               variant="outlined"
                             />
                             
@@ -196,19 +183,19 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
                             <Button
                               color="primary"
                               variant="contained"
-                              onClick={() => { saveUsuario(values.nome, isChecked)}}> Salvar</Button>
+                              onClick={() => { saveTipoPagamento(values.nome, isChecked)}}> Salvar</Button>
                           </Box>
                         </Card>
                         </div>
-                      <ModalFeedback open={modalVisible} success={modalSuccess} redirect={modalSuccess ? '/adm/painel' : ''} title={ modalSuccess ? "Sucesso" : "Falhou"} subTitle={ modalSuccess ? "Usuario editada com sucesso." : "Não foi possível editar a usuario, tente novamente mais tarde."} />
+                      <ModalFeedback open={modalVisible} success={modalSuccess} redirect={modalSuccess ? '/adm/painel' : ''} title={ modalSuccess ? "Sucesso" : "Falhou"} subTitle={ modalSuccess ? "Tipo de pagamento editado com sucesso." : "Não foi possível editar, tente novamente mais tarde."} />
                       </Box>
                       </Card>
-                    */  :
+                      :
       <div>
 
      
       
-      <UsuariosListToolbar onTextHandle={handleChangeSearch} />
+      <TipoPagamentosListToolbar onTextHandle={handleChangeSearch} />
         
       <Card style={{marginTop: 20}}>
       <PerfectScrollbar>
@@ -220,28 +207,20 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
                   Nome
                 </TableCell>
                 <TableCell>
-                  CPF
+                  Ativo
                 </TableCell>
                 <TableCell>
-                  Email
-                </TableCell>
-                <TableCell>
-                  Sexo
-                </TableCell>
-                <TableCell>
-                  Loja
-                </TableCell>
-                <TableCell>
-                  Perfil
+                  Ações
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {usuarios.slice(0, limit).map((customer) => (
+              {tipoPagamentos.slice(0, limit).map((customer) => (
                 <TableRow
                   hover
-                  key={customer._id}
+                  key={customer.id}
                 >
+                  
                   <TableCell>
                     <Box
                       sx={{
@@ -257,87 +236,27 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
                       </Typography>
                     </Box>
                   </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
+                    <TableCell >
+                      {customer.ativo ? <Chip
+                    color="success"
+                    label={"Ativo"}
+                    size="small"
+                  />: <Chip
+                  color="warning"
+                  label={"Inativo"}
+                  size="small"
+                />}
+                    </TableCell>
+                    <TableCell >
+                       <IconButton
+                       color="inherit"
+                       aria-label="open drawer"
+                       onClick={()=>{ handleEdit(customer)
                       }}
-                    >
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {customer.cpf}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {customer.email}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {customer.gender == "Male" ? "Masculino" : customer.gender == 'Female' ? "Feminino" : ''}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {filterLojaFromId(customer.loja)}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      {customer.profiles.map((user) => (
-                        
-                        <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {user == "sysAdminMktPlc" ? 'sistema' : user}
-                      </Typography>
-                      
-                      ))}
-                     
-                    </Box>
-                  </TableCell>
-                  
+                     >
+                       <Edit/>
+                     </IconButton>
+                     </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -364,9 +283,8 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
   );
 };
 
-UsuariosListResults.propTypes = {
-  customers: PropTypes.array.isRequired,
-  lojas: PropTypes.array.isRequired
+TipoPagamentosListResults.propTypes = {
+  customers: PropTypes.array.isRequired
 };
 
-export default UsuariosListResults;
+export default TipoPagamentosListResults;

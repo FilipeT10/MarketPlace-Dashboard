@@ -15,6 +15,8 @@ import Lojas from './pages/adm/Lojas';
 import CadastrarLoja from './pages/adm/CadastrarLoja';
 import Usuarios from './pages/adm/Usuarios';
 import CadastrarUsuario from './pages/adm/CadastrarUsuario';
+import TipoPagamentos from './pages/adm/TipoPagamentos';
+import CadastrarTipoPagamento from './pages/adm/CadastrarTipoPagamento';
 
 const adminRoutes = [
   {
@@ -26,9 +28,11 @@ const adminRoutes = [
       { path: 'lojas', element: <Lojas /> },
       { path: 'cadastrar-loja', element: <CadastrarLoja /> },
       { path: 'cadastrar-usuario', element: <CadastrarUsuario /> },
+      { path: 'cadastrar-tipopagamento', element: <CadastrarTipoPagamento /> },
       { path: 'usuarios', element: <Usuarios /> },
       { path: 'painel', element: <Dashboard /> },
       { path: 'extratos', element: <Produtos /> },
+      { path: 'tipopagamento', element: <TipoPagamentos /> },
       { path: 'configuracoes', element: <Settings /> },
       { path: 'cadastro', element: <Register /> },
       { path: 'avisos', element: <Register /> },

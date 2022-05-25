@@ -21,11 +21,14 @@ import {
   UserPlus as UserPlusIcon,
   Users as UsersIcon,
   Bell as BellIcon,
-  Archive
+  Archive,
+  CreditCard,
+  Folder,
+  FolderMinus
 } from 'react-feather';
 import NavItem from './NavItem';
 import { getNome, getProfile, isAdmin } from 'src/daos/auth';
-import { NotificationsOutlined} from '@material-ui/icons';
+import { CardGiftcardOutlined, NotificationsOutlined} from '@material-ui/icons';
 
 
 const items = [
@@ -36,8 +39,13 @@ const items = [
   },
   {
     href: '/app/categorias',
-    icon: UsersIcon,
+    icon: Folder,
     title: 'Categorias'
+  },
+  {
+    href: '/app/subcategorias',
+    icon: FolderMinus,
+    title: 'Subcategorias'
   },
   {
     href: '/app/produtos',
@@ -81,6 +89,11 @@ const itemsAdm = [
     href: '/adm/extratos',
     icon: Archive,
     title: 'Extrato'
+  },
+  {
+    href: '/adm/tipopagamento',
+    icon: CreditCard,
+    title: 'Tipo de Pagamentos'
   },
   {
     href: '/adm/avisos',
