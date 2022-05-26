@@ -23,7 +23,9 @@ import {
   Typography,
   Grid,
   Switch,
-  Alert
+  Alert,
+  MenuItem,
+  FormControlLabel
 } from '@material-ui/core';
 import getInitials from '../../utils/getInitials';
 
@@ -45,7 +47,11 @@ var ingredientes = []
 
 var imagens = []
 
-const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+
+const ProductEdit = ({ product, categorias, subcategorias, onBackEdit, ...rest }) => {
   const [isChecked, setChecked] = useState(product.ativo);
   const [values, setValues] = useState(product);
 
@@ -53,21 +59,33 @@ const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
   const [modalSuccess, setModalSuccess] = useState(true)
 
   const [errorImagem, setErrorImagem] = useState(false)
+
+  const [subcategoriaName, setSubcategoriaName] = useState([]);
+
+  const [subcategoriaId, setSubcategoriaId] = useState(product.subcategorias);
+
+  const handleChangeSubcategoria = (event) => {
+    console.log(event)
+    if (!subcategoriaId.includes(event.target.value))
+    setSubcategoriaId(event.target.value); 
+
+    console.log(subcategoriaId)
+    // selected options
+  };
   
-  const tipoProdutos = [
-    {
-      value: 'roupa',
-      label: 'Roupas'
-    },
-    {
-      value: 'tenis',
-      label: 'Tênis'
-    },
-    {
-      value: 'alimentacao',
-      label: 'Alimentação'
+  const filterSubCategoriaFromId = (id) => {
+    if(subcategorias.length == 0 || id == undefined){
+      return ''
+    }else{
+      let usuariosFilter = subcategorias.filter(function(item){
+        return item._id == id
+      })
+      if(usuariosFilter.length == 0){
+        return "Subcategoria não encontrada"
+      }
+      return usuariosFilter[0].name
     }
-  ];
+  }
 
   const handleSelecetedTamanhos =(items) =>{
     tamanhos = items
@@ -96,6 +114,7 @@ const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
       "tamanhos": tamanhos,
       "cores": cores,
       "ingredientes": ingredientes,
+      "subcategorias": subcategoriaId,
       "imagens": imagens,
       "ativo": isChecked
     }
@@ -116,6 +135,12 @@ const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
 
   
   const handleChangeCategoria = (event) => {
+    setValues({
+      ...values,
+      [event.target.name]: event.target.value
+    });
+  };
+  const handleChangeSubCategoria = (event) => {
     setValues({
       ...values,
       [event.target.name]: event.target.value
@@ -204,28 +229,43 @@ const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
                           </TextField>
                           : <div></div>
                           }
-                          <TextField
+                          { subcategorias.length > 0 ?
+                            <TextField
                             fullWidth
-                            label="Tipo de Produto"
-                            name="tipo"
+                            label="Subcategoria"
+                            name="subcategorias"
                             margin="normal"
-                            onChange={handleChange}
-                            required
                             select
-                            SelectProps={{ native: true }}
-                            value={values.tipo}
+                            value={values.subcategorias}
                             variant="outlined"
-                          >
-                            {
-                            tipoProdutos.map((option) => (
-                              <option
-                                key={option.value}
-                                value={option.value}
-                              >
-                                {option.label}
-                              </option>
-                            ))}
-                          </TextField>
+                            required
+                            SelectProps={{
+                               multiple: true,
+                               value: subcategoriaId,
+                               onChange: (e) => handleChangeSubcategoria(e),
+                               renderValue: (selected) => {
+                                 var ids = selected;
+                                 var nomes = []
+                                 ids.map((id) => (
+                                    nomes.push(filterSubCategoriaFromId(id))
+                                 ))
+                                 return nomes.join(", ")
+                              
+                              },
+                               
+                             }}
+                           >
+                             {subcategorias.map((subcategoria) => (
+                               <MenuItem key={subcategoria._id} value={subcategoria._id}>
+                                 <FormControlLabel
+                                   control={<Checkbox checked={subcategoriaId.includes(subcategoria._id)} />}
+                                   label={subcategoria.name}
+                                 />
+                               </MenuItem>
+                             ))}
+                           </TextField>
+                          : <div></div>
+                          }
                           <TagsInput
                               selectedTags={handleSelecetedTamanhos}
                               fullWidth
@@ -317,7 +357,8 @@ const ProductEdit = ({ product, categorias, onBackEdit, ...rest }) => {
 ProductEdit.propTypes = {
   product: PropTypes.object.isRequired,
   onBackEdit: PropTypes.func,
-  categorias: PropTypes.object.isRequired
+  categorias: PropTypes.object.isRequired,
+  subcategorias: PropTypes.object.isRequired
 };
 
 export default ProductEdit;

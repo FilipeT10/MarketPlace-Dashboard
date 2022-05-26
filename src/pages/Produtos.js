@@ -18,12 +18,15 @@ import ServiceProdutos from '../services/Produtos'
 
 import ServiceCategorias from '../services/Categorias'
 import AppConfig from 'src/AppConfig';
+import ServiceSubCategorias from 'src/services/SubCategorias';
 
 
 class Produtos extends React.Component {
 
   state = {
     produtos: [],
+    categorias: [],
+    subcategorias: [],
     searchText: "",
     isList: false,
     loading: false,
@@ -43,8 +46,8 @@ class Produtos extends React.Component {
     ServiceProdutos.getProdutos().then(response => {
         var produtos = response.data;
         console.log(produtos)
-        this.setState({produtos, loading: false})
-      
+        this.setState({produtos})
+        this.getCategorias()
     }).catch(error => {
         alert('Falha ao carregar os produtos, tente novamente mais tarde.');
         console.log(error);
@@ -55,9 +58,19 @@ class Produtos extends React.Component {
     ServiceCategorias.getCategorias().then(response => {
         var categorias = response.data;
         this.setState({categorias})
-      
+        this.getSubCategorias()
     }).catch(error => {
         alert('Falha ao carregar as categorias, tente novamente mais tarde.');
+        console.log(error);
+    });
+  }
+  getSubCategorias = () => {
+    ServiceSubCategorias.getSubCategorias().then(response => {
+        var subcategorias = response.data;
+        this.setState({subcategorias, loading: false})
+      
+    }).catch(error => {
+        alert('Falha ao carregar as subcategorias, tente novamente mais tarde.');
         console.log(error);
     });
   }
@@ -68,7 +81,7 @@ class Produtos extends React.Component {
     this.setState({isEdit: false})
   };
   handleEdit = (customer) => {
-    this.getCategorias()
+   
     this.setState({values:{nome: customer.name, ...customer}, isEdit: true})
   };
 
@@ -79,7 +92,7 @@ class Produtos extends React.Component {
   render(){
 
     const { classes } = this.props;
-    const { produtos, isList, loading, searchText, values, isEdit, categorias} = this.state;
+    const { produtos, isList, loading, searchText, values, isEdit, categorias, subcategorias} = this.state;
   
 
   return(
@@ -100,13 +113,13 @@ class Produtos extends React.Component {
           }
         <div>
         { loading ? <LinearProgress/> :
-          isList ? <ProductListResults customers={produtos}  onListType={() => {isList ?  this.setState({isList: false}) : this.setState({isList: true})}} /> : <Grid
+          isList ? <ProductListResults customers={produtos} categorias={categorias} subcategorias={subcategorias}  onListType={() => {isList ?  this.setState({isList: false}) : this.setState({isList: true})}} /> : <Grid
             container
             spacing={3}
           >
             {isEdit ? 
               <Card sx={{ backgroundColor: 'background.default', marginLeft: 3, marginTop: 3, width: '100%'}}>
-                <ProductEdit product={values} categorias={categorias} onBackEdit={this.handleBackEdit}/>
+                <ProductEdit product={values} categorias={categorias} subcategorias={subcategorias} onBackEdit={this.handleBackEdit}/>
               </Card>
             :
             

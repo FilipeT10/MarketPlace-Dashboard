@@ -12,7 +12,7 @@ import {
   Divider,
   Switch,
   TextField,
-  Typography, Grid
+  Typography, Grid, MenuItem, Checkbox, FormControlLabel
 } from '@material-ui/core';
 import IconButton from "@material-ui/core/IconButton";
 import { ArrowBack } from '@material-ui/icons';
@@ -22,6 +22,7 @@ import ModalFeedback from 'src/components/Other/ModalFeedback';
 import InputImages from 'src/components/Other/InputImages';
 import AppConfig from 'src/AppConfig';
 import { getLoja } from 'src/daos/auth';
+import ServiceSubCategorias from 'src/services/SubCategorias';
 
 var tamanhos = []
 
@@ -41,9 +42,12 @@ class CadastrarProduto extends React.Component {
     errorNome: false,
     errorPreco: false,
     errorQtd: false,
+    loading: true,
     errorText: 'Campo obrigatório',
     nome: '',
     categorias: [], 
+    subcategoriaId: [],
+    subcategorias: [], 
     values: {},
     modalVisible: false,
     modalSuccess: true,
@@ -57,7 +61,30 @@ class CadastrarProduto extends React.Component {
     this.getCategorias()
   }
 
-   
+   handleChangeSubcategoria = (event) => {
+    const {subcategoriaId} = this.state
+    if (!subcategoriaId.includes(event.target.value))
+    this.setState({subcategoriaId: event.target.value}); 
+
+    console.log(subcategoriaId)
+    // selected options
+  };
+  
+  filterSubCategoriaFromId = (id) => {
+
+    const {subcategorias} = this.state
+    if(subcategorias.length == 0 || id == undefined){
+      return ''
+    }else{
+      let usuariosFilter = subcategorias.filter(function(item){
+        return item._id == id
+      })
+      if(usuariosFilter.length == 0){
+        return "Subcategoria não encontrada"
+      }
+      return usuariosFilter[0].name
+    }
+  }
 
   handleInputChange = (event) => {
       let files = event.target.files;
@@ -68,27 +95,14 @@ class CadastrarProduto extends React.Component {
         console.log(e.target.result)
         this.saveImage(e.target.result)
       }
-
+        
   }
   saveImage(image){
 
     this.setState({images: [...this.state.images, image]})
   }
 
-  tipoProdutos = [
-    {
-      value: 'roupa',
-      label: 'Roupas'
-    },
-    {
-      value: 'tenis',
-      label: 'Tênis'
-    },
-    {
-      value: 'alimentacao',
-      label: 'Alimentação'
-    }
-  ];
+  
    handleSelecetedTamanhos =(items) =>{
     tamanhos = items
     console.log("tamanhos "+tamanhos);
@@ -143,11 +157,7 @@ class CadastrarProduto extends React.Component {
     if(categoria == undefined){
       categoria = this.state.categorias[0]._id
     }
-    var tipo = this.state.values.tipo
-
-    if(tipo == undefined){
-      tipo = this.tipoProdutos[0].value
-    }
+    
 
     if(imagens.length < 1){
       this.setState({errorImagem: true})
@@ -164,7 +174,7 @@ class CadastrarProduto extends React.Component {
         "ingredientes": ingredientes,
         "imagens": imagens,
         "categoria": categoria,
-        "tipo": tipo,
+        "subcategorias": this.state.subcategoriaId,
         "ativo": this.state.isChecked
       }
       ServiceProdutos.saveProdutos(json).then(response => {
@@ -206,7 +216,15 @@ class CadastrarProduto extends React.Component {
     ServiceCategorias.getCategorias().then(response => {
         var categorias = response.data;
         this.setState({categorias})
+        ServiceSubCategorias.getSubCategorias().then(response => {
+          console.log(response.data)
+          var subcategorias = response.data;
+          this.setState({subcategorias, loading: false})
+          }).catch(error => {
       
+              alert('Falha ao carregar as subcategorias, tente novamente mais tarde.');
+              console.log(error);
+          });
     }).catch(error => {
 
         alert('Falha ao carregar as categorias, tente novamente mais tarde.');
@@ -223,7 +241,7 @@ class CadastrarProduto extends React.Component {
  
   render(){
 
-    const { values, categorias, isChecked, errorNome, errorPreco, errorQtd, errorText, modalVisible, modalSuccess} = this.state;
+    const { values, categorias, subcategorias, isChecked, errorNome, errorPreco, errorQtd, errorText, modalVisible, modalSuccess, subcategoriaId, loading} = this.state;
   return (
 
   <>
@@ -249,6 +267,7 @@ class CadastrarProduto extends React.Component {
           title="Cadastrar"
         />
         <Divider />
+        { loading ? <LinearProgress/> :
         <CardContent>
                             <TextField
                               fullWidth
@@ -310,28 +329,42 @@ class CadastrarProduto extends React.Component {
                           </TextField>
                           : <div></div>
                           }
-                          <TextField
+                          { subcategorias.length > 0 ?
+                            <TextField
                             fullWidth
-                            label="Tipo de Produto"
-                            name="tipo"
+                            label="Subcategoria"
+                            name="subcategorias"
                             margin="normal"
-                            onChange={this.handleChange}
-                            required
                             select
-                            SelectProps={{ native: true }}
-                            value={values.tipo}
+                            value={values.subcategorias}
                             variant="outlined"
-                          >
-                            {
-                            this.tipoProdutos.map((option) => (
-                              <option
-                                key={option.value}
-                                value={option.value}
-                              >
-                                {option.label}
-                              </option>
-                            ))}
-                          </TextField>
+                            SelectProps={{
+                               multiple: true,
+                               value: subcategoriaId,
+                               onChange: (e) => this.handleChangeSubcategoria(e),
+                               renderValue: (selected) => {
+                                 var ids = selected;
+                                 var nomes = []
+                                 ids.map((id) => (
+                                    nomes.push(this.filterSubCategoriaFromId(id))
+                                 ))
+                                 return nomes.join(", ")
+                              
+                              },
+                               
+                             }}
+                           >
+                             {subcategorias.map((subcategoria) => (
+                               <MenuItem key={subcategoria._id} value={subcategoria._id}>
+                                 <FormControlLabel
+                                   control={<Checkbox checked={subcategoriaId.includes(subcategoria._id)} />}
+                                   label={subcategoria.name}
+                                 />
+                               </MenuItem>
+                             ))}
+                           </TextField>
+                          : <div></div>
+                          }
                           <TagsInput
                               selectedTags={this.handleSelecetedTamanhos}
                               fullWidth
@@ -404,6 +437,7 @@ class CadastrarProduto extends React.Component {
                             
                           
                           </CardContent>
+            }
         <Divider />
         <Box sx={{
             display: 'flex',
@@ -419,7 +453,7 @@ class CadastrarProduto extends React.Component {
                      </Box>
           </Box>
       </Container>
-      <ModalFeedback open={modalVisible} success={modalSuccess} redirect={modalSuccess ? '/app/products' : ''} title={ modalSuccess ? "Sucesso" : "Falhou"} subTitle={ modalSuccess ? "Cadastro realizado com sucesso." : "Não foi possível realizar o cadastro, tente novamente mais tarde."} />
+      <ModalFeedback open={modalVisible} success={modalSuccess} redirect={modalSuccess ? '/app/produtos' : ''} title={ modalSuccess ? "Sucesso" : "Falhou"} subTitle={ modalSuccess ? "Cadastro realizado com sucesso." : "Não foi possível realizar o cadastro, tente novamente mais tarde."} />
             
     </Box>
   </>

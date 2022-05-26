@@ -37,10 +37,9 @@ import ProductEdit from './ProductEdit';
 import ProductListToolbar from './ProductListToolbar';
 
 
-const ProductListResults = ({ onListType, customers, ...rest }) => {
+const ProductListResults = ({ onListType, customers, categorias, subcategorias, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-  const [categorias, setCategorias] = useState([])
   const [isEdit, setIsEdit] = useState(false);
 
   const [isList, setIsList] = useState(true);
@@ -63,17 +62,33 @@ const ProductListResults = ({ onListType, customers, ...rest }) => {
   };
 
   
-  const getCategorias = () => {
-    ServiceCategorias.getCategorias().then(response => {
-        var categorias = response.data;
-        setCategorias(categorias)
-      
-    }).catch(error => {
-        alert('Falha ao carregar as categorias, tente novamente mais tarde.');
-        console.log(error);
-    });
-  }
 
+  const filterCategoriaFromId = (id) => {
+    if(categorias.length == 0 || id == undefined){
+      return ''
+    }else{
+      let usuariosFilter = categorias.filter(function(item){
+        return item._id == id
+      })
+      if(usuariosFilter.length == 0){
+        return "Categoria não encontrada"
+      }
+      return usuariosFilter[0].name
+    }
+  }
+  const filterSubCategoriaFromId = (id) => {
+    if(subcategorias.length == 0 || id == undefined){
+      return ''
+    }else{
+      let usuariosFilter = subcategorias.filter(function(item){
+        return item._id == id
+      })
+      if(usuariosFilter.length == 0){
+        return "Subcategoria não encontrada"
+      }
+      return usuariosFilter[0].name
+    }
+  }
 
   const handleLimitChange = (event) => {
     setPage(0);
@@ -90,7 +105,6 @@ const ProductListResults = ({ onListType, customers, ...rest }) => {
   };
 
   const handleEdit = (customer) => {
-    getCategorias()
     setValues({nome: customer.name, ...customer})
     setIsEdit(true);
   };
@@ -101,7 +115,7 @@ const ProductListResults = ({ onListType, customers, ...rest }) => {
   return (
     <div>
        { isEdit ? <Card sx={{ backgroundColor: 'background.default'}}>
-                    <ProductEdit product={values} categorias={categorias} onBackEdit={handleBackEdit}/>
+                    <ProductEdit product={values} categorias={categorias} subcategorias={subcategorias} onBackEdit={handleBackEdit}/>
                   </Card>
                        :<div>
 
@@ -116,6 +130,12 @@ const ProductListResults = ({ onListType, customers, ...rest }) => {
               <TableRow>
                 <TableCell>
                   Nome
+                </TableCell>
+                <TableCell>
+                  Categoria
+                </TableCell>
+                <TableCell>
+                  Subcategorias
                 </TableCell>
                 <TableCell>
                   Ativo
@@ -191,6 +211,40 @@ const ProductListResults = ({ onListType, customers, ...rest }) => {
                       </Typography>
                     </Box>
                   </TableCell>
+                  <TableCell>
+                    <Box
+                      sx={{
+                        alignItems: 'center',
+                        display: 'flex'
+                      }}
+                    >
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {filterCategoriaFromId(customer.categoria)}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    
+                      { customer.subcategorias.map((subcategoria) => (
+                        <Box
+                        sx={{
+                          alignItems: 'center',
+                          display: 'flex'
+                        }}
+                      >
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {filterSubCategoriaFromId(subcategoria)}
+                      </Typography>
+
+                    </Box>
+                      ))}
+                  </TableCell>
                     <TableCell >
                     {customer.ativo ? <Chip
                     color="success"
@@ -239,7 +293,9 @@ const ProductListResults = ({ onListType, customers, ...rest }) => {
 
 ProductListResults.propTypes = {
   onListType: PropTypes.func,
-  customers: PropTypes.array.isRequired
+  customers: PropTypes.array.isRequired,
+  categorias: PropTypes.array.isRequired,
+  subcategorias: PropTypes.array.isRequired
 };
 
 export default ProductListResults;
