@@ -132,10 +132,28 @@ const ProductListResults = ({ onListType, customers, categorias, subcategorias, 
                   Nome
                 </TableCell>
                 <TableCell>
+                  Preço
+                </TableCell>
+                <TableCell>
+                  Quantidade
+                </TableCell>
+                <TableCell>
+                  Tamanhos
+                </TableCell>
+                <TableCell>
+                  Cores
+                </TableCell>
+                <TableCell>
+                  Ingredientes
+                </TableCell>
+                <TableCell>
                   Categoria
                 </TableCell>
                 <TableCell>
                   Subcategorias
+                </TableCell>
+                <TableCell>
+                  Data
                 </TableCell>
                 <TableCell>
                   Ativo
@@ -164,6 +182,142 @@ const ProductListResults = ({ onListType, customers, categorias, subcategorias, 
                         variant="body1"
                       >
                         {customer.name}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box
+                      sx={{
+                        alignItems: 'center',
+                        display: 'flex'
+                      }}
+                    >
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {customer.preco}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box
+                      sx={{
+                        alignItems: 'center',
+                        display: 'flex'
+                      }}
+                    >
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {customer.quantidade}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    
+                      { customer.tamanhos.map((subcategoria) => (
+                        <Box
+                        sx={{
+                          alignItems: 'center',
+                          display: 'flex'
+                        }}
+                      >
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {subcategoria}
+                      </Typography>
+
+                    </Box>
+                      ))}
+                  </TableCell>
+                  <TableCell>
+                    
+                      { customer.cores.map((subcategoria) => (
+                        <Box
+                        sx={{
+                          alignItems: 'center',
+                          display: 'flex'
+                        }}
+                      >
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {subcategoria}
+                      </Typography>
+
+                    </Box>
+                      ))}
+                  </TableCell>
+                  <TableCell>
+                    
+                      { customer.ingredientes.map((subcategoria) => (
+                        <Box
+                        sx={{
+                          alignItems: 'center',
+                          display: 'flex'
+                        }}
+                      >
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {subcategoria}
+                      </Typography>
+
+                    </Box>
+                      ))}
+                  </TableCell>
+                  <TableCell>
+                    <Box
+                      sx={{
+                        alignItems: 'center',
+                        display: 'flex'
+                      }}
+                    >
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {filterCategoriaFromId(customer.categoria)}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    
+                      { customer.subcategorias.map((subcategoria) => (
+                        <Box
+                        sx={{
+                          alignItems: 'center',
+                          display: 'flex'
+                        }}
+                      >
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {filterSubCategoriaFromId(subcategoria)}
+                      </Typography>
+
+                    </Box>
+                      ))}
+                  </TableCell>
+                  <TableCell>
+                    <Box
+                      sx={{
+                        alignItems: 'center',
+                        display: 'flex'
+                      }}
+                    >
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {customer.data}
                       </Typography>
                     </Box>
                   </TableCell>
@@ -222,6 +376,93 @@ const ProductListResults = ({ onListType, customers, categorias, subcategorias, 
                         color="textPrimary"
                         variant="body1"
                       >
+                        {customer.preco}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box
+                      sx={{
+                        alignItems: 'center',
+                        display: 'flex'
+                      }}
+                    >
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {customer.quantidade}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    
+                      { customer.tamanhos.map((subcategoria) => (
+                        <Box
+                        sx={{
+                          alignItems: 'center',
+                          display: 'flex'
+                        }}
+                      >
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {subcategoria}
+                      </Typography>
+
+                    </Box>
+                      ))}
+                  </TableCell>
+                  <TableCell>
+                    
+                      { customer.cores.map((subcategoria) => (
+                        <Box
+                        sx={{
+                          alignItems: 'center',
+                          display: 'flex'
+                        }}
+                      >
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {subcategoria}
+                      </Typography>
+
+                    </Box>
+                      ))}
+                  </TableCell>
+                  <TableCell>
+                    
+                      { customer.ingredientes.map((subcategoria) => (
+                        <Box
+                        sx={{
+                          alignItems: 'center',
+                          display: 'flex'
+                        }}
+                      >
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {subcategoria}
+                      </Typography>
+
+                    </Box>
+                      ))}
+                  </TableCell>
+                  <TableCell>
+                    <Box
+                      sx={{
+                        alignItems: 'center',
+                        display: 'flex'
+                      }}
+                    >
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
                         {filterCategoriaFromId(customer.categoria)}
                       </Typography>
                     </Box>
@@ -244,6 +485,21 @@ const ProductListResults = ({ onListType, customers, categorias, subcategorias, 
 
                     </Box>
                       ))}
+                  </TableCell>
+                  <TableCell>
+                    <Box
+                      sx={{
+                        alignItems: 'center',
+                        display: 'flex'
+                      }}
+                    >
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {customer.data}
+                      </Typography>
+                    </Box>
                   </TableCell>
                     <TableCell >
                     {customer.ativo ? <Chip
