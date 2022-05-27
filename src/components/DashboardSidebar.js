@@ -24,7 +24,8 @@ import {
   Archive,
   CreditCard,
   Folder,
-  FolderMinus
+  FolderMinus,
+  Clipboard
 } from 'react-feather';
 import NavItem from './NavItem';
 import { getNome, getProfile, isAdmin } from 'src/daos/auth';
@@ -38,6 +39,16 @@ const items = [
     title: 'Painel'
   },
   {
+    href: '/app/pedidos',
+    icon: Clipboard,
+    title: 'Pedidos'
+  },
+  {
+    href: '/app/produtos',
+    icon: ShoppingBagIcon,
+    title: 'Produtos'
+  },
+  {
     href: '/app/categorias',
     icon: Folder,
     title: 'Categorias'
@@ -46,11 +57,6 @@ const items = [
     href: '/app/subcategorias',
     icon: FolderMinus,
     title: 'Subcategorias'
-  },
-  {
-    href: '/app/produtos',
-    icon: ShoppingBagIcon,
-    title: 'Produtos'
   },
   {
     href: '/app/perfil',
