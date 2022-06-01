@@ -1,6 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { Box, Container, CircularProgress, LinearProgress } from '@material-ui/core';
+import { Box, Container, CircularProgress, LinearProgress, Alert } from '@material-ui/core';
 import ServicePedidos from '../services/Pedidos'
 
 import ServiceCategorias from '../services/Categorias'
@@ -15,7 +15,7 @@ import {
   Typography, Grid, MenuItem, Checkbox, FormControlLabel
 } from '@material-ui/core';
 import IconButton from "@material-ui/core/IconButton";
-import { ArrowBack, ArrowDropDown } from '@material-ui/icons';
+import { ArrowBack, ArrowDropDown, ArrowDropUp } from '@material-ui/icons';
 import TagsInput from '../components/Other/TagsInput';
 
 import ModalFeedback from 'src/components/Other/ModalFeedback';
@@ -25,6 +25,7 @@ import { getLoja } from 'src/daos/auth';
 import ServiceSubCategorias from 'src/services/SubCategorias';
 import ServiceTipoPagamentos from 'src/services/TipoPagamentos';
 import ServiceProdutos from 'src/services/Produtos';
+import ProducsPedidotListResults from 'src/components/pedidos/ProductsPedidoListResults';
 
 var tamanhos = []
 
@@ -47,6 +48,7 @@ class CadastrarPedido extends React.Component {
     loading: true,
     errorText: 'Campo obrigatório',
     nome: '',
+    isCheckedEntregarLoja: false,
     tipopagamentos: [], 
     subcategoriaId: [],
     subcategorias: [], 
@@ -54,11 +56,14 @@ class CadastrarPedido extends React.Component {
     produtosPedido: [], 
     ingredientesSelected: [],
     values: {},
+    frete: 5.99,
     selectedProduto: {},
+    quantidadeProduto: 1,
     modalVisible: false,
     modalSuccess: true,
     selectedFile: '',
-    errorImagem: false
+    errorImagem: false,
+    detalhesProduto: false
   };
   
 
@@ -124,6 +129,12 @@ class CadastrarPedido extends React.Component {
     this.setState({images: [...this.state.images, image]})
   }
 
+  handleCheckedEntregarLoja = () => {
+    this.setState({
+      isCheckedEntregarLoja: !this.state.isCheckedEntregarLoja
+    });
+  };
+
   
    handleSelecetedTamanhos =(items) =>{
     tamanhos = items
@@ -141,64 +152,189 @@ class CadastrarPedido extends React.Component {
     imagens = items
     console.log("imagens "+imagens);
   }
+
+  adicionarProduto = (product) => {
+
+   
+
+    
+    var tamanho = this.state.values.tamanho
+
+    if(tamanho == undefined){
+      tamanho = product.tamanhos[0]
+    }
+    var cor = this.state.values.cor
+
+    if(cor == undefined){
+      cor = product.cores[0]
+    }
+
+    var produto = {
+      "tamanho": tamanho,
+      "cor": cor,
+      "name": product.name,
+      "preco": product.preco,
+      "quantidade": this.state.quantidadeProduto,
+      "ingredientes": this.state.ingredientesSelected,
+      "produto": product._id
+    }
+    console.log(produto)
+
+    this.setState({
+      values:
+      {...this.state.values,
+        "cor": undefined,
+        "tamanho": undefined
+        }
+      });
+    this.setState({quantidadeProduto: 1});
+    
+    var produtosPedidos = this.state.produtosPedido
+    produtosPedidos.push(produto)
+    
+    this.setState({ "detalhesProduto": false})
+    this.setState({ "produtosPedido": produtosPedidos})
+      
+  }
   savePedidos = () => {
 
     var possuiError = false
-    this.setState({errorQtd: true, errorNome: false, errorPreco: false})
-      
-    if(this.state.values.name != undefined){
-      if(this.state.values.name.length == 0){
-        this.setState({errorNome: true})
+
+    var referencia = " "
+
+    this.setState({errorCep: false, errorLogradouro: false, errorNumero: false, errorComplemento: false, errorBairro: false, errorCidade: false, errorEstado: false})
+    if(!this.state.isCheckedEntregarLoja){
+        
+      if(this.state.values.cep != undefined){
+        if(this.state.values.cep.length == 0){
+          this.setState({errorCep: true})
+          possuiError = true
+        }
+      }else{
+        this.setState({errorCep: true})
         possuiError = true
       }
-    }else{
-      this.setState({errorNome: true})
-      possuiError = true
-    }
-
-    if(this.state.values.preco != undefined){
-      if(this.state.values.preco.length == 0){
-        this.setState({errorPreco: true})
+      if(this.state.values.logradouro != undefined){
+        if(this.state.values.logradouro.length == 0){
+          this.setState({errorLogradouro: true})
+          possuiError = true
+        }
+      }else{
+        this.setState({errorLogradouro: true})
         possuiError = true
       }
-    }else{
-      this.setState({errorPreco: true})
-      possuiError = true
-    }
-    if(this.state.values.quantidade != undefined){
-      if(this.state.values.quantidade.length == 0){
-        this.setState({errorQtd: true})
+
+      if(this.state.values.numero != undefined){
+        if(this.state.values.numero.length == 0){
+          this.setState({errorNumero: true})
+          possuiError = true
+        }
+      }else{
+        this.setState({errorNumero: true})
         possuiError = true
       }
-    }else{
-      this.setState({errorQtd: true})
-      possuiError = true
-    }
-    var categoria = this.state.values.categoria
+      if(this.state.values.complemento != undefined){
+        if(this.state.values.complemento.length == 0){
+          this.setState({errorComplemento: true})
+          possuiError = true
+        }
+      }else{
+        this.setState({errorComplemento: true})
+        possuiError = true
+      }
+      if(this.state.values.bairro != undefined){
+        if(this.state.values.bairro.length == 0){
+          this.setState({errorBairro: true})
+          possuiError = true
+        }
+      }else{
+        this.setState({errorBairro: true})
+        possuiError = true
+      }
+      if(this.state.values.cidade != undefined){
+        if(this.state.values.cidade.length == 0){
+          this.setState({errorCidade: true})
+          possuiError = true
+        }
+      }else{
+        this.setState({errorCidade: true})
+        possuiError = true
+      }
 
-    if(categoria == undefined){
-      categoria = this.state.categorias[0]._id
-    }
-    
+      if(this.state.values.estado != undefined){
+        if(this.state.values.estado.length == 0){
+          this.setState({errorEstado: true})
+          possuiError = true
+        }
+      }else{
+        this.setState({errorEstado: true})
+        possuiError = true
+      }
 
-    if(imagens.length < 1){
-      this.setState({errorImagem: true})
-      possuiError = true
+      if(this.state.values.referencia != undefined){
+        referencia = this.state.values.referencia
+      }else{
+        referencia = " "
+      }
+     
     }
+
+    var tipoPagamento = this.state.values.tipopagamentos
+
+    if(tipoPagamento == undefined){
+      tipoPagamento = this.state.tipopagamentos[0]._id
+    }
+
+
+  
 
     if(possuiError == false){
-      this.setState({errorQtd: true, errorNome: false, errorPreco: false})
+
+      this.setState({errorCep: false, errorLogradouro: false, errorNumero: false, errorComplemento: false, errorBairro: false, errorCidade: false, errorEstado: false})
+      var pontos = (this.getValorTotal()/2).toFixed(0)
       var json = {
-        ...this.state.values,
+        "user": getLoja(),
         "loja": getLoja(),
-        "tamanhos": tamanhos,
-        "cores": cores,
-        "ingredientes": ingredientes,
-        "imagens": imagens,
-        "categoria": categoria,
-        "subcategorias": this.state.subcategoriaId,
-        "ativo": this.state.isChecked
+        "valor": this.getValorTotal(),
+        "status": '01',
+        "tipoPagamento": tipoPagamento,
+        "produtos": this.state.produtosPedido,
+        "endereco": {
+          "cep": this.state.values.cep,
+          "numero": this.state.values.numero,
+          "complemento": this.state.values.complemento,
+          "bairro": this.state.values.bairro,
+          "cidade": this.state.values.cidade,
+          "estado": this.state.values.estado,
+          "logradouro": this.state.values.logradouro,
+          "referencia": referencia
+        },
+        "pontos": pontos
       }
+
+      if(this.state.isCheckedEntregarLoja){
+        json = {
+          "user": getLoja(),
+          "loja": getLoja(),
+          "valor": this.getValorTotal(),
+          "status": '01',
+          "tipoPagamento": tipoPagamento,
+          "produtos": this.state.produtosPedido,
+          "pontos": pontos,
+          "endereco": {
+            "cep": "Loja Física",
+            "numero": 0,
+            "complemento": " ",
+            "bairro": " ",
+            "cidade": " ",
+            "estado": " ",
+            "logradouro": " ",
+            "referencia": "Loja Física"
+          },
+        }
+      }
+
+      console.log(json)
       ServicePedidos.savePedidos(json).then(response => {
           var categorias = response.data;
 
@@ -214,9 +350,19 @@ class CadastrarPedido extends React.Component {
   }
 
   detalheProduto = (produto) => {
-    console.log(produto)
+    const {produtos} = this.state
+    if(produto == undefined){
+      if(produtos.length == 0){
+        return alert("Não possui nenhum pedido cadastrado nesta loja.")
+      }else{
+        produto = produtos[0]._id
+        var ingredientesSelected = this.filterProductFromId(produto).ingredientes
+      
+        this.setState({ ingredientesSelected});
+      }
+    }
     var selectedProduto = produto
-    this.setState({selectedProduto});
+    this.setState({selectedProduto, detalhesProduto: true});
 
   };
 
@@ -241,6 +387,10 @@ class CadastrarPedido extends React.Component {
         [event.target.name]: event.target.value
         }
       });
+    
+  };
+  handleChangeQuantidade = (event) => {
+    this.setState({ quantidadeProduto: Number(event.target.value)});
     
   };
    handleChange = (event) => {
@@ -290,10 +440,29 @@ class CadastrarPedido extends React.Component {
       isChecked: !this.state.isChecked
     });
   };
+  getValorTotal = () => {
+    var valorTotal = 0
+    this.state.produtosPedido.map((produto) => {
+      var precoProduto = Number(produto.preco)*produto.quantidade
+      valorTotal = valorTotal+precoProduto
+    })
+    if(!this.state.isCheckedEntregarLoja){
+      valorTotal = valorTotal+this.state.frete
+    }
+    return valorTotal.toFixed(2)
+  };
+  getSubTotal = () => {
+    var valorTotal = 0
+    this.state.produtosPedido.map((produto) => {
+      var precoProduto = Number(produto.preco)*produto.quantidade
+      valorTotal = valorTotal+precoProduto
+    })
+    return valorTotal.toFixed(2)
+  };
  
   render(){
 
-    const { values, tipopagamentos, produtos, produtosPedido, isChecked, errorText, modalVisible, modalSuccess, subcategoriaId, loading, selectedProduto, ingredientesSelected} = this.state;
+    const { isCheckedEntregarLoja, values, tipopagamentos, produtos, produtosPedido, isChecked, errorText, modalVisible, modalSuccess, detalhesProduto, subcategoriaId, loading, selectedProduto, ingredientesSelected, quantidadeProduto} = this.state;
   return (
 
   <>
@@ -321,41 +490,47 @@ class CadastrarPedido extends React.Component {
         <Divider />
         { loading ? <LinearProgress/> :
           <CardContent>   
-               { produtos.length > 0 ?
+            {produtosPedido.length > 0 &&
+              <ProducsPedidotListResults customers={produtosPedido}/>
+            
+            }
+               { produtos.length > 0 && 
            <div>
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <TextField
-              fullWidth
-              label="Produto"
-              name="produtoItem"
-              margin="normal"
-              onChange={this.handleChangeProductSelect}
-              required
-              select
-              SelectProps={{ native: true }}
-              value={values.produtoItem}
-              variant="outlined"
-            >
-              {produtos.map((option) => (
-                <option
-                  key={option._id}
-                  value={option._id}
-                >
-                  {option.name}
-                </option>
-              ))}
-            </TextField>
-            <Button
-            color="primary"
-            style={{margin: 15, marginBottom: 8}}
-            variant="outlined"
-            onClick={() => { this.detalheProduto(values.produtoItem)}}>
-              <ArrowDropDown/>
-            </Button>
-            </div>
+             {!detalhesProduto &&
+             <Button
+                  fullWidth
+                  color="warning"
+                  variant="outlined"
+                  onClick={() => { detalhesProduto ? this.setState({detalhesProduto: false}) : this.detalheProduto(values.produtoItem)}}>
+                  {detalhesProduto ? "Cancelar Produto" : "Adicionar Produto"}
+                </Button>
+            }
+            { detalhesProduto && 
             <Card>
               <CardContent>
                 
+                  
+                  <TextField
+                  fullWidth
+                  label="Produto"
+                  name="produtoItem"
+                  margin="normal"
+                  onChange={this.handleChangeProductSelect}
+                  required
+                  select
+                  SelectProps={{ native: true }}
+                  value={values.produtoItem}
+                  variant="outlined"
+                >
+                  {produtos.map((option) => (
+                    <option
+                      key={option._id}
+                      value={option._id}
+                    >
+                      {option.name}
+                    </option>
+                  ))}
+                </TextField>
                 {this.filterProductFromId(selectedProduto).tamanhos != undefined && this.filterProductFromId(selectedProduto).tamanhos.length > 0 &&
                 <TextField
                 fullWidth
@@ -426,6 +601,27 @@ class CadastrarPedido extends React.Component {
                              ))}
                            </TextField>
                           }
+             { this.filterProductFromId(selectedProduto).quantidade != undefined && this.filterProductFromId(selectedProduto).quantidade > 0 ?
+              <TextField
+                              fullWidth
+                              label="Quantidade"
+                              margin="normal"
+                              required
+                              type="number"
+                              name="quantidade"
+                              onChange={this.handleChangeQuantidade}
+                              value={quantidadeProduto}
+                              variant="outlined"
+                            />
+
+                            :
+                            <Typography
+                        color="error"
+                        variant="h6"
+                      >
+                        {"PRODUTO SEM ESTOQUE"}
+                  </Typography>
+              }
               </CardContent>
               <Divider />
               <Box
@@ -436,16 +632,25 @@ class CadastrarPedido extends React.Component {
                 }}
               >
                 <Button
-                  color="primary"
-                  variant="contained"
-                >
-                  Adicionar
+                  color="error"
+                  variant="outlined"
+                  style={{marginRight: 10}}
+                  onClick={() => { this.setState({detalhesProduto: false}) }}>
+                  {"Cancelar"}
                 </Button>
+                { this.filterProductFromId(selectedProduto).quantidade != undefined && this.filterProductFromId(selectedProduto).quantidade > 0 &&
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={ () => this.adicionarProduto(this.filterProductFromId(selectedProduto))}
+                  >
+                    Adicionar
+                  </Button>
+                }
               </Box>
             </Card>
+             }
             </div>
-            : 
-            <div></div>
             }
               { tipopagamentos.length > 0 ?
               <TextField
@@ -471,13 +676,196 @@ class CadastrarPedido extends React.Component {
             </TextField>
             : <div></div>
             }
+            
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+
+            <Typography
+                color="textPrimary"
+                variant="h6"
+                style={{marginTop: 8, marginLeft: 2}}>
+                Entregar na Loja:
+              </Typography>
+
+              <Switch
+                checked={isCheckedEntregarLoja}
+                onChange={this.handleCheckedEntregarLoja}
+                inputProps={{ 'aria-label': 'controlled' }}
+              />
+            
+            </div>
+            {!isCheckedEntregarLoja &&
+              <div>
+                <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  label="CEP"
+                  name="cep"
+                  margin="normal"
+                  error={this.state.errorCep}
+                  helperText={this.state.errorCep ? this.state.errorText : ''}
+                  onChange={this.handleChangeTipoPagamento}
+                  required
+                  value={values.cep}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  label="Logradouro"
+                  name="logradouro"
+                  margin="normal"
+                  error={this.state.errorLogradouro}
+                  helperText={this.state.errorLogradouro ? this.state.errorText : ''}
+                  onChange={this.handleChangeTipoPagamento}
+                  required
+                  value={values.logradouro}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  label="Bairro"
+                  name="bairro"
+                  margin="normal"
+                  error={this.state.errorBairro}
+                  helperText={this.state.errorBairro? this.state.errorText : ''}
+                  onChange={this.handleChangeTipoPagamento}
+                  required
+                  value={values.bairro}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  label="Cidade"
+                  name="cidade"
+                  margin="normal"
+                  error={this.state.errorCidade}
+                  helperText={this.state.errorCidade ? this.state.errorText : ''}
+                  onChange={this.handleChangeTipoPagamento}
+                  required
+                  value={values.cidade}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  label="Número"
+                  name="numero"
+                  required
+                  margin="normal"
+                  error={this.state.errorNumero}
+                  helperText={this.state.errorNumero ? this.state.errorText : ''}
+                  onChange={this.handleChangeTipoPagamento}
+                  type="number"
+                  value={values.numero}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  label="Complemento"
+                  name="complemento"
+                  margin="normal"
+                  error={this.state.errorComplemento}
+                  helperText={this.state.errorComplemento ? this.state.errorText : ''}
+                  onChange={this.handleChangeTipoPagamento}
+                  required
+                  value={values.complemento}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  label="Estado"
+                  name="estado"
+                  margin="normal"
+                  error={this.state.errorEstado}
+                  helperText={this.state.errorEstado ? this.state.errorText : ''}
+                  onChange={this.handleChangeTipoPagamento}
+                  required
+                  value={values.estado}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  label="Referência"
+                  name="referencia"
+                  margin="normal"
+                  onChange={this.handleChangeTipoPagamento}
+                  value={values.referencia}
+                  variant="outlined"
+                />
+              </Grid>
+             
+            </div>
+            }
           </CardContent>
             }
         <Divider />
         <Box sx={{
             display: 'flex',
-            justifyContent: 'flex-end',
+            justifyContent: 'space-between',
             p: 2 }}>
+              
+              <Typography
+                color="textPrimary"
+                variant="h6"
+                style={{marginTop: 8, marginRight: 10}}>
+                {"Subtotal: R$:"+this.getSubTotal()}
+              </Typography>
+              <Typography
+                color="textPrimary"
+                variant="h6"
+                style={{marginTop: 8, marginRight: 10}}>
+                {isCheckedEntregarLoja ? "" : "Frete: R$:"+this.state.frete}
+              </Typography>
+              <Typography
+                color="textPrimary"
+                variant="h6"
+                style={{marginTop: 8, marginRight: 30}}>
+                {isCheckedEntregarLoja ? "Total: R$:"+this.getValorTotal() : "Total: R$:"+this.getValorTotal()}
+              </Typography>
           <Button
             color="primary"
             variant="contained"

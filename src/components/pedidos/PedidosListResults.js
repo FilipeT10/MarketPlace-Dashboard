@@ -61,6 +61,12 @@ const PedidoListResults = ({ onListType, customers, usuarios, tipopagamentos, ..
     setPedidos(pedidosFilter)*/
   };
 
+  const formataData = (data) => {
+    
+    var dat = moment(data).format('DD/MM/YYYY  HH:mm:ss')
+    return dat
+  }
+
   
 
   const filterUsuarioFromId = (id) => {
@@ -227,19 +233,55 @@ const PedidoListResults = ({ onListType, customers, usuarios, tipopagamentos, ..
                     </Box>
                   </TableCell>
                   <TableCell>
-                    <Box
+                    
+                      {customer.endereco.referencia == "Loja Física" && customer.endereco.cep == "Loja Física" && customer.endereco.numero == 0 ? 
+                      <Typography
+                      color="textPrimary"
+                      variant="body1"
+                    >
+                      {customer.endereco.referencia}
+                    </Typography>
+                      
+                      :
+                      <Box
                       sx={{
-                        alignItems: 'center',
-                        display: 'flex'
+                        alignItems: 'center'
                       }}
                     >
                       <Typography
                         color="textPrimary"
                         variant="body1"
                       >
-                        {customer.endereco.bairro}
+                        {customer.endereco.logradouro+", "+customer.endereco.complemento}
                       </Typography>
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {customer.endereco.numero+" "+customer.endereco.bairro}
+                      </Typography>
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {customer.endereco.cidade+" - "+customer.endereco.estado}
+                      </Typography>
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {customer.endereco.cep}
+                      </Typography>
+                      
+                      <Typography
+                        color="textPrimary"
+                        variant="body1"
+                      >
+                        {customer.endereco.referencia}
+                      </Typography>
+
                     </Box>
+                      }
                   </TableCell>
                   
                   <TableCell >
@@ -264,7 +306,7 @@ const PedidoListResults = ({ onListType, customers, usuarios, tipopagamentos, ..
                         color="textPrimary"
                         variant="body1"
                       >
-                        {customer.data}
+                        {formataData(customer.data)}
                       </Typography>
                     </Box>
                   </TableCell>
