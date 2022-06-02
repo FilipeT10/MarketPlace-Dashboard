@@ -30,10 +30,11 @@ import getInitials from '../../utils/getInitials';
 import Edit from "@material-ui/icons/Edit";
 
 import IconButton from "@material-ui/core/IconButton";
+import { Close } from '@material-ui/icons';
 
 
 
-const ProducsPedidotListResults = ({ onListType, customers, ...rest }) => {
+const ProducsPedidotListResults = ({ onListType, customers, removeProduct, editProduct, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [isEdit, setIsEdit] = useState(false);
@@ -105,7 +106,7 @@ const ProducsPedidotListResults = ({ onListType, customers, ...rest }) => {
             </TableHead>
             <TableBody>
               {
-              produtos.slice(page*limit, (page*limit)+limit).map((customer) => (
+              produtos.slice(page*limit, (page*limit)+limit).map((customer, index) => (
                 <TableRow
                   hover
                   key={customer.produto}
@@ -213,12 +214,19 @@ const ProducsPedidotListResults = ({ onListType, customers, ...rest }) => {
                        <IconButton
                        color="inherit"
                        aria-label="open drawer"
-                       onClick={()=>{ //handleEdit(customer)
-                      }}
+                       onClick={ () => editProduct(index)}
                      >
                        <Edit/>
                      </IconButton>
+                     <IconButton
+                       color="error"
+                       aria-label="open drawer"
+                       onClick={() => removeProduct(index)}
+                     >
+                       <Close/>
+                     </IconButton>
                      </TableCell>
+                     
                 </TableRow>
               ))}
                <TableRow>
@@ -247,6 +255,8 @@ const ProducsPedidotListResults = ({ onListType, customers, ...rest }) => {
 
 ProducsPedidotListResults.propTypes = {
   onListType: PropTypes.func,
+  removeProduct: PropTypes.func,
+  editProduct: PropTypes.func,
   customers: PropTypes.array.isRequired
 };
 
