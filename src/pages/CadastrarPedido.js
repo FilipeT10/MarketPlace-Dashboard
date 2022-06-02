@@ -63,7 +63,8 @@ class CadastrarPedido extends React.Component {
     modalSuccess: true,
     selectedFile: '',
     errorImagem: false,
-    detalhesProduto: false
+    detalhesProduto: false,
+    editProduct: null
   };
   
 
@@ -362,7 +363,7 @@ class CadastrarPedido extends React.Component {
       }
     }
     var selectedProduto = produto
-    this.setState({selectedProduto, detalhesProduto: true});
+    this.setState({selectedProduto, detalhesProduto: true, editProduct: null});
 
   };
 
@@ -433,6 +434,77 @@ class CadastrarPedido extends React.Component {
     console.log(ingredientesSelected)
     // selected options
   };
+
+  editProduct = (produto) => {
+    
+      var ingredientesSelected = this.state.produtosPedido[produto].ingredientes
+    
+      this.setState({ ingredientesSelected});
+      
+      this.setState({
+        values:
+        {...this.state.values,
+          ...this.state.produtosPedido[produto]
+          }
+        });
+      this.setState({  "editProduct": produto, "detalhesProduto": false, "quantidadeProduto": this.state.produtosPedido[produto].quantidade})
+  
+    // selected options
+  };
+
+  editarProduto = (product) => {
+
+   
+    var produtosPedidos = this.state.produtosPedido
+    
+    var tamanho = this.state.values.tamanho
+
+    if(tamanho == undefined){
+      tamanho = produtosPedidos[product].tamanho
+    }
+    var cor = this.state.values.cor
+
+    if(cor == undefined){
+      cor = produtosPedidos[product].cor
+    }
+
+    var produto = {
+      "tamanho": tamanho,
+      "cor": cor,
+      "quantidade": this.state.quantidadeProduto,
+      "ingredientes": this.state.ingredientesSelected
+    }
+    console.log(produto)
+
+    this.setState({
+      values:
+      {...this.state.values,
+        "cor": undefined,
+        "tamanho": undefined
+        }
+      });
+    this.setState({quantidadeProduto: 1});
+    
+    produtosPedidos[product] = {...produtosPedidos[product], ...produto}
+
+    console.log("Produtos Pedidos", produtosPedidos)
+    
+    this.setState({ "detalhesProduto": false, "editProduct": null})
+    this.setState({ "produtosPedido": produtosPedidos})
+      
+  }
+
+  
+ 
+  removeProduct = (product) => {
+    
+    var produtosPedidos = this.state.produtosPedido
+    produtosPedidos.splice(product, 1);
+    
+    this.setState({ "produtosPedido": produtosPedidos})
+
+    // selected options
+  };
   
   
    handleAtivoChecked = () => {
@@ -491,11 +563,149 @@ class CadastrarPedido extends React.Component {
         { loading ? <LinearProgress/> :
           <CardContent>   
             {produtosPedido.length > 0 &&
-              <ProducsPedidotListResults customers={produtosPedido}/>
+              <ProducsPedidotListResults customers={produtosPedido} editProduct={(product) => this.editProduct(product)} removeProduct={(product) => this.removeProduct(product)}/>
             
             }
                { produtos.length > 0 && 
            <div>
+              { this.state.editProduct != null && 
+            <Card>
+              <CardContent>
+                
+                  
+                  <TextField
+                  fullWidth
+                  label="Produto"
+                  name="produtoItem"
+                  margin="normal"
+                  disabled
+                  required
+                  value={this.filterProductFromId(produtosPedido[this.state.editProduct].produto).name}
+                  variant="outlined"
+                >
+                  
+                </TextField>
+                {this.filterProductFromId(produtosPedido[this.state.editProduct].produto).tamanhos != undefined && this.filterProductFromId(produtosPedido[this.state.editProduct].produto).tamanhos.length > 0 &&
+                <TextField
+                fullWidth
+                label="Tamanho"
+                name="tamanho"
+                margin="normal"
+                onChange={this.handleChangeTipoPagamento}
+                required
+                select
+                value={values.tamanho}
+                SelectProps={{ native: true }}
+                variant="outlined"
+              >
+                {this.filterProductFromId(produtosPedido[this.state.editProduct].produto).tamanhos.map((option) => (
+                  <option
+                    key={option}
+                    value={option}
+                  >
+                    {option}
+                  </option>
+                ))}
+              </TextField>
+               }
+               {this.filterProductFromId(produtosPedido[this.state.editProduct].produto).cores != undefined && this.filterProductFromId(produtosPedido[this.state.editProduct].produto).cores.length > 0 &&
+                  <TextField
+                  fullWidth
+                  label="Cor"
+                  name="cor"
+                  margin="normal"
+                  onChange={this.handleChangeTipoPagamento}
+                  required
+                  select
+                  SelectProps={{ native: true }}
+                  value={values.cor}
+                  variant="outlined"
+                >
+                  {this.filterProductFromId(produtosPedido[this.state.editProduct].produto).cores.map((option) => (
+                    <option
+                      key={option}
+                      value={option}
+                    >
+                      {option}
+                    </option>
+                  ))}
+                </TextField>
+              }
+              {this.filterProductFromId(produtosPedido[this.state.editProduct].produto).ingredientes != undefined && this.filterProductFromId(produtosPedido[this.state.editProduct].produto).ingredientes.length > 0 &&
+                            <TextField
+                            fullWidth
+                            label="Ingredientes"
+                            name="ingredientes"
+                            margin="normal"
+                            select
+                            variant="outlined"
+                            SelectProps={{
+                               multiple: true,
+                               value: ingredientesSelected,
+                               onChange: (e) => this.handleChangeIngredientes(e),
+                               renderValue: (selected) => selected.join(", "),
+                               
+                             }}
+                           >
+                             {this.filterProductFromId(produtosPedido[this.state.editProduct].produto).ingredientes.map((ingrediente) => (
+                               <MenuItem key={ingrediente} value={ingrediente}>
+                                 <FormControlLabel
+                                   control={<Checkbox checked={ingredientesSelected.includes(ingrediente)} />}
+                                   label={ingrediente}
+                                 />
+                               </MenuItem>
+                             ))}
+                           </TextField>
+                          }
+             { this.filterProductFromId(produtosPedido[this.state.editProduct].produto).quantidade != undefined && this.filterProductFromId(produtosPedido[this.state.editProduct].produto).quantidade > 0 ?
+              <TextField
+                              fullWidth
+                              label="Quantidade"
+                              margin="normal"
+                              required
+                              type="number"
+                              name="quantidade"
+                              onChange={this.handleChangeQuantidade}
+                              value={quantidadeProduto}
+                              variant="outlined"
+                            />
+
+                            :
+                            <Typography
+                        color="error"
+                        variant="h6"
+                      >
+                        {"PRODUTO SEM ESTOQUE"}
+                  </Typography>
+              }
+              </CardContent>
+              <Divider />
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  p: 2
+                }}
+              >
+                <Button
+                  color="error"
+                  variant="outlined"
+                  style={{marginRight: 10}}
+                  onClick={() => { this.setState({detalhesProduto: false, editProduct: null}) }}>
+                  {"Cancelar"}
+                </Button>
+                { this.filterProductFromId(produtosPedido[this.state.editProduct].produto).quantidade != undefined && this.filterProductFromId(produtosPedido[this.state.editProduct].produto).quantidade > 0 &&
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={ () => this.editarProduto(this.state.editProduct)}
+                  >
+                    Salvar
+                  </Button>
+                }
+              </Box>
+            </Card>
+             }
              {!detalhesProduto &&
              <Button
                   fullWidth
@@ -650,6 +860,8 @@ class CadastrarPedido extends React.Component {
               </Box>
             </Card>
              }
+
+         
             </div>
             }
               { tipopagamentos.length > 0 ?
