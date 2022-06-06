@@ -99,9 +99,11 @@ const ProducsPedidotListResults = ({ onListType, customers, removeProduct, editP
                 <TableCell>
                   Ingredientes
                 </TableCell>
+                {editProduct && removeProduct &&
                 <TableCell>
                   Ações
                 </TableCell>
+                }
               </TableRow>
             </TableHead>
             <TableBody>
@@ -209,6 +211,8 @@ const ProducsPedidotListResults = ({ onListType, customers, removeProduct, editP
                     </Box>
                       ))}
                   </TableCell>
+
+                  {editProduct && removeProduct &&
                  
                     <TableCell >
                        <IconButton
@@ -226,7 +230,7 @@ const ProducsPedidotListResults = ({ onListType, customers, removeProduct, editP
                        <Close/>
                      </IconButton>
                      </TableCell>
-                     
+                  }
                 </TableRow>
               ))}
                <TableRow>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -23,18 +23,19 @@ import {
   TextField,
   Typography,
   Grid,
-  Switch
+  Switch,
+  Collapse
 } from '@material-ui/core';
 import getInitials from '../../utils/getInitials';
 
 import Edit from "@material-ui/icons/Edit";
 
 import IconButton from "@material-ui/core/IconButton";
-
-import { ArrowBack } from '@material-ui/icons';
+import { ArrowBack, KeyboardArrowDown, KeyboardArrowUp, RemoveRedEye } from '@material-ui/icons';
 import TagsInput from '../Other/TagsInput';
 import PedidosEdit from './PedidosEdit';
 import PedidosListToolbar from './PedidosListToolbar';
+import ProducsPedidotListResults from './ProductsPedidoListResults';
 
 
 const PedidoListResults = ({ onListType, customers, usuarios, tipopagamentos, ...rest }) => {
@@ -118,52 +119,14 @@ const PedidoListResults = ({ onListType, customers, usuarios, tipopagamentos, ..
     setIsEdit(false);
   };
 
-  return (
-    <div>
-       { isEdit ? <Card sx={{ backgroundColor: 'background.default'}}>
-                    <PedidosEdit pedido={values} categorias={usuarios} subcategorias={tipopagamentos} onBackEdit={handleBackEdit}/>
-                  </Card>
-                       :<div>
+  function Row(props) {
+    const { customer } = props;
 
-      <PedidosListToolbar onTextHandle={handleChangeSearch}  onListType={() => onListType()} list />
-
-      <Card style={{marginTop: 20}}>
-      <PerfectScrollbar>
-        
-        <Box sx={{  }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  Produtos
-                </TableCell>
-                <TableCell>
-                  Valor
-                </TableCell>
-                <TableCell>
-                  Tipo de Pagamento
-                </TableCell>
-                <TableCell>
-                  Cliente
-                </TableCell>
-                <TableCell>
-                  Endereço
-                </TableCell>
-                <TableCell>
-                  Status
-                </TableCell>
-                <TableCell>
-                  Data
-                </TableCell>
-                <TableCell>
-                  Ações
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {
-              pedidos.slice(page*limit, (page*limit)+limit).map((customer) => (
-                <TableRow
+    const [open, setOpen] = useState(false);
+  
+    return (
+      <Fragment>
+        <TableRow
                   hover
                   key={customer._id}
                 >
@@ -319,9 +282,78 @@ const PedidoListResults = ({ onListType, customers, usuarios, tipopagamentos, ..
                      >
                        <Edit/>
                      </IconButton>
+                     <IconButton
+                      aria-label="expand row"
+                      size="small"
+                      onClick={() => setOpen(!open)}
+                    >
+                      {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                    </IconButton>
                      </TableCell>
                 </TableRow>
-              ))}
+
+                 <TableRow>
+                  <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+                    <Collapse in={open} timeout="auto" unmountOnExit>
+                      <Box sx={{ margin: 1 }}>
+                      <ProducsPedidotListResults customers={customer.produtos}/>
+            
+                      </Box>
+                    </Collapse>
+                  </TableCell>
+                </TableRow>
+              
+      </Fragment>
+    );
+  }
+
+  return (
+    <div>
+       { isEdit ? <Card sx={{ backgroundColor: 'background.default'}}>
+                    <PedidosEdit pedido={values} categorias={usuarios} subcategorias={tipopagamentos} onBackEdit={handleBackEdit}/>
+                  </Card>
+                       :<div>
+
+      <PedidosListToolbar onTextHandle={handleChangeSearch}  onListType={() => onListType()} list />
+
+      <Card style={{marginTop: 20}}>
+      <PerfectScrollbar>
+        
+        <Box sx={{  }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>
+                  Produtos
+                </TableCell>
+                <TableCell>
+                  Valor
+                </TableCell>
+                <TableCell>
+                  Tipo de Pagamento
+                </TableCell>
+                <TableCell>
+                  Cliente
+                </TableCell>
+                <TableCell>
+                  Endereço
+                </TableCell>
+                <TableCell>
+                  Status
+                </TableCell>
+                <TableCell>
+                  Data
+                </TableCell>
+                <TableCell>
+                  Ações
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {pedidos.slice(page*limit, (page*limit)+limit).map((customer) => (
+              <Row key={customer._id} customer={customer} />
+            ))}
+              
             </TableBody>
           </Table>
         </Box>

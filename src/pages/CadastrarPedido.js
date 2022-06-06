@@ -15,7 +15,7 @@ import {
   Typography, Grid, MenuItem, Checkbox, FormControlLabel
 } from '@material-ui/core';
 import IconButton from "@material-ui/core/IconButton";
-import { ArrowBack, ArrowDropDown, ArrowDropUp } from '@material-ui/icons';
+import { Add, ArrowBack, ArrowDropDown, ArrowDropUp, HorizontalRule } from '@material-ui/icons';
 import TagsInput from '../components/Other/TagsInput';
 
 import ModalFeedback from 'src/components/Other/ModalFeedback';
@@ -378,7 +378,7 @@ class CadastrarPedido extends React.Component {
       var selectedProduto = event.target.value
       var ingredientesSelected = this.filterProductFromId(selectedProduto).ingredientes
       
-      this.setState({selectedProduto, ingredientesSelected});
+      this.setState({selectedProduto, ingredientesSelected, quantidadeProduto: 1});
   };
 
   handleChangeTipoPagamento = (event) => {
@@ -531,6 +531,25 @@ class CadastrarPedido extends React.Component {
     })
     return valorTotal.toFixed(2)
   };
+
+  
+
+  getDisponibilidade = (selectedProduto, editProduct ) => {
+    var quantidade = 0
+    if(this.state.produtosPedido.length > 0){
+      this.state.produtosPedido.map((product, index) => {
+        if(product.produto != undefined && product.produto == selectedProduto){
+          if(editProduct != null && index == editProduct){
+            quantidade = quantidade
+          }else{
+            quantidade = quantidade+product.quantidade
+          }
+        }
+      })
+    }
+    return this.filterProductFromId(selectedProduto).quantidade - quantidade
+    
+  }
  
   render(){
 
@@ -658,25 +677,52 @@ class CadastrarPedido extends React.Component {
                            </TextField>
                           }
              { this.filterProductFromId(produtosPedido[this.state.editProduct].produto).quantidade != undefined && this.filterProductFromId(produtosPedido[this.state.editProduct].produto).quantidade > 0 ?
-              <TextField
-                              fullWidth
-                              label="Quantidade"
-                              margin="normal"
-                              required
-                              type="number"
-                              name="quantidade"
-                              onChange={this.handleChangeQuantidade}
-                              value={quantidadeProduto}
-                              variant="outlined"
-                            />
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <Typography
+              color="textPrimary"
+              variant="h6"
+              style={{marginTop: 12, marginLeft: 2}}>
+              Quantidade:
+              </Typography>
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
 
-                            :
-                            <Typography
-                        color="error"
-                        variant="h6"
-                      >
-                        {"PRODUTO SEM ESTOQUE"}
+                <IconButton color="primary" size="large" onClick={() => { this.state.quantidadeProduto != 1 ? this.setState({quantidadeProduto: this.state.quantidadeProduto-1}) : {}}}>
+                  <HorizontalRule />
+                </IconButton>
+                <Typography
+                  color="warning"
+                  style={{marginTop: 12, marginLeft: 0}}>
+                  {this.state.quantidadeProduto}
                   </Typography>
+                <IconButton color="primary" size="large" onClick={() => { this.state.quantidadeProduto < this.getDisponibilidade(produtosPedido[this.state.editProduct].produto, this.state.editProduct) ?  this.setState({quantidadeProduto: this.state.quantidadeProduto+1}) : {}}}>
+                  <Add />
+                </IconButton>
+                {(this.state.quantidadeProduto < this.getDisponibilidade(produtosPedido[this.state.editProduct].produto, this.state.editProduct)) == false &&
+                  <Typography
+                  color="orange"
+                  variant="h6"
+                  style={{marginTop: 12, marginLeft: 10}}>
+                  
+                    {"ÚLTIMO PRODUTO DO ESTOQUE!"}
+              </Typography>
+                }
+                {this.state.quantidadeProduto == this.filterProductFromId(selectedProduto).quantidade && 
+                    <Typography
+                    color="orange"
+                    variant="h6"
+                    style={{marginTop: 12, marginLeft: 10}}>
+                    
+                      {"ÚLTIMO PRODUTO DO ESTOQUE!"}
+                </Typography>}
+                </div>
+                </div>
+                          :
+                          <Typography
+                      color="error"
+                      variant="h6"
+                    >
+                      {"PRODUTO SEM ESTOQUE"}
+                </Typography>
               }
               </CardContent>
               <Divider />
@@ -812,18 +858,40 @@ class CadastrarPedido extends React.Component {
                            </TextField>
                           }
              { this.filterProductFromId(selectedProduto).quantidade != undefined && this.filterProductFromId(selectedProduto).quantidade > 0 ?
-              <TextField
-                              fullWidth
-                              label="Quantidade"
-                              margin="normal"
-                              required
-                              type="number"
-                              name="quantidade"
-                              onChange={this.handleChangeQuantidade}
-                              value={quantidadeProduto}
-                              variant="outlined"
-                            />
+             <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <Typography
+                color="textPrimary"
+                variant="h6"
+                style={{marginTop: 12, marginLeft: 2}}>
+                Quantidade:
+                </Typography>
+                  <div style={{ display: 'flex', flexDirection: 'row' }}>
 
+                  <IconButton color="primary" size="large" onClick={() => { this.state.quantidadeProduto != 1 ? this.setState({quantidadeProduto: this.state.quantidadeProduto-1}) : {}}}>
+                    <HorizontalRule />
+                  </IconButton>
+                  <Typography
+                    color="warning"
+                    style={{marginTop: 12, marginLeft: 0}}>
+                    {this.state.quantidadeProduto}
+                    </Typography>
+                  <IconButton color="primary" size="large" onClick={() => { this.state.quantidadeProduto < this.getDisponibilidade(selectedProduto, null) ?  this.setState({quantidadeProduto: this.state.quantidadeProduto+1}) : {}}}>
+                    <Add />
+                  </IconButton>
+
+                  {(this.state.quantidadeProduto < this.getDisponibilidade(selectedProduto, null)) == false &&
+                  <Typography
+                  color="orange"
+                  variant="h6"
+                  style={{marginTop: 12, marginLeft: 10}}>
+                  
+                    {"ÚLTIMO PRODUTO DO ESTOQUE!"}
+              </Typography>
+                }
+
+                  
+                  </div>
+                  </div>
                             :
                             <Typography
                         color="error"
