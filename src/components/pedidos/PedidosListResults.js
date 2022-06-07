@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import ServiceCategorias from '../../services/Categorias'
 import {
   Avatar,
@@ -52,6 +53,7 @@ const PedidoListResults = ({ onListType, customers, usuarios, tipopagamentos, ..
   const [pedidos, setPedidos] = useState(customers)
   const [searchText, setSearchText] = useState("");
   
+  const navigate = useNavigate();
 
   const handleChangeSearch = (event) => {
     let value = event.target.value
@@ -112,8 +114,10 @@ const PedidoListResults = ({ onListType, customers, usuarios, tipopagamentos, ..
   };
 
   const handleEdit = (customer) => {
-    setValues({nome: customer.name, ...customer})
-    setIsEdit(true);
+    //setValues({nome: customer.name, ...customer})
+
+    navigate("/app/editar-pedido", { replace: true, state: {values: {...customer}} });
+    //setIsEdit(true);
   };
   const handleBackEdit = () => {
     setIsEdit(false);
@@ -308,6 +312,7 @@ const PedidoListResults = ({ onListType, customers, usuarios, tipopagamentos, ..
   }
 
   return (
+
     <div>
        { isEdit ? <Card sx={{ backgroundColor: 'background.default'}}>
                     <PedidosEdit pedido={values} categorias={usuarios} subcategorias={tipopagamentos} onBackEdit={handleBackEdit}/>
