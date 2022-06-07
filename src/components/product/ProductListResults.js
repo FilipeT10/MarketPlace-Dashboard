@@ -113,6 +113,7 @@ const ProductListResults = ({ onListType, customers, categorias, subcategorias, 
   };
 
   return (
+    
     <div>
        { isEdit ? <Card sx={{ backgroundColor: 'background.default'}}>
                     <ProductEdit product={values} categorias={categorias} subcategorias={subcategorias} onBackEdit={handleBackEdit}/>
