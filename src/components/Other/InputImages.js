@@ -24,6 +24,7 @@ export default function InputImages({ ...props }) {
   const [inputValue, setInputValue] = React.useState("");
   const [selectedItem, setSelectedItem] = React.useState([]);
   const [error, setError] = React.useState(props.error);
+  const [maxLenght, setMaxLenght] = React.useState(props.maxLenght);
   
   useEffect(() => {
       setError(props.error);
@@ -36,7 +37,7 @@ export default function InputImages({ ...props }) {
   }, [selectedItem, selectedTags]);
 
   function handleInputChange(event) {
-
+    
     let files = event.target.files;
 
     let filesSave = []
@@ -62,21 +63,30 @@ export default function InputImages({ ...props }) {
   }
 
   function saveImage(image){
-    setError(false)
     let newSelectedItem = [...selectedItem, ...image];
     setSelectedItem(newSelectedItem);
-
+    if(maxLenght == undefined ||  maxLenght == newSelectedItem.length){
+      setError(false)
+    }else{
+      setError(true)
+    }
   }
 
   
   
   const handleDelete = item => () => {
+    console.log(item)
     const newSelectedItem = [...selectedItem];
     newSelectedItem.splice(newSelectedItem.indexOf(item), 1);
     if(newSelectedItem.length == 0){
       setError(true)
     }
     setSelectedItem(newSelectedItem);
+    if(maxLenght == undefined ||  maxLenght == newSelectedItem.length){
+      setError(false)
+    }else{
+      setError(true)
+    }
   };
 
   
@@ -99,7 +109,7 @@ export default function InputImages({ ...props }) {
               color="red"
               variant="h6"
             >
-              Carregue as fotos do produto
+              {maxLenght == 1 && selectedItem.length > 1 ? "Carregue somente uma imagem" : "Carregue uma imagem"}
             </Typography>}
             <PerfectScrollbar>
               <div style={{ display: 'flex', flexDirection: 'row', padding: 20 }}>
