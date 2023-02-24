@@ -122,7 +122,7 @@ class CadastrarProduto extends React.Component {
   saveProdutos = () => {
 
     var possuiError = false
-    this.setState({errorQtd: true, errorNome: false, errorPreco: false})
+    this.setState({errorQtd: false, errorNome: false, errorPreco: false})
       
     if(this.state.values.name != undefined){
       if(this.state.values.name.length == 0){
@@ -165,7 +165,7 @@ class CadastrarProduto extends React.Component {
     }
 
     if(possuiError == false){
-      this.setState({errorQtd: true, errorNome: false, errorPreco: false})
+      this.setState({errorQtd: false, errorNome: false, errorPreco: false})
       var json = {
         ...this.state.values,
         "loja": getLoja(),
