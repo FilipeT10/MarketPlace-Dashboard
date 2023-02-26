@@ -577,7 +577,7 @@ class CadastrarLoja extends React.Component {
                             defaultValue={this.state.primaryLightColor}
                             InputProps={{ value: this.state.primaryLightColor }}
                             value={this.state.primaryLightColor || ''}
-                            onChange={color => { this.setState({ primaryLightColor: color }); console.log(color); console.log(this.state.primaryLightColor) }}
+                            onChange={color => { this.setState({ primaryLightColor: color }) }}
                             margin="normal"
                             name="primaryLightColor"
                             required
@@ -693,7 +693,7 @@ class CadastrarLoja extends React.Component {
                             color="textPrimary"
                             variant="h5"
                           >
-                            App
+                            Aplicativo
                           </Typography>
                         </Grid>
                       </Grid>
