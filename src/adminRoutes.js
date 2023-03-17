@@ -17,6 +17,7 @@ import Usuarios from './pages/adm/Usuarios';
 import CadastrarUsuario from './pages/adm/CadastrarUsuario';
 import TipoPagamentos from './pages/adm/TipoPagamentos';
 import CadastrarTipoPagamento from './pages/adm/CadastrarTipoPagamento';
+import Privacy from './pages/Privacy';
 
 const adminRoutes = [
   {
@@ -44,6 +45,7 @@ const adminRoutes = [
     element: <MainLayout />,
     children: [
       { path: '404', element: <NotFound /> },
+      { path: 'privacy', element: <Privacy /> },
       { path: '/', element: <Navigate to="/adm/painel" /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]

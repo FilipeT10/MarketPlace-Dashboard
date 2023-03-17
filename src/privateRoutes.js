@@ -16,6 +16,7 @@ import CadastrarSubCategoria from './pages/CadastrarSubCategoria';
 import Pedidos from './pages/Pedidos';
 import CadastrarPedido from './pages/CadastrarPedido';
 import EditarPedido from './pages/EditarPedido';
+import Privacy from './pages/Privacy';
 
 const privateRoutes = [
   {
@@ -44,6 +45,7 @@ const privateRoutes = [
     element: <MainLayout />,
     children: [
       { path: '404', element: <NotFound /> },
+      { path: 'privacy', element: <Privacy /> },
       { path: '/', element: <Navigate to="/app/painel" /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]

@@ -6,6 +6,7 @@ import Categorias from './pages/Categorias';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
+import Privacy from './pages/Privacy';
 import Produtos from './pages/Produtos';
 import Register from './pages/Register';
 import Settings from './pages/Settings';
@@ -18,6 +19,7 @@ const routes = [
     element: <MainLayout />,
     children: [
       { path: 'login', element: <Login /> },
+      { path: 'privacy', element: <Privacy /> },
       { path: '404', element: <NotFound /> },
       { path: '/', element: <Navigate to="/login" /> },
       { path: '*', element: <Navigate to="/404" /> }

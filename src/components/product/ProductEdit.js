@@ -187,6 +187,16 @@ const ProductEdit = ({ product, categorias, subcategorias, onBackEdit, ...rest }
                             />
                             <TextField
                               fullWidth
+                              label="Descrição"
+                              margin="normal"
+                              name="descricao"
+                              required
+                              onChange={handleChange}
+                              value={values.descricao}
+                              variant="outlined"
+                            />
+                            <TextField
+                              fullWidth
                               label="Preço"
                               margin="normal"
                               name="preco"

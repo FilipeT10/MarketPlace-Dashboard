@@ -40,6 +40,7 @@ class CadastrarProduto extends React.Component {
   state = {
     isChecked: true,
     errorNome: false,
+    errorDescricao: false,
     errorPreco: false,
     errorQtd: false,
     loading: true,
@@ -122,7 +123,7 @@ class CadastrarProduto extends React.Component {
   saveProdutos = () => {
 
     var possuiError = false
-    this.setState({errorQtd: false, errorNome: false, errorPreco: false})
+    this.setState({errorQtd: false, errorNome: false, errorPreco: false, errorDescricao: false})
       
     if(this.state.values.name != undefined){
       if(this.state.values.name.length == 0){
@@ -131,6 +132,15 @@ class CadastrarProduto extends React.Component {
       }
     }else{
       this.setState({errorNome: true})
+      possuiError = true
+    }
+    if(this.state.values.descricao != undefined){
+      if(this.state.values.descricao.length == 0){
+        this.setState({errorDescricao: true})
+        possuiError = true
+      }
+    }else{
+      this.setState({errorDescricao: true})
       possuiError = true
     }
 
@@ -165,7 +175,7 @@ class CadastrarProduto extends React.Component {
     }
 
     if(possuiError == false){
-      this.setState({errorQtd: false, errorNome: false, errorPreco: false})
+      this.setState({errorQtd: false, errorNome: false, errorPreco: false, errorDescricao: false})
       var json = {
         ...this.state.values,
         "loja": getLoja(),
@@ -241,7 +251,7 @@ class CadastrarProduto extends React.Component {
  
   render(){
 
-    const { values, categorias, subcategorias, isChecked, errorNome, errorPreco, errorQtd, errorText, modalVisible, modalSuccess, subcategoriaId, loading} = this.state;
+    const { values, categorias, subcategorias, isChecked, errorNome, errorPreco, errorQtd, errorDescricao, errorText, modalVisible, modalSuccess, subcategoriaId, loading} = this.state;
   return (
 
   <>
@@ -279,6 +289,18 @@ class CadastrarProduto extends React.Component {
                               helperText={errorNome ? errorText : ''}
                               onChange={this.handleChange}
                               value={values.name}
+                              variant="outlined"
+                            />
+                            <TextField
+                              fullWidth
+                              label="Descrição"
+                              margin="normal"
+                              name="descricao"
+                              required
+                              error={errorDescricao}
+                              helperText={errorDescricao ? errorText : ''}
+                              onChange={this.handleChange}
+                              value={values.descricao}
                               variant="outlined"
                             />
                             <TextField
