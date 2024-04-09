@@ -1,9 +1,15 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { Box, Container, CircularProgress, LinearProgress, Alert } from '@material-ui/core';
-import ServicePedidos from '../services/Pedidos'
+import {
+  Box,
+  Container,
+  CircularProgress,
+  LinearProgress,
+  Alert
+} from '@material-ui/core';
+import ServicePedidos from '../services/Pedidos';
 
-import ServiceCategorias from '../services/Categorias'
+import ServiceCategorias from '../services/Categorias';
 import {
   Button,
   Card,
@@ -12,10 +18,20 @@ import {
   Divider,
   Switch,
   TextField,
-  Typography, Grid, MenuItem, Checkbox, FormControlLabel
+  Typography,
+  Grid,
+  MenuItem,
+  Checkbox,
+  FormControlLabel
 } from '@material-ui/core';
-import IconButton from "@material-ui/core/IconButton";
-import { Add, ArrowBack, ArrowDropDown, ArrowDropUp, HorizontalRule } from '@material-ui/icons';
+import IconButton from '@material-ui/core/IconButton';
+import {
+  Add,
+  ArrowBack,
+  ArrowDropDown,
+  ArrowDropUp,
+  HorizontalRule
+} from '@material-ui/icons';
 import TagsInput from '../components/Other/TagsInput';
 
 import ModalFeedback from 'src/components/Other/ModalFeedback';
@@ -27,19 +43,15 @@ import ServiceTipoPagamentos from 'src/services/TipoPagamentos';
 import ServiceProdutos from 'src/services/Produtos';
 import ProducsPedidotListResults from 'src/components/pedidos/ProductsPedidoListResults';
 
-var tamanhos = []
+var tamanhos = [];
 
-var cores = []
+var cores = [];
 
-var ingredientes = []
+var ingredientes = [];
 
-var imagens = []
-
+var imagens = [];
 
 class CadastrarPedido extends React.Component {
-
-
-
   state = {
     isChecked: true,
     errorNome: false,
@@ -48,6 +60,7 @@ class CadastrarPedido extends React.Component {
     loading: true,
     errorText: 'Campo obrigatório',
     nome: '',
+    valorFrete: '1.00',
     isCheckedEntregarLoja: false,
     tipopagamentos: [],
     subcategoriaId: [],
@@ -56,7 +69,6 @@ class CadastrarPedido extends React.Component {
     produtosPedido: [],
     ingredientesSelected: [],
     values: {},
-    frete: 5.99,
     selectedProduto: {},
     quantidadeProduto: 1,
     modalVisible: false,
@@ -67,52 +79,47 @@ class CadastrarPedido extends React.Component {
     editProduct: null
   };
 
-
   componentDidMount() {
-
-    this.getTipoPagamentos()
+    this.getTipoPagamentos();
   }
 
   handleChangeSubcategoria = (event) => {
-
-    const { subcategoriaId } = this.state
+    const { subcategoriaId } = this.state;
     if (!subcategoriaId.includes(event.target.value))
       this.setState({ subcategoriaId: event.target.value });
 
-    console.log(subcategoriaId)
+    console.log(subcategoriaId);
     // selected options
   };
 
   filterSubCategoriaFromId = (id) => {
-
-    const { subcategorias } = this.state
+    const { subcategorias } = this.state;
     if (subcategorias.length == 0 || id == undefined) {
-      return ''
+      return '';
     } else {
       let usuariosFilter = subcategorias.filter(function (item) {
-        return item._id == id
-      })
+        return item._id == id;
+      });
       if (usuariosFilter.length == 0) {
-        return "Subcategoria não encontrada"
+        return 'Subcategoria não encontrada';
       }
-      return usuariosFilter[0].name
+      return usuariosFilter[0].name;
     }
-  }
+  };
   filterProductFromId = (id) => {
-
-    const { produtos } = this.state
+    const { produtos } = this.state;
     if (produtos.length == 0 || id == undefined) {
-      return {}
+      return {};
     } else {
       let usuariosFilter = produtos.filter(function (item) {
-        return item._id == id
-      })
+        return item._id == id;
+      });
       if (usuariosFilter.length == 0) {
-        return {}
+        return {};
       }
-      return usuariosFilter[0]
+      return usuariosFilter[0];
     }
-  }
+  };
 
   handleInputChange = (event) => {
     let files = event.target.files;
@@ -120,14 +127,12 @@ class CadastrarPedido extends React.Component {
     reader.readAsDataURL(files[0]);
 
     reader.onload = (e) => {
-      console.log(e.target.result)
-      this.saveImage(e.target.result)
-    }
-
-  }
+      console.log(e.target.result);
+      this.saveImage(e.target.result);
+    };
+  };
   saveImage(image) {
-
-    this.setState({ images: [...this.state.images, image] })
+    this.setState({ images: [...this.state.images, image] });
   }
 
   handleCheckedEntregarLoja = () => {
@@ -136,382 +141,378 @@ class CadastrarPedido extends React.Component {
     });
   };
 
-
   handleSelecetedTamanhos = (items) => {
-    tamanhos = items
-    console.log("tamanhos " + tamanhos);
-  }
+    tamanhos = items;
+    console.log('tamanhos ' + tamanhos);
+  };
   handleSelecetedCores = (items) => {
-    cores = items
-    console.log("cores " + cores);
-  }
+    cores = items;
+    console.log('cores ' + cores);
+  };
   handleSelecetedIngredientes = (items) => {
-    ingredientes = items
-    console.log("ingredientes " + ingredientes);
-  }
+    ingredientes = items;
+    console.log('ingredientes ' + ingredientes);
+  };
   handleSelecetedImagens = (items) => {
-    imagens = items
-    console.log("imagens " + imagens);
-  }
+    imagens = items;
+    console.log('imagens ' + imagens);
+  };
 
   adicionarProduto = (product) => {
-
-
-
-
-    var tamanho = this.state.values.tamanho
+    var tamanho = this.state.values.tamanho;
 
     if (tamanho == undefined) {
-      tamanho = product.tamanhos[0]
+      tamanho = product.tamanhos[0];
     }
-    var cor = this.state.values.cor
+    var cor = this.state.values.cor;
 
     if (cor == undefined) {
-      cor = product.cores[0]
+      cor = product.cores[0];
     }
 
     var produto = {
-      "tamanho": tamanho,
-      "cor": cor,
-      "name": product.name,
-      "preco": product.preco,
-      "quantidade": this.state.quantidadeProduto,
-      "ingredientes": this.state.ingredientesSelected,
-      "produto": product._id
-    }
-    console.log(produto)
+      tamanho: tamanho,
+      cor: cor,
+      name: product.name,
+      preco: product.promocao ? product.promocao.preco : product.preco,
+      promocao: product.promocao ? product.promocao : null,
+      quantidade: this.state.quantidadeProduto,
+      ingredientes: this.state.ingredientesSelected,
+      produto: product._id
+    };
+    console.log(produto);
 
     this.setState({
-      values:
-      {
+      values: {
         ...this.state.values,
-        "cor": undefined,
-        "tamanho": undefined
+        cor: undefined,
+        tamanho: undefined
       }
     });
     this.setState({ quantidadeProduto: 1 });
 
-    var produtosPedidos = this.state.produtosPedido
-    produtosPedidos.push(produto)
+    var produtosPedidos = this.state.produtosPedido;
+    produtosPedidos.push(produto);
 
-    this.setState({ "detalhesProduto": false })
-    this.setState({ "produtosPedido": produtosPedidos })
-
-  }
+    this.setState({ detalhesProduto: false });
+    this.setState({ produtosPedido: produtosPedidos });
+  };
   savePedidos = () => {
+    var possuiError = false;
 
-    var possuiError = false
+    var referencia = ' ';
 
-    var referencia = " "
-
-    this.setState({ errorCep: false, errorLogradouro: false, errorNumero: false, errorComplemento: false, errorBairro: false, errorCidade: false, errorEstado: false })
+    this.setState({
+      errorCep: false,
+      errorLogradouro: false,
+      errorNumero: false,
+      errorComplemento: false,
+      errorBairro: false,
+      errorCidade: false,
+      errorEstado: false
+    });
     if (!this.state.isCheckedEntregarLoja) {
-
       if (this.state.values.cep != undefined) {
         if (this.state.values.cep.length == 0) {
-          this.setState({ errorCep: true })
-          possuiError = true
+          this.setState({ errorCep: true });
+          possuiError = true;
         }
       } else {
-        this.setState({ errorCep: true })
-        possuiError = true
+        this.setState({ errorCep: true });
+        possuiError = true;
       }
       if (this.state.values.logradouro != undefined) {
         if (this.state.values.logradouro.length == 0) {
-          this.setState({ errorLogradouro: true })
-          possuiError = true
+          this.setState({ errorLogradouro: true });
+          possuiError = true;
         }
       } else {
-        this.setState({ errorLogradouro: true })
-        possuiError = true
+        this.setState({ errorLogradouro: true });
+        possuiError = true;
       }
 
       if (this.state.values.numero != undefined) {
         if (this.state.values.numero.length == 0) {
-          this.setState({ errorNumero: true })
-          possuiError = true
+          this.setState({ errorNumero: true });
+          possuiError = true;
         }
       } else {
-        this.setState({ errorNumero: true })
-        possuiError = true
+        this.setState({ errorNumero: true });
+        possuiError = true;
       }
       if (this.state.values.complemento != undefined) {
         if (this.state.values.complemento.length == 0) {
-          this.setState({ errorComplemento: true })
-          possuiError = true
+          this.setState({ errorComplemento: true });
+          possuiError = true;
         }
       } else {
-        this.setState({ errorComplemento: true })
-        possuiError = true
+        this.setState({ errorComplemento: true });
+        possuiError = true;
       }
       if (this.state.values.bairro != undefined) {
         if (this.state.values.bairro.length == 0) {
-          this.setState({ errorBairro: true })
-          possuiError = true
+          this.setState({ errorBairro: true });
+          possuiError = true;
         }
       } else {
-        this.setState({ errorBairro: true })
-        possuiError = true
+        this.setState({ errorBairro: true });
+        possuiError = true;
       }
       if (this.state.values.cidade != undefined) {
         if (this.state.values.cidade.length == 0) {
-          this.setState({ errorCidade: true })
-          possuiError = true
+          this.setState({ errorCidade: true });
+          possuiError = true;
         }
       } else {
-        this.setState({ errorCidade: true })
-        possuiError = true
+        this.setState({ errorCidade: true });
+        possuiError = true;
       }
 
       if (this.state.values.estado != undefined) {
         if (this.state.values.estado.length == 0) {
-          this.setState({ errorEstado: true })
-          possuiError = true
+          this.setState({ errorEstado: true });
+          possuiError = true;
         }
       } else {
-        this.setState({ errorEstado: true })
-        possuiError = true
+        this.setState({ errorEstado: true });
+        possuiError = true;
       }
 
       if (this.state.values.referencia != undefined) {
-        referencia = this.state.values.referencia
+        referencia = this.state.values.referencia;
       } else {
-        referencia = " "
+        referencia = ' ';
       }
-
     }
 
-    var tipoPagamento = this.state.values.tipopagamentos
+    var tipoPagamento = this.state.values.tipopagamentos;
 
     if (tipoPagamento == undefined) {
-      tipoPagamento = this.state.tipopagamentos[0]._id
+      tipoPagamento = this.state.tipopagamentos[0]._id;
     }
 
-
-
-
     if (possuiError == false) {
-
-      this.setState({ errorCep: false, errorLogradouro: false, errorNumero: false, errorComplemento: false, errorBairro: false, errorCidade: false, errorEstado: false })
-      var pontos = (this.getValorTotal() / 2).toFixed(0)
+      this.setState({
+        errorCep: false,
+        errorLogradouro: false,
+        errorNumero: false,
+        errorComplemento: false,
+        errorBairro: false,
+        errorCidade: false,
+        errorEstado: false
+      });
+      var pontos = (this.getValorTotal() / 2).toFixed(0);
       var json = {
-        "user": getLoja(),
-        "loja": getLoja(),
-        "valor": this.getValorTotal(),
-        "status": '01',
-        "tipoPagamento": tipoPagamento,
-        "produtos": this.state.produtosPedido,
-        "endereco": {
-          "cep": this.state.values.cep,
-          "numero": this.state.values.numero,
-          "complemento": this.state.values.complemento,
-          "bairro": this.state.values.bairro,
-          "cidade": this.state.values.cidade,
-          "estado": this.state.values.estado,
-          "logradouro": this.state.values.logradouro,
-          "referencia": referencia
+        user: getLoja(),
+        loja: getLoja(),
+        valor: this.getValorTotal(),
+        status: '01',
+        tipoPagamento: tipoPagamento,
+        produtos: this.state.produtosPedido,
+        valorFrete: this.state.valorFrete,
+        tipoEntrega: 'entrega',
+        endereco: {
+          cep: this.state.values.cep,
+          numero: this.state.values.numero,
+          complemento: this.state.values.complemento,
+          bairro: this.state.values.bairro,
+          cidade: this.state.values.cidade,
+          estado: this.state.values.estado,
+          logradouro: this.state.values.logradouro,
+          referencia: referencia
         },
-        "pontos": pontos
-      }
+        pontos: pontos
+      };
 
       if (this.state.isCheckedEntregarLoja) {
         json = {
-          "user": getLoja(),
-          "loja": getLoja(),
-          "valor": this.getValorTotal(),
-          "status": '01',
-          "tipoPagamento": tipoPagamento,
-          "produtos": this.state.produtosPedido,
-          "pontos": pontos,
-          "endereco": {
-            "cep": "Loja Física",
-            "numero": 0,
-            "complemento": " ",
-            "bairro": " ",
-            "cidade": " ",
-            "estado": " ",
-            "logradouro": " ",
-            "referencia": "Loja Física"
-          },
-        }
+          user: getLoja(),
+          loja: getLoja(),
+          valor: this.getValorTotal(),
+          status: '01',
+          tipoPagamento: tipoPagamento,
+          tipoEntrega: 'retirada',
+          produtos: this.state.produtosPedido,
+          valorFrete: this.state.valorFrete,
+          pontos: pontos,
+          endereco: {
+            cep: 'Loja Física',
+            numero: 0,
+            complemento: ' ',
+            bairro: ' ',
+            cidade: ' ',
+            estado: ' ',
+            logradouro: ' ',
+            referencia: 'Loja Física'
+          }
+        };
       }
-
-      console.log(json)
-      ServicePedidos.savePedidos(json).then(response => {
-        var categorias = response.data;
-
-
-        this.setState({ modalVisible: true, modalSuccess: true })
-        console.log(categorias)
-      }).catch(error => {
-
-        this.setState({ modalVisible: true, modalSuccess: false })
-        console.log(error);
-      });
+      this.getSubTotal(json);
     }
-  }
+  };
 
   detalheProduto = (produto) => {
-    const { produtos } = this.state
+    const { produtos } = this.state;
     if (produto == undefined) {
       if (produtos.length == 0) {
-        return alert("Não possui nenhum pedido cadastrado nesta loja.")
+        return alert('Não possui nenhum pedido cadastrado nesta loja.');
       } else {
-        produto = produtos[0]._id
-        var ingredientesSelected = this.filterProductFromId(produto).ingredientes
+        produto = produtos[0]._id;
+        var ingredientesSelected =
+          this.filterProductFromId(produto).ingredientes;
 
         this.setState({ ingredientesSelected });
       }
     }
-    var selectedProduto = produto
-    this.setState({ selectedProduto, detalhesProduto: true, editProduct: null });
-
+    var selectedProduto = produto;
+    this.setState({
+      selectedProduto,
+      detalhesProduto: true,
+      editProduct: null
+    });
   };
 
   handleChangeProductSelect = (event) => {
     this.setState({
-      values:
-      {
+      values: {
         ...this.state.values,
         [event.target.name]: event.target.value
       }
     });
 
-    var selectedProduto = event.target.value
-    var ingredientesSelected = this.filterProductFromId(selectedProduto).ingredientes
+    var selectedProduto = event.target.value;
+    var ingredientesSelected =
+      this.filterProductFromId(selectedProduto).ingredientes;
 
-    this.setState({ selectedProduto, ingredientesSelected, quantidadeProduto: 1 });
+    this.setState({
+      selectedProduto,
+      ingredientesSelected,
+      quantidadeProduto: 1
+    });
   };
 
   handleChangeTipoPagamento = (event) => {
     this.setState({
-      values:
-      {
+      values: {
         ...this.state.values,
         [event.target.name]: event.target.value
       }
     });
-
   };
   handleChangeQuantidade = (event) => {
     this.setState({ quantidadeProduto: Number(event.target.value) });
-
   };
   handleChange = (event) => {
     this.setState({
-      values:
-      {
+      values: {
         ...this.state.values,
         [event.target.name]: event.target.value
       }
     });
 
-    console.log(this.state.values)
+    console.log(this.state.values);
   };
   getTipoPagamentos = () => {
-    ServiceTipoPagamentos.getTipoPagamentos().then(response => {
-      var tipopagamentos = response.data.items;
-      this.setState({ tipopagamentos })
-      this.getProdutos()
-    }).catch(error => {
-
-      alert('Falha ao carregar, tente novamente mais tarde.');
-      console.log(error);
-    });
-  }
+    this.setState({ loading: true });
+    ServiceTipoPagamentos.getTipoPagamentos()
+      .then((response) => {
+        var tipopagamentos = response.data.items;
+        this.setState({ tipopagamentos });
+        this.getProdutos();
+      })
+      .catch((error) => {
+        alert('Falha ao carregar, tente novamente mais tarde.');
+        console.log(error);
+      });
+  };
   getProdutos = () => {
-    ServiceProdutos.getProdutos().then(response => {
-      var produtos = response.data;
-      this.setState({ produtos, loading: false })
-    }).catch(error => {
-
-      alert('Falha ao carregar os produtos, tente novamente mais tarde.');
-      console.log(error);
-    });
-  }
+    ServiceProdutos.getProdutos()
+      .then((response) => {
+        var produtos = response.data;
+        this.setState({ produtos, loading: false });
+      })
+      .catch((error) => {
+        alert('Falha ao carregar os produtos, tente novamente mais tarde.');
+        console.log(error);
+      });
+  };
 
   handleChangeIngredientes = (event) => {
-    const { ingredientesSelected } = this.state
+    const { ingredientesSelected } = this.state;
     if (!ingredientesSelected.includes(event.target.value))
       this.setState({ ingredientesSelected: event.target.value });
 
-    console.log(ingredientesSelected)
+    console.log(ingredientesSelected);
     // selected options
   };
 
   editProduct = (produto) => {
-
-    var ingredientesSelected = this.state.produtosPedido[produto].ingredientes
+    var ingredientesSelected = this.state.produtosPedido[produto].ingredientes;
 
     this.setState({ ingredientesSelected });
 
     this.setState({
-      values:
-      {
+      values: {
         ...this.state.values,
         ...this.state.produtosPedido[produto]
       }
     });
-    this.setState({ "editProduct": produto, "detalhesProduto": false, "quantidadeProduto": this.state.produtosPedido[produto].quantidade })
+    this.setState({
+      editProduct: produto,
+      detalhesProduto: false,
+      quantidadeProduto: this.state.produtosPedido[produto].quantidade
+    });
 
     // selected options
   };
 
   editarProduto = (product) => {
+    var produtosPedidos = this.state.produtosPedido;
 
-
-    var produtosPedidos = this.state.produtosPedido
-
-    var tamanho = this.state.values.tamanho
+    var tamanho = this.state.values.tamanho;
 
     if (tamanho == undefined) {
-      tamanho = produtosPedidos[product].tamanho
+      tamanho = produtosPedidos[product].tamanho;
     }
-    var cor = this.state.values.cor
+    var cor = this.state.values.cor;
 
     if (cor == undefined) {
-      cor = produtosPedidos[product].cor
+      cor = produtosPedidos[product].cor;
     }
 
     var produto = {
-      "tamanho": tamanho,
-      "cor": cor,
-      "quantidade": this.state.quantidadeProduto,
-      "ingredientes": this.state.ingredientesSelected
-    }
-    console.log(produto)
+      tamanho: tamanho,
+      cor: cor,
+      quantidade: this.state.quantidadeProduto,
+      ingredientes: this.state.ingredientesSelected
+    };
+    console.log(produto);
 
     this.setState({
-      values:
-      {
+      values: {
         ...this.state.values,
-        "cor": undefined,
-        "tamanho": undefined
+        cor: undefined,
+        tamanho: undefined
       }
     });
     this.setState({ quantidadeProduto: 1 });
 
-    produtosPedidos[product] = { ...produtosPedidos[product], ...produto }
+    produtosPedidos[product] = { ...produtosPedidos[product], ...produto };
 
-    console.log("Produtos Pedidos", produtosPedidos)
+    console.log('Produtos Pedidos', produtosPedidos);
 
-    this.setState({ "detalhesProduto": false, "editProduct": null })
-    this.setState({ "produtosPedido": produtosPedidos })
-
-  }
-
-
+    this.setState({ detalhesProduto: false, editProduct: null });
+    this.setState({ produtosPedido: produtosPedidos });
+  };
 
   removeProduct = (product) => {
-
-    var produtosPedidos = this.state.produtosPedido
+    var produtosPedidos = this.state.produtosPedido;
     produtosPedidos.splice(product, 1);
 
-    this.setState({ "produtosPedido": produtosPedidos })
+    this.setState({ produtosPedido: produtosPedidos });
 
     // selected options
   };
-
 
   handleAtivoChecked = () => {
     this.setState({
@@ -519,49 +520,109 @@ class CadastrarPedido extends React.Component {
     });
   };
   getValorTotal = () => {
-    var valorTotal = 0
+    var valorTotal = 0;
     this.state.produtosPedido.map((produto) => {
-      var precoProduto = Number(produto.preco) * produto.quantidade
-      valorTotal = valorTotal + precoProduto
-    })
+      var precoProduto = Number(produto.preco) * produto.quantidade;
+      valorTotal = valorTotal + precoProduto;
+    });
     if (!this.state.isCheckedEntregarLoja) {
-      valorTotal = valorTotal + this.state.frete
+      valorTotal = valorTotal + Number(this.state.valorFrete);
     }
-    return valorTotal.toFixed(2)
+    return valorTotal.toFixed(2);
   };
-  getSubTotal = () => {
-    var valorTotal = 0
-    this.state.produtosPedido.map((produto) => {
-      var precoProduto = Number(produto.preco) * produto.quantidade
-      valorTotal = valorTotal + precoProduto
-    })
-    return valorTotal.toFixed(2)
-  };
+  // getValorTotal = () => {
+  //   const { valorFrete, subtotal } = this.state;
+  //   if (this.state.isCheckedEntregarLoja) {
+  //     return Number(subtotal);
+  //   }
+  //   return Number(valorFrete) + Number(subtotal);
+  // };
+  // getSubTotal = () => {
+  //   var valorTotal = 0;
+  //   this.state.produtosPedido.map((produto) => {
+  //     var precoProduto = Number(produto.preco) * produto.quantidade;
+  //     valorTotal = valorTotal + precoProduto;
+  //   });
+  //   return valorTotal.toFixed(2);
+  // };
 
+  getSubTotal = async (json) => {
+    var total = 0.0;
+    this.state.produtosPedido.forEach((item) => {
+      total += Number(item.preco);
+    });
 
+    var productsIds = [];
+    this.state.produtosPedido.forEach((item) => {
+      for (let i = 0; i < item.quantidade; i++) {
+        productsIds.push(item.produto);
+      }
+    });
+    ServicePedidos.getSubtotalValue(productsIds)
+      .then(async (response) => {
+        var newTotal = response.data.valorTotal;
+        if (newTotal.toFixed(2) != total.toFixed(2)) {
+          this.getTipoPagamentos();
+          this.setState({ produtosPedido: [] });
+          throw alert(
+            'O preço de algum produto mudou, por favor inicie a compra novamente!'
+          );
+        } else {
+          ServicePedidos.savePedidos(json)
+            .then((response) => {
+              var categorias = response.data;
 
-  getDisponibilidade = (selectedProduto, editProduct) => {
-    var quantidade = 0
-    if (this.state.produtosPedido.length > 0) {
-      this.state.produtosPedido.map((product, index) => {
-        if (product.produto != undefined && product.produto == selectedProduto) {
-          if (editProduct != null && index == editProduct) {
-            quantidade = quantidade
-          } else {
-            quantidade = quantidade + product.quantidade
-          }
+              this.setState({ modalVisible: true, modalSuccess: true });
+              console.log(categorias);
+            })
+            .catch((error) => {
+              this.setState({ modalVisible: true, modalSuccess: false });
+              console.log(error);
+            });
         }
       })
-    }
-    return this.filterProductFromId(selectedProduto).quantidade - quantidade
+      .catch((error) => {});
+    return total.toFixed(2);
+  };
 
-  }
+  getDisponibilidade = (selectedProduto, editProduct) => {
+    var quantidade = 0;
+    if (this.state.produtosPedido.length > 0) {
+      this.state.produtosPedido.map((product, index) => {
+        if (
+          product.produto != undefined &&
+          product.produto == selectedProduto
+        ) {
+          if (editProduct != null && index == editProduct) {
+            quantidade = quantidade;
+          } else {
+            quantidade = quantidade + product.quantidade;
+          }
+        }
+      });
+    }
+    return this.filterProductFromId(selectedProduto).quantidade - quantidade;
+  };
 
   render() {
-
-    const { isCheckedEntregarLoja, values, tipopagamentos, produtos, produtosPedido, isChecked, errorText, modalVisible, modalSuccess, detalhesProduto, subcategoriaId, loading, selectedProduto, ingredientesSelected, quantidadeProduto } = this.state;
+    const {
+      isCheckedEntregarLoja,
+      values,
+      tipopagamentos,
+      produtos,
+      produtosPedido,
+      isChecked,
+      errorText,
+      modalVisible,
+      modalSuccess,
+      detalhesProduto,
+      subcategoriaId,
+      loading,
+      selectedProduto,
+      ingredientesSelected,
+      quantidadeProduto
+    } = this.state;
     return (
-
       <>
         <Helmet>
           <title>{'Cadastrar Pedido | ' + AppConfig.sigla}</title>
@@ -577,27 +638,27 @@ class CadastrarPedido extends React.Component {
             <Box sx={{ pt: 3 }}>
               <Box sx={{}}>
                 <div>
-
-
                   <Card>
-                    <CardHeader
-                      subheader="Pedido"
-                      title="Cadastrar"
-                    />
+                    <CardHeader subheader="Pedido" title="Cadastrar" />
                     <Divider />
-                    {loading ? <LinearProgress /> :
+                    {loading ? (
+                      <LinearProgress />
+                    ) : (
                       <CardContent>
-                        {produtosPedido.length > 0 &&
-                          <ProducsPedidotListResults customers={produtosPedido} editProduct={(product) => this.editProduct(product)} removeProduct={(product) => this.removeProduct(product)} />
-
-                        }
-                        {produtos.length > 0 &&
+                        {produtosPedido.length > 0 && (
+                          <ProducsPedidotListResults
+                            customers={produtosPedido}
+                            editProduct={(product) => this.editProduct(product)}
+                            removeProduct={(product) =>
+                              this.removeProduct(product)
+                            }
+                          />
+                        )}
+                        {produtos.length > 0 && (
                           <div>
-                            {this.state.editProduct != null &&
+                            {this.state.editProduct != null && (
                               <Card>
                                 <CardContent>
-
-
                                   <TextField
                                     fullWidth
                                     label="Produto"
@@ -605,131 +666,237 @@ class CadastrarPedido extends React.Component {
                                     margin="normal"
                                     disabled
                                     required
-                                    value={this.filterProductFromId(produtosPedido[this.state.editProduct].produto).name}
+                                    value={
+                                      this.filterProductFromId(
+                                        produtosPedido[this.state.editProduct]
+                                          .produto
+                                      ).name
+                                    }
                                     variant="outlined"
-                                  >
-
-                                  </TextField>
-                                  {this.filterProductFromId(produtosPedido[this.state.editProduct].produto).tamanhos != undefined && this.filterProductFromId(produtosPedido[this.state.editProduct].produto).tamanhos.length > 0 &&
-                                    <TextField
-                                      fullWidth
-                                      label="Tamanho"
-                                      name="tamanho"
-                                      margin="normal"
-                                      onChange={this.handleChangeTipoPagamento}
-                                      required
-                                      select
-                                      value={values.tamanho}
-                                      SelectProps={{ native: true }}
-                                      variant="outlined"
-                                    >
-                                      {this.filterProductFromId(produtosPedido[this.state.editProduct].produto).tamanhos.map((option) => (
-                                        <option
-                                          key={option}
-                                          value={option}
-                                        >
-                                          {option}
-                                        </option>
-                                      ))}
-                                    </TextField>
-                                  }
-                                  {this.filterProductFromId(produtosPedido[this.state.editProduct].produto).cores != undefined && this.filterProductFromId(produtosPedido[this.state.editProduct].produto).cores.length > 0 &&
-                                    <TextField
-                                      fullWidth
-                                      label="Cor"
-                                      name="cor"
-                                      margin="normal"
-                                      onChange={this.handleChangeTipoPagamento}
-                                      required
-                                      select
-                                      SelectProps={{ native: true }}
-                                      value={values.cor}
-                                      variant="outlined"
-                                    >
-                                      {this.filterProductFromId(produtosPedido[this.state.editProduct].produto).cores.map((option) => (
-                                        <option
-                                          key={option}
-                                          value={option}
-                                        >
-                                          {option}
-                                        </option>
-                                      ))}
-                                    </TextField>
-                                  }
-                                  {this.filterProductFromId(produtosPedido[this.state.editProduct].produto).ingredientes != undefined && this.filterProductFromId(produtosPedido[this.state.editProduct].produto).ingredientes.length > 0 &&
-                                    <TextField
-                                      fullWidth
-                                      label="Ingredientes"
-                                      name="ingredientes"
-                                      margin="normal"
-                                      select
-                                      variant="outlined"
-                                      SelectProps={{
-                                        multiple: true,
-                                        value: ingredientesSelected,
-                                        onChange: (e) => this.handleChangeIngredientes(e),
-                                        renderValue: (selected) => selected.join(", "),
-
+                                  ></TextField>
+                                  {this.filterProductFromId(
+                                    produtosPedido[this.state.editProduct]
+                                      .produto
+                                  ).tamanhos != undefined &&
+                                    this.filterProductFromId(
+                                      produtosPedido[this.state.editProduct]
+                                        .produto
+                                    ).tamanhos.length > 0 && (
+                                      <TextField
+                                        fullWidth
+                                        label="Tamanho"
+                                        name="tamanho"
+                                        margin="normal"
+                                        onChange={
+                                          this.handleChangeTipoPagamento
+                                        }
+                                        required
+                                        select
+                                        value={values.tamanho}
+                                        SelectProps={{ native: true }}
+                                        variant="outlined"
+                                      >
+                                        {this.filterProductFromId(
+                                          produtosPedido[this.state.editProduct]
+                                            .produto
+                                        ).tamanhos.map((option) => (
+                                          <option key={option} value={option}>
+                                            {option}
+                                          </option>
+                                        ))}
+                                      </TextField>
+                                    )}
+                                  {this.filterProductFromId(
+                                    produtosPedido[this.state.editProduct]
+                                      .produto
+                                  ).cores != undefined &&
+                                    this.filterProductFromId(
+                                      produtosPedido[this.state.editProduct]
+                                        .produto
+                                    ).cores.length > 0 && (
+                                      <TextField
+                                        fullWidth
+                                        label="Cor"
+                                        name="cor"
+                                        margin="normal"
+                                        onChange={
+                                          this.handleChangeTipoPagamento
+                                        }
+                                        required
+                                        select
+                                        SelectProps={{ native: true }}
+                                        value={values.cor}
+                                        variant="outlined"
+                                      >
+                                        {this.filterProductFromId(
+                                          produtosPedido[this.state.editProduct]
+                                            .produto
+                                        ).cores.map((option) => (
+                                          <option key={option} value={option}>
+                                            {option}
+                                          </option>
+                                        ))}
+                                      </TextField>
+                                    )}
+                                  {this.filterProductFromId(
+                                    produtosPedido[this.state.editProduct]
+                                      .produto
+                                  ).ingredientes != undefined &&
+                                    this.filterProductFromId(
+                                      produtosPedido[this.state.editProduct]
+                                        .produto
+                                    ).ingredientes.length > 0 && (
+                                      <TextField
+                                        fullWidth
+                                        label="Ingredientes"
+                                        name="ingredientes"
+                                        margin="normal"
+                                        select
+                                        variant="outlined"
+                                        SelectProps={{
+                                          multiple: true,
+                                          value: ingredientesSelected,
+                                          onChange: (e) =>
+                                            this.handleChangeIngredientes(e),
+                                          renderValue: (selected) =>
+                                            selected.join(', ')
+                                        }}
+                                      >
+                                        {this.filterProductFromId(
+                                          produtosPedido[this.state.editProduct]
+                                            .produto
+                                        ).ingredientes.map((ingrediente) => (
+                                          <MenuItem
+                                            key={ingrediente}
+                                            value={ingrediente}
+                                          >
+                                            <FormControlLabel
+                                              control={
+                                                <Checkbox
+                                                  checked={ingredientesSelected.includes(
+                                                    ingrediente
+                                                  )}
+                                                />
+                                              }
+                                              label={ingrediente}
+                                            />
+                                          </MenuItem>
+                                        ))}
+                                      </TextField>
+                                    )}
+                                  {this.filterProductFromId(
+                                    produtosPedido[this.state.editProduct]
+                                      .produto
+                                  ).quantidade != undefined &&
+                                  this.filterProductFromId(
+                                    produtosPedido[this.state.editProduct]
+                                      .produto
+                                  ).quantidade > 0 ? (
+                                    <div
+                                      style={{
+                                        display: 'flex',
+                                        flexDirection: 'row'
                                       }}
                                     >
-                                      {this.filterProductFromId(produtosPedido[this.state.editProduct].produto).ingredientes.map((ingrediente) => (
-                                        <MenuItem key={ingrediente} value={ingrediente}>
-                                          <FormControlLabel
-                                            control={<Checkbox checked={ingredientesSelected.includes(ingrediente)} />}
-                                            label={ingrediente}
-                                          />
-                                        </MenuItem>
-                                      ))}
-                                    </TextField>
-                                  }
-                                  {this.filterProductFromId(produtosPedido[this.state.editProduct].produto).quantidade != undefined && this.filterProductFromId(produtosPedido[this.state.editProduct].produto).quantidade > 0 ?
-                                    <div style={{ display: 'flex', flexDirection: 'row' }}>
                                       <Typography
                                         color="textPrimary"
                                         variant="h6"
-                                        style={{ marginTop: 12, marginLeft: 2 }}>
+                                        style={{ marginTop: 12, marginLeft: 2 }}
+                                      >
                                         Quantidade:
                                       </Typography>
-                                      <div style={{ display: 'flex', flexDirection: 'row' }}>
-
-                                        <IconButton color="primary" size="large" onClick={() => { this.state.quantidadeProduto != 1 ? this.setState({ quantidadeProduto: this.state.quantidadeProduto - 1 }) : {} }}>
+                                      <div
+                                        style={{
+                                          display: 'flex',
+                                          flexDirection: 'row'
+                                        }}
+                                      >
+                                        <IconButton
+                                          color="primary"
+                                          size="large"
+                                          onClick={() => {
+                                            this.state.quantidadeProduto != 1
+                                              ? this.setState({
+                                                  quantidadeProduto:
+                                                    this.state
+                                                      .quantidadeProduto - 1
+                                                })
+                                              : {};
+                                          }}
+                                        >
                                           <HorizontalRule />
                                         </IconButton>
                                         <Typography
                                           color="warning"
-                                          style={{ marginTop: 12, marginLeft: 0 }}>
+                                          style={{
+                                            marginTop: 12,
+                                            marginLeft: 0
+                                          }}
+                                        >
                                           {this.state.quantidadeProduto}
                                         </Typography>
-                                        <IconButton color="primary" size="large" onClick={() => { this.state.quantidadeProduto < this.getDisponibilidade(produtosPedido[this.state.editProduct].produto, this.state.editProduct) ? this.setState({ quantidadeProduto: this.state.quantidadeProduto + 1 }) : {} }}>
+                                        <IconButton
+                                          color="primary"
+                                          size="large"
+                                          onClick={() => {
+                                            this.state.quantidadeProduto <
+                                            this.getDisponibilidade(
+                                              produtosPedido[
+                                                this.state.editProduct
+                                              ].produto,
+                                              this.state.editProduct
+                                            )
+                                              ? this.setState({
+                                                  quantidadeProduto:
+                                                    this.state
+                                                      .quantidadeProduto + 1
+                                                })
+                                              : {};
+                                          }}
+                                        >
                                           <Add />
                                         </IconButton>
-                                        {(this.state.quantidadeProduto < this.getDisponibilidade(produtosPedido[this.state.editProduct].produto, this.state.editProduct)) == false &&
+                                        {this.state.quantidadeProduto <
+                                          this.getDisponibilidade(
+                                            produtosPedido[
+                                              this.state.editProduct
+                                            ].produto,
+                                            this.state.editProduct
+                                          ) ==
+                                          false && (
                                           <Typography
                                             color="orange"
                                             variant="h6"
-                                            style={{ marginTop: 12, marginLeft: 10 }}>
-
-                                            {"ÚLTIMO PRODUTO DO ESTOQUE!"}
+                                            style={{
+                                              marginTop: 12,
+                                              marginLeft: 10
+                                            }}
+                                          >
+                                            {'ÚLTIMO PRODUTO DO ESTOQUE!'}
                                           </Typography>
-                                        }
-                                        {this.state.quantidadeProduto == this.filterProductFromId(selectedProduto).quantidade &&
+                                        )}
+                                        {this.state.quantidadeProduto ==
+                                          this.filterProductFromId(
+                                            selectedProduto
+                                          ).quantidade && (
                                           <Typography
                                             color="orange"
                                             variant="h6"
-                                            style={{ marginTop: 12, marginLeft: 10 }}>
-
-                                            {"ÚLTIMO PRODUTO DO ESTOQUE!"}
-                                          </Typography>}
+                                            style={{
+                                              marginTop: 12,
+                                              marginLeft: 10
+                                            }}
+                                          >
+                                            {'ÚLTIMO PRODUTO DO ESTOQUE!'}
+                                          </Typography>
+                                        )}
                                       </div>
                                     </div>
-                                    :
-                                    <Typography
-                                      color="error"
-                                      variant="h6"
-                                    >
-                                      {"PRODUTO SEM ESTOQUE"}
+                                  ) : (
+                                    <Typography color="error" variant="h6">
+                                      {'PRODUTO SEM ESTOQUE'}
                                     </Typography>
-                                  }
+                                  )}
                                 </CardContent>
                                 <Divider />
                                 <Box
@@ -743,35 +910,57 @@ class CadastrarPedido extends React.Component {
                                     color="error"
                                     variant="outlined"
                                     style={{ marginRight: 10 }}
-                                    onClick={() => { this.setState({ detalhesProduto: false, editProduct: null }) }}>
-                                    {"Cancelar"}
+                                    onClick={() => {
+                                      this.setState({
+                                        detalhesProduto: false,
+                                        editProduct: null
+                                      });
+                                    }}
+                                  >
+                                    {'Cancelar'}
                                   </Button>
-                                  {this.filterProductFromId(produtosPedido[this.state.editProduct].produto).quantidade != undefined && this.filterProductFromId(produtosPedido[this.state.editProduct].produto).quantidade > 0 &&
-                                    <Button
-                                      color="primary"
-                                      variant="contained"
-                                      onClick={() => this.editarProduto(this.state.editProduct)}
-                                    >
-                                      Salvar
-                                    </Button>
-                                  }
+                                  {this.filterProductFromId(
+                                    produtosPedido[this.state.editProduct]
+                                      .produto
+                                  ).quantidade != undefined &&
+                                    this.filterProductFromId(
+                                      produtosPedido[this.state.editProduct]
+                                        .produto
+                                    ).quantidade > 0 && (
+                                      <Button
+                                        color="primary"
+                                        variant="contained"
+                                        onClick={() =>
+                                          this.editarProduto(
+                                            this.state.editProduct
+                                          )
+                                        }
+                                      >
+                                        Salvar
+                                      </Button>
+                                    )}
                                 </Box>
                               </Card>
-                            }
-                            {!detalhesProduto &&
+                            )}
+                            {!detalhesProduto && (
                               <Button
                                 fullWidth
                                 color="warning"
                                 variant="outlined"
-                                onClick={() => { detalhesProduto ? this.setState({ detalhesProduto: false }) : this.detalheProduto(values.produtoItem) }}>
-                                {detalhesProduto ? "Cancelar Produto" : "Adicionar Produto"}
+                                onClick={() => {
+                                  detalhesProduto
+                                    ? this.setState({ detalhesProduto: false })
+                                    : this.detalheProduto(values.produtoItem);
+                                }}
+                              >
+                                {detalhesProduto
+                                  ? 'Cancelar Produto'
+                                  : 'Adicionar Produto'}
                               </Button>
-                            }
-                            {detalhesProduto &&
+                            )}
+                            {detalhesProduto && (
                               <Card>
                                 <CardContent>
-
-
                                   <TextField
                                     fullWidth
                                     label="Produto"
@@ -793,119 +982,190 @@ class CadastrarPedido extends React.Component {
                                       </option>
                                     ))}
                                   </TextField>
-                                  {this.filterProductFromId(selectedProduto).tamanhos != undefined && this.filterProductFromId(selectedProduto).tamanhos.length > 0 &&
-                                    <TextField
-                                      fullWidth
-                                      label="Tamanho"
-                                      name="tamanho"
-                                      margin="normal"
-                                      onChange={this.handleChangeTipoPagamento}
-                                      required
-                                      select
-                                      SelectProps={{ native: true }}
-                                      variant="outlined"
-                                    >
-                                      {this.filterProductFromId(selectedProduto).tamanhos.map((option) => (
-                                        <option
-                                          key={option}
-                                          value={option}
-                                        >
-                                          {option}
-                                        </option>
-                                      ))}
-                                    </TextField>
-                                  }
-                                  {this.filterProductFromId(selectedProduto).cores != undefined && this.filterProductFromId(selectedProduto).cores.length > 0 &&
-                                    <TextField
-                                      fullWidth
-                                      label="Cor"
-                                      name="cor"
-                                      margin="normal"
-                                      onChange={this.handleChangeTipoPagamento}
-                                      required
-                                      select
-                                      SelectProps={{ native: true }}
-                                      variant="outlined"
-                                    >
-                                      {this.filterProductFromId(selectedProduto).cores.map((option) => (
-                                        <option
-                                          key={option}
-                                          value={option}
-                                        >
-                                          {option}
-                                        </option>
-                                      ))}
-                                    </TextField>
-                                  }
-                                  {this.filterProductFromId(selectedProduto).ingredientes != undefined && this.filterProductFromId(selectedProduto).ingredientes.length > 0 &&
-                                    <TextField
-                                      fullWidth
-                                      label="Ingredientes"
-                                      name="ingredientes"
-                                      margin="normal"
-                                      select
-                                      variant="outlined"
-                                      SelectProps={{
-                                        multiple: true,
-                                        value: ingredientesSelected,
-                                        onChange: (e) => this.handleChangeIngredientes(e),
-                                        renderValue: (selected) => selected.join(", "),
-
+                                  {this.filterProductFromId(selectedProduto)
+                                    .tamanhos != undefined &&
+                                    this.filterProductFromId(selectedProduto)
+                                      .tamanhos.length > 0 && (
+                                      <TextField
+                                        fullWidth
+                                        label="Tamanho"
+                                        name="tamanho"
+                                        margin="normal"
+                                        onChange={
+                                          this.handleChangeTipoPagamento
+                                        }
+                                        required
+                                        select
+                                        SelectProps={{ native: true }}
+                                        variant="outlined"
+                                      >
+                                        {this.filterProductFromId(
+                                          selectedProduto
+                                        ).tamanhos.map((option) => (
+                                          <option key={option} value={option}>
+                                            {option}
+                                          </option>
+                                        ))}
+                                      </TextField>
+                                    )}
+                                  {this.filterProductFromId(selectedProduto)
+                                    .cores != undefined &&
+                                    this.filterProductFromId(selectedProduto)
+                                      .cores.length > 0 && (
+                                      <TextField
+                                        fullWidth
+                                        label="Cor"
+                                        name="cor"
+                                        margin="normal"
+                                        onChange={
+                                          this.handleChangeTipoPagamento
+                                        }
+                                        required
+                                        select
+                                        SelectProps={{ native: true }}
+                                        variant="outlined"
+                                      >
+                                        {this.filterProductFromId(
+                                          selectedProduto
+                                        ).cores.map((option) => (
+                                          <option key={option} value={option}>
+                                            {option}
+                                          </option>
+                                        ))}
+                                      </TextField>
+                                    )}
+                                  {this.filterProductFromId(selectedProduto)
+                                    .ingredientes != undefined &&
+                                    this.filterProductFromId(selectedProduto)
+                                      .ingredientes.length > 0 && (
+                                      <TextField
+                                        fullWidth
+                                        label="Ingredientes"
+                                        name="ingredientes"
+                                        margin="normal"
+                                        select
+                                        variant="outlined"
+                                        SelectProps={{
+                                          multiple: true,
+                                          value: ingredientesSelected,
+                                          onChange: (e) =>
+                                            this.handleChangeIngredientes(e),
+                                          renderValue: (selected) =>
+                                            selected.join(', ')
+                                        }}
+                                      >
+                                        {this.filterProductFromId(
+                                          selectedProduto
+                                        ).ingredientes.map((ingrediente) => (
+                                          <MenuItem
+                                            key={ingrediente}
+                                            value={ingrediente}
+                                          >
+                                            <FormControlLabel
+                                              control={
+                                                <Checkbox
+                                                  checked={ingredientesSelected.includes(
+                                                    ingrediente
+                                                  )}
+                                                />
+                                              }
+                                              label={ingrediente}
+                                            />
+                                          </MenuItem>
+                                        ))}
+                                      </TextField>
+                                    )}
+                                  {this.filterProductFromId(selectedProduto)
+                                    .quantidade != undefined &&
+                                  this.filterProductFromId(selectedProduto)
+                                    .quantidade > 0 ? (
+                                    <div
+                                      style={{
+                                        display: 'flex',
+                                        flexDirection: 'row'
                                       }}
                                     >
-                                      {this.filterProductFromId(selectedProduto).ingredientes.map((ingrediente) => (
-                                        <MenuItem key={ingrediente} value={ingrediente}>
-                                          <FormControlLabel
-                                            control={<Checkbox checked={ingredientesSelected.includes(ingrediente)} />}
-                                            label={ingrediente}
-                                          />
-                                        </MenuItem>
-                                      ))}
-                                    </TextField>
-                                  }
-                                  {this.filterProductFromId(selectedProduto).quantidade != undefined && this.filterProductFromId(selectedProduto).quantidade > 0 ?
-                                    <div style={{ display: 'flex', flexDirection: 'row' }}>
                                       <Typography
                                         color="textPrimary"
                                         variant="h6"
-                                        style={{ marginTop: 12, marginLeft: 2 }}>
+                                        style={{ marginTop: 12, marginLeft: 2 }}
+                                      >
                                         Quantidade:
                                       </Typography>
-                                      <div style={{ display: 'flex', flexDirection: 'row' }}>
-
-                                        <IconButton color="primary" size="large" onClick={() => { this.state.quantidadeProduto != 1 ? this.setState({ quantidadeProduto: this.state.quantidadeProduto - 1 }) : {} }}>
+                                      <div
+                                        style={{
+                                          display: 'flex',
+                                          flexDirection: 'row'
+                                        }}
+                                      >
+                                        <IconButton
+                                          color="primary"
+                                          size="large"
+                                          onClick={() => {
+                                            this.state.quantidadeProduto != 1
+                                              ? this.setState({
+                                                  quantidadeProduto:
+                                                    this.state
+                                                      .quantidadeProduto - 1
+                                                })
+                                              : {};
+                                          }}
+                                        >
                                           <HorizontalRule />
                                         </IconButton>
                                         <Typography
                                           color="warning"
-                                          style={{ marginTop: 12, marginLeft: 0 }}>
+                                          style={{
+                                            marginTop: 12,
+                                            marginLeft: 0
+                                          }}
+                                        >
                                           {this.state.quantidadeProduto}
                                         </Typography>
-                                        <IconButton color="primary" size="large" onClick={() => { this.state.quantidadeProduto < this.getDisponibilidade(selectedProduto, null) ? this.setState({ quantidadeProduto: this.state.quantidadeProduto + 1 }) : {} }}>
+                                        <IconButton
+                                          color="primary"
+                                          size="large"
+                                          onClick={() => {
+                                            this.state.quantidadeProduto <
+                                            this.getDisponibilidade(
+                                              selectedProduto,
+                                              null
+                                            )
+                                              ? this.setState({
+                                                  quantidadeProduto:
+                                                    this.state
+                                                      .quantidadeProduto + 1
+                                                })
+                                              : {};
+                                          }}
+                                        >
                                           <Add />
                                         </IconButton>
 
-                                        {(this.state.quantidadeProduto < this.getDisponibilidade(selectedProduto, null)) == false &&
+                                        {this.state.quantidadeProduto <
+                                          this.getDisponibilidade(
+                                            selectedProduto,
+                                            null
+                                          ) ==
+                                          false && (
                                           <Typography
                                             color="orange"
                                             variant="h6"
-                                            style={{ marginTop: 12, marginLeft: 10 }}>
-
-                                            {"ÚLTIMO PRODUTO DO ESTOQUE!"}
+                                            style={{
+                                              marginTop: 12,
+                                              marginLeft: 10
+                                            }}
+                                          >
+                                            {'ÚLTIMO PRODUTO DO ESTOQUE!'}
                                           </Typography>
-                                        }
-
-
+                                        )}
                                       </div>
                                     </div>
-                                    :
-                                    <Typography
-                                      color="error"
-                                      variant="h6"
-                                    >
-                                      {"PRODUTO SEM ESTOQUE"}
+                                  ) : (
+                                    <Typography color="error" variant="h6">
+                                      {'PRODUTO SEM ESTOQUE'}
                                     </Typography>
-                                  }
+                                  )}
                                 </CardContent>
                                 <Divider />
                                 <Box
@@ -919,26 +1179,36 @@ class CadastrarPedido extends React.Component {
                                     color="error"
                                     variant="outlined"
                                     style={{ marginRight: 10 }}
-                                    onClick={() => { this.setState({ detalhesProduto: false }) }}>
-                                    {"Cancelar"}
+                                    onClick={() => {
+                                      this.setState({ detalhesProduto: false });
+                                    }}
+                                  >
+                                    {'Cancelar'}
                                   </Button>
-                                  {this.filterProductFromId(selectedProduto).quantidade != undefined && this.filterProductFromId(selectedProduto).quantidade > 0 &&
-                                    <Button
-                                      color="primary"
-                                      variant="contained"
-                                      onClick={() => this.adicionarProduto(this.filterProductFromId(selectedProduto))}
-                                    >
-                                      Adicionar
-                                    </Button>
-                                  }
+                                  {this.filterProductFromId(selectedProduto)
+                                    .quantidade != undefined &&
+                                    this.filterProductFromId(selectedProduto)
+                                      .quantidade > 0 && (
+                                      <Button
+                                        color="primary"
+                                        variant="contained"
+                                        onClick={() =>
+                                          this.adicionarProduto(
+                                            this.filterProductFromId(
+                                              selectedProduto
+                                            )
+                                          )
+                                        }
+                                      >
+                                        Adicionar
+                                      </Button>
+                                    )}
                                 </Box>
                               </Card>
-                            }
-
-
+                            )}
                           </div>
-                        }
-                        {tipopagamentos.length > 0 ?
+                        )}
+                        {tipopagamentos.length > 0 ? (
                           <TextField
                             fullWidth
                             label="Tipo de Pagamentos"
@@ -952,23 +1222,21 @@ class CadastrarPedido extends React.Component {
                             variant="outlined"
                           >
                             {tipopagamentos.map((option) => (
-                              <option
-                                key={option._id}
-                                value={option._id}
-                              >
+                              <option key={option._id} value={option._id}>
                                 {option.name}
                               </option>
                             ))}
                           </TextField>
-                          : <div></div>
-                        }
+                        ) : (
+                          <div></div>
+                        )}
 
                         <div style={{ display: 'flex', flexDirection: 'row' }}>
-
                           <Typography
                             color="textPrimary"
                             variant="h6"
-                            style={{ marginTop: 8, marginLeft: 2 }}>
+                            style={{ marginTop: 8, marginLeft: 2 }}
+                          >
                             Entregar na Loja:
                           </Typography>
 
@@ -977,87 +1245,82 @@ class CadastrarPedido extends React.Component {
                             onChange={this.handleCheckedEntregarLoja}
                             inputProps={{ 'aria-label': 'controlled' }}
                           />
-
                         </div>
-                        {!isCheckedEntregarLoja &&
+                        {!isCheckedEntregarLoja && (
                           <div>
-                            <Grid
-                              item
-                              md={6}
-                              xs={12}
-                            >
+                            <Grid item md={6} xs={12}>
                               <TextField
                                 fullWidth
                                 label="CEP"
                                 name="cep"
                                 margin="normal"
                                 error={this.state.errorCep}
-                                helperText={this.state.errorCep ? this.state.errorText : ''}
+                                helperText={
+                                  this.state.errorCep
+                                    ? this.state.errorText
+                                    : ''
+                                }
                                 onChange={this.handleChangeTipoPagamento}
                                 required
                                 value={values.cep}
                                 variant="outlined"
                               />
                             </Grid>
-                            <Grid
-                              item
-                              md={6}
-                              xs={12}
-                            >
+                            <Grid item md={6} xs={12}>
                               <TextField
                                 fullWidth
                                 label="Logradouro"
                                 name="logradouro"
                                 margin="normal"
                                 error={this.state.errorLogradouro}
-                                helperText={this.state.errorLogradouro ? this.state.errorText : ''}
+                                helperText={
+                                  this.state.errorLogradouro
+                                    ? this.state.errorText
+                                    : ''
+                                }
                                 onChange={this.handleChangeTipoPagamento}
                                 required
                                 value={values.logradouro}
                                 variant="outlined"
                               />
                             </Grid>
-                            <Grid
-                              item
-                              md={6}
-                              xs={12}
-                            >
+                            <Grid item md={6} xs={12}>
                               <TextField
                                 fullWidth
                                 label="Bairro"
                                 name="bairro"
                                 margin="normal"
                                 error={this.state.errorBairro}
-                                helperText={this.state.errorBairro ? this.state.errorText : ''}
+                                helperText={
+                                  this.state.errorBairro
+                                    ? this.state.errorText
+                                    : ''
+                                }
                                 onChange={this.handleChangeTipoPagamento}
                                 required
                                 value={values.bairro}
                                 variant="outlined"
                               />
                             </Grid>
-                            <Grid
-                              item
-                              md={6}
-                              xs={12}
-                            >
+                            <Grid item md={6} xs={12}>
                               <TextField
                                 fullWidth
                                 label="Cidade"
                                 name="cidade"
                                 margin="normal"
                                 error={this.state.errorCidade}
-                                helperText={this.state.errorCidade ? this.state.errorText : ''}
+                                helperText={
+                                  this.state.errorCidade
+                                    ? this.state.errorText
+                                    : ''
+                                }
                                 onChange={this.handleChangeTipoPagamento}
                                 required
                                 value={values.cidade}
                                 variant="outlined"
                               />
                             </Grid>
-                            <Grid
-                              item
-                              md={6}
-                              xs={12}
-                            >
+                            <Grid item md={6} xs={12}>
                               <TextField
                                 fullWidth
                                 label="Número"
@@ -1065,54 +1328,54 @@ class CadastrarPedido extends React.Component {
                                 required
                                 margin="normal"
                                 error={this.state.errorNumero}
-                                helperText={this.state.errorNumero ? this.state.errorText : ''}
+                                helperText={
+                                  this.state.errorNumero
+                                    ? this.state.errorText
+                                    : ''
+                                }
                                 onChange={this.handleChangeTipoPagamento}
                                 type="number"
                                 value={values.numero}
                                 variant="outlined"
                               />
                             </Grid>
-                            <Grid
-                              item
-                              md={6}
-                              xs={12}
-                            >
+                            <Grid item md={6} xs={12}>
                               <TextField
                                 fullWidth
                                 label="Complemento"
                                 name="complemento"
                                 margin="normal"
                                 error={this.state.errorComplemento}
-                                helperText={this.state.errorComplemento ? this.state.errorText : ''}
+                                helperText={
+                                  this.state.errorComplemento
+                                    ? this.state.errorText
+                                    : ''
+                                }
                                 onChange={this.handleChangeTipoPagamento}
                                 required
                                 value={values.complemento}
                                 variant="outlined"
                               />
                             </Grid>
-                            <Grid
-                              item
-                              md={6}
-                              xs={12}
-                            >
+                            <Grid item md={6} xs={12}>
                               <TextField
                                 fullWidth
                                 label="Estado"
                                 name="estado"
                                 margin="normal"
                                 error={this.state.errorEstado}
-                                helperText={this.state.errorEstado ? this.state.errorText : ''}
+                                helperText={
+                                  this.state.errorEstado
+                                    ? this.state.errorText
+                                    : ''
+                                }
                                 onChange={this.handleChangeTipoPagamento}
                                 required
                                 value={values.estado}
                                 variant="outlined"
                               />
                             </Grid>
-                            <Grid
-                              item
-                              md={6}
-                              xs={12}
-                            >
+                            <Grid item md={6} xs={12}>
                               <TextField
                                 fullWidth
                                 label="Referência"
@@ -1123,54 +1386,67 @@ class CadastrarPedido extends React.Component {
                                 variant="outlined"
                               />
                             </Grid>
-
                           </div>
-                        }
+                        )}
                       </CardContent>
-                    }
+                    )}
                     <Divider />
-                    <Box sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      p: 2
-                    }}>
-
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        p: 2
+                      }}
+                    >
                       <Typography
                         color="textPrimary"
                         variant="h6"
-                        style={{ marginTop: 8, marginRight: 10 }}>
-                        {"Subtotal: R$:" + this.getSubTotal()}
+                        style={{ marginTop: 8, marginRight: 10 }}
+                      >
+                        {isCheckedEntregarLoja
+                          ? ''
+                          : 'Frete: R$:' + Number(this.state.valorFrete)}
                       </Typography>
                       <Typography
                         color="textPrimary"
                         variant="h6"
-                        style={{ marginTop: 8, marginRight: 10 }}>
-                        {isCheckedEntregarLoja ? "" : "Frete: R$:" + this.state.frete}
-                      </Typography>
-                      <Typography
-                        color="textPrimary"
-                        variant="h6"
-                        style={{ marginTop: 8, marginRight: 30 }}>
-                        {isCheckedEntregarLoja ? "Total: R$:" + this.getValorTotal() : "Total: R$:" + this.getValorTotal()}
+                        style={{ marginTop: 8, marginRight: 30 }}
+                      >
+                        {isCheckedEntregarLoja
+                          ? 'Total: R$:' + this.getValorTotal()
+                          : 'Total: R$:' + this.getValorTotal()}
                       </Typography>
                       <Button
                         color="primary"
                         variant="contained"
-                        onClick={() => { this.savePedidos() }}> Salvar</Button>
+                        onClick={() => {
+                          this.savePedidos();
+                        }}
+                      >
+                        {' '}
+                        Salvar
+                      </Button>
                     </Box>
                   </Card>
                 </div>
               </Box>
             </Box>
           </Container>
-          <ModalFeedback open={modalVisible} success={modalSuccess} redirect={modalSuccess ? '/app/pedidos' : ''} title={modalSuccess ? "Sucesso" : "Falhou"} subTitle={modalSuccess ? "Cadastro realizado com sucesso." : "Não foi possível realizar o cadastro, tente novamente mais tarde."} />
-
+          <ModalFeedback
+            open={modalVisible}
+            success={modalSuccess}
+            redirect={modalSuccess ? '/app/pedidos' : ''}
+            title={modalSuccess ? 'Sucesso' : 'Falhou'}
+            subTitle={
+              modalSuccess
+                ? 'Cadastro realizado com sucesso.'
+                : 'Não foi possível realizar o cadastro, tente novamente mais tarde.'
+            }
+          />
         </Box>
       </>
     );
   }
 }
-
-
 
 export default CadastrarPedido;

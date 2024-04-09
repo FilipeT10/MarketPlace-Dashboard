@@ -1,6 +1,5 @@
-
 import { getLoja } from 'src/daos/auth';
-import api from './api'
+import api from './api';
 /*
 // Buscando usuários do github
 api.get("users/tgmarinho")
@@ -9,14 +8,11 @@ api.get("users/tgmarinho")
         console.error("ops! ocorreu um erro" + err);
      });*/
 
-class ServiceProdutos  {
-  
-    
-    static getProdutos = () => api.get(`produtos?loja=${getLoja()}`)
-
-    static editProdutos = (id, json) => api.patch(`produtos/${id}`, json)
-    static saveProdutos = (json) => api.post(`produtos`, json)
-  
+class ServiceProdutos {
+  static getProdutos = () => api.get(`produtos?loja=${getLoja()}`);
+  static getProdutosId = (id) => api.get(`produtos/${id}`);
+  static editProdutos = (id, json) => api.patch(`produtos/${id}`, json);
+  static saveProdutos = (json) => api.post(`produtos`, json);
 }
 
 export default ServiceProdutos;
