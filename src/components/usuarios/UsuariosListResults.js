@@ -20,13 +20,15 @@ import {
   TablePagination,
   TableRow,
   TextField,
-  Typography, Grid, Container
+  Typography,
+  Grid,
+  Container
 } from '@material-ui/core';
 import getInitials from '../../utils/getInitials';
 
-import Edit from "@material-ui/icons/Edit";
+import Edit from '@material-ui/icons/Edit';
 
-import IconButton from "@material-ui/core/IconButton";
+import IconButton from '@material-ui/core/IconButton';
 import { Android, ArrowBack, Language } from '@material-ui/icons';
 import ServiceUsuarios from 'src/services/Usuarios';
 import ModalFeedback from '../Other/ModalFeedback';
@@ -35,49 +37,52 @@ import UsuariosListToolbar from './UsuariosListToolbar';
 const UsuariosListResults = ({ customers, lojas, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-  const [customerEdit, setCustomerEdit] = useState({})
+  const [customerEdit, setCustomerEdit] = useState({});
   const [isEdit, setIsEdit] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false)
-  const [modalSuccess, setModalSuccess] = useState(true)
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalSuccess, setModalSuccess] = useState(true);
   const [isChecked, setChecked] = useState(false);
   const [values, setValues] = useState({
     nome: '',
     tipo: ''
   });
 
-  
-  const [usuarios, setUsuarios] = useState(customers)
+  const [usuarios, setUsuarios] = useState(customers);
 
-  
-
-  const [searchText, setSearchText] = useState("");
-  
+  const [searchText, setSearchText] = useState('');
 
   const handleChangeSearch = (event) => {
-    let value = event.target.value
-    setSearchText(value)
-    let usuariosFilter = customers.filter(function(item){
-      return item.name.includes(value) || item.name.includes(value.toLowerCase()) || item.name.includes(value.toUpperCase()) || item.name.includes(value.charAt(0).toUpperCase()+value.slice(1)) || item.cpf?.includes(value) || item.email?.includes(value)
-    })
-    setUsuarios(usuariosFilter)
+    let value = event.target.value;
+    setSearchText(value);
+    let usuariosFilter = customers.filter(function (item) {
+      return (
+        item.name.includes(value) ||
+        item.name.includes(value.toLowerCase()) ||
+        item.name.includes(value.toUpperCase()) ||
+        item.name.includes(value.charAt(0).toUpperCase() + value.slice(1)) ||
+        item.cpf?.includes(value) ||
+        item.email?.includes(value)
+      );
+    });
+    setUsuarios(usuariosFilter);
   };
 
   const filterLojaFromId = (id) => {
-    console.log(id)
-    console.log(lojas)
-    if(lojas.length == 0 || id == undefined){
-      return ''
-    }else{
-      let usuariosFilter = lojas.filter(function(item){
-        return item._id == id
-      })
-      console.log(usuariosFilter)
-      if(usuariosFilter.length == 0){
-        return "Loja não encontrada"
+    console.log(id);
+    console.log(lojas);
+    if (lojas.length == 0 || id == undefined) {
+      return '';
+    } else {
+      let usuariosFilter = lojas.filter(function (item) {
+        return item._id == id;
+      });
+      console.log(usuariosFilter);
+      if (usuariosFilter.length == 0) {
+        return 'Loja não encontrada';
       }
-      return usuariosFilter[0].name
+      return usuariosFilter[0].name;
     }
-  }
+  };
   const handleChange = (event) => {
     setValues({
       ...values,
@@ -94,9 +99,9 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
   };
   const handleEdit = (customer) => {
     setChecked(customer.ativo);
-    setValues({nome: customer.name, tipo: customer.tipoUsuario})
+    setValues({ nome: customer.name, tipo: customer.tipoUsuario });
     setIsEdit(true);
-    setCustomerEdit(customer)
+    setCustomerEdit(customer);
   };
 
   const handleBackEdit = () => {
@@ -105,28 +110,30 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
   const handleAtivoChecked = () => {
     setChecked(!isChecked);
   };
-  
+
   const saveUsuario = (nome, ativo) => {
     var json = {
-      "name": values.nome,
-      "tipoUsuario": values.tipo,
-      "ativo": isChecked
-    }
-    ServiceUsuarios.editUsuarios(customerEdit._id, json).then(response => {
-        setModalSuccess(true)
-        setModalVisible(true)
+      name: values.nome,
+      tipoUsuario: values.tipo,
+      ativo: isChecked
+    };
+    ServiceUsuarios.editUsuarios(customerEdit._id, json)
+      .then((response) => {
+        setModalSuccess(true);
+        setModalVisible(true);
         var usuarios = response.data;
-        console.log(usuarios)
-    }).catch(error => {
-        setModalSuccess(false)
-        setModalVisible(true)
+        console.log(usuarios);
+      })
+      .catch((error) => {
+        setModalSuccess(false);
+        setModalVisible(true);
         console.log(error);
-    });
-  }
+      });
+  };
 
   return (
     <div>
-      { isEdit ?   null  /*    
+      {isEdit ? null /*    
                       <Card sx={{ backgroundColor: 'background.default'}}>
                         <Box sx={{ }}> 
                         <div>
@@ -203,163 +210,126 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
                       <ModalFeedback open={modalVisible} success={modalSuccess} redirect={modalSuccess ? '/adm/painel' : ''} title={ modalSuccess ? "Sucesso" : "Falhou"} subTitle={ modalSuccess ? "Usuario editada com sucesso." : "Não foi possível editar a usuario, tente novamente mais tarde."} />
                       </Box>
                       </Card>
-                    */  :
-      <div>
+                    */ : (
+        <div>
+          <UsuariosListToolbar onTextHandle={handleChangeSearch} />
 
-     
-      
-      <UsuariosListToolbar onTextHandle={handleChangeSearch} />
-        
-      <Card style={{marginTop: 20}}>
-      <PerfectScrollbar>
-        <Box sx={{  }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  Nome
-                </TableCell>
-                <TableCell>
-                  CPF
-                </TableCell>
-                <TableCell>
-                  Email
-                </TableCell>
-                <TableCell>
-                  Sexo
-                </TableCell>
-                <TableCell>
-                  Loja
-                </TableCell>
-                <TableCell>
-                  Perfil
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {usuarios.slice(0, limit).map((customer) => (
-                <TableRow
-                  hover
-                  key={customer._id}
-                >
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {customer.name}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {customer.cpf}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {customer.email}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {customer.gender == "Male" ? "Masculino" : customer.gender == 'Female' ? "Feminino" : ''}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {filterLojaFromId(customer.loja)}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      {customer.profiles.map((user) => (
-                        
-                        <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {user == "sysAdminMktPlc" ? 'sistema' : user}
-                      </Typography>
-                      
+          <Card style={{ marginTop: 20 }}>
+            <PerfectScrollbar>
+              <Box sx={{}}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Nome</TableCell>
+                      <TableCell>CPF</TableCell>
+                      <TableCell>Email</TableCell>
+                      <TableCell>Sexo</TableCell>
+                      <TableCell>Loja</TableCell>
+                      <TableCell>Perfil</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {usuarios
+                      .slice(page * limit, page * limit + limit)
+                      .map((customer) => (
+                        <TableRow hover key={customer._id}>
+                          <TableCell>
+                            <Box
+                              sx={{
+                                alignItems: 'center',
+                                display: 'flex'
+                              }}
+                            >
+                              <Typography color="textPrimary" variant="body1">
+                                {customer.name}
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell>
+                            <Box
+                              sx={{
+                                alignItems: 'center',
+                                display: 'flex'
+                              }}
+                            >
+                              <Typography color="textPrimary" variant="body1">
+                                {customer.cpf}
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell>
+                            <Box
+                              sx={{
+                                alignItems: 'center',
+                                display: 'flex'
+                              }}
+                            >
+                              <Typography color="textPrimary" variant="body1">
+                                {customer.email}
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell>
+                            <Box
+                              sx={{
+                                alignItems: 'center',
+                                display: 'flex'
+                              }}
+                            >
+                              <Typography color="textPrimary" variant="body1">
+                                {customer.gender == 'Male'
+                                  ? 'Masculino'
+                                  : customer.gender == 'Female'
+                                  ? 'Feminino'
+                                  : ''}
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell>
+                            <Box
+                              sx={{
+                                alignItems: 'center',
+                                display: 'flex'
+                              }}
+                            >
+                              <Typography color="textPrimary" variant="body1">
+                                {filterLojaFromId(customer.loja)}
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell>
+                            <Box
+                              sx={{
+                                alignItems: 'center',
+                                display: 'flex'
+                              }}
+                            >
+                              {customer.profiles.map((user) => (
+                                <Typography color="textPrimary" variant="body1">
+                                  {user == 'sysAdminMktPlc' ? 'sistema' : user}
+                                </Typography>
+                              ))}
+                            </Box>
+                          </TableCell>
+                        </TableRow>
                       ))}
-                     
-                    </Box>
-                  </TableCell>
-                  
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          
-        </Box>
-        
-      </PerfectScrollbar>
+                  </TableBody>
+                </Table>
+              </Box>
+            </PerfectScrollbar>
 
-        
-      <TablePagination
-        component="div"
-        count={customers.length}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
-      </Card>
-      </div>
-    }
+            <TablePagination
+              component="div"
+              count={customers.length}
+              onPageChange={handlePageChange}
+              onRowsPerPageChange={handleLimitChange}
+              page={page}
+              rowsPerPage={limit}
+              rowsPerPageOptions={[5, 10, 25]}
+            />
+          </Card>
+        </div>
+      )}
     </div>
   );
 };

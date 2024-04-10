@@ -4,7 +4,6 @@ import MainLayout from './components/MainLayout';
 import Account from './pages/Account';
 import Categorias from './pages/Categorias';
 import Dashboard from './pages/Dashboard';
-import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import Produtos from './pages/Produtos';
 import Register from './pages/Register';
@@ -17,6 +16,8 @@ import Pedidos from './pages/Pedidos';
 import CadastrarPedido from './pages/CadastrarPedido';
 import EditarPedido from './pages/EditarPedido';
 import Privacy from './pages/Privacy';
+import Cupons from './pages/Cupons';
+import CadastrarCupom from './pages/CadastrarCupom';
 
 const privateRoutes = [
   {
@@ -27,6 +28,7 @@ const privateRoutes = [
       { path: 'perfil', element: <Account /> },
       { path: 'categorias', element: <Categorias /> },
       { path: 'cadastrar-categoria', element: <CadastrarCategoria /> },
+      { path: 'cadastrar-cupom', element: <CadastrarCupom /> },
       { path: 'subcategorias', element: <SubSubCategorias /> },
       { path: 'cadastrar-subcategoria', element: <CadastrarSubCategoria /> },
       { path: 'cadastrar-produto', element: <CadastrarProduto /> },
@@ -34,6 +36,8 @@ const privateRoutes = [
       { path: 'painel', element: <Dashboard /> },
       { path: 'produtos', element: <Produtos /> },
       { path: 'pedidos', element: <Pedidos /> },
+      { path: 'promo', element: <Pedidos /> },
+      { path: 'cupons', element: <Cupons /> },
       { path: 'editar-pedido', element: <EditarPedido /> },
       { path: 'configuracoes', element: <Settings /> },
       { path: 'cadastro', element: <Register /> },

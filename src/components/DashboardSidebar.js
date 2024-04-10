@@ -25,12 +25,16 @@ import {
   CreditCard,
   Folder,
   FolderMinus,
-  Clipboard
+  Clipboard,
+  Tag,
+  Bookmark
 } from 'react-feather';
 import NavItem from './NavItem';
 import { getNome, getProfile, isAdmin } from 'src/daos/auth';
-import { CardGiftcardOutlined, NotificationsOutlined} from '@material-ui/icons';
-
+import {
+  CardGiftcardOutlined,
+  NotificationsOutlined
+} from '@material-ui/icons';
 
 const items = [
   {
@@ -59,6 +63,16 @@ const items = [
     title: 'Subcategorias'
   },
   {
+    href: '/app/promo',
+    icon: Bookmark,
+    title: 'Promoções'
+  },
+  {
+    href: '/app/cupons',
+    icon: Tag,
+    title: 'Cupons'
+  },
+  {
     href: '/app/perfil',
     icon: UserIcon,
     title: 'Perfil'
@@ -72,7 +86,7 @@ const items = [
     href: '/app/cadastro',
     icon: UserPlusIcon,
     title: 'Cadastro'
-  },
+  }
 ];
 
 const itemsAdm = [
@@ -115,19 +129,21 @@ const itemsAdm = [
     href: '/app/configuracoes',
     icon: SettingsIcon,
     title: 'Configurações'
-  },
-  
+  }
 ];
 
-
 const DashboardSidebar = ({ onMobileClose, openMobile }) => {
-
   const user = {
     avatar: '/static/images/avatars/avatar.png',
-    jobTitle: getProfile() == 'admin' ? 'Administrador' : getProfile() == 'sysAdminMktPlc' ? 'Sistema' : '' ,
+    jobTitle:
+      getProfile() == 'admin'
+        ? 'Administrador'
+        : getProfile() == 'sysAdminMktPlc'
+        ? 'Sistema'
+        : '',
     name: getNome()
   };
-  
+
   const location = useLocation();
 
   useEffect(() => {
@@ -162,44 +178,36 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
           }}
           to="/app/account"
         />
-        <Typography
-          color="textPrimary"
-          variant="h5"
-        >
+        <Typography color="textPrimary" variant="h5">
           {user.name}
         </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body2"
-        >
+        <Typography color="textSecondary" variant="body2">
           {user.jobTitle}
         </Typography>
       </Box>
       <Divider />
       <Box sx={{ p: 2 }}>
         <List>
-          { isAdmin() ? 
-            itemsAdm.map((item) => (
-              <NavItem
-                href={item.href}
-                key={item.title}
-                title={item.title}
-                icon={item.icon}
-              />
-            ))
-          :
-          items.map((item) => (
-            <NavItem
-              href={item.href}
-              key={item.title}
-              title={item.title}
-              icon={item.icon}
-            />
-          ))}
+          {isAdmin()
+            ? itemsAdm.map((item) => (
+                <NavItem
+                  href={item.href}
+                  key={item.title}
+                  title={item.title}
+                  icon={item.icon}
+                />
+              ))
+            : items.map((item) => (
+                <NavItem
+                  href={item.href}
+                  key={item.title}
+                  title={item.title}
+                  icon={item.icon}
+                />
+              ))}
         </List>
       </Box>
       <Box sx={{ flexGrow: 1 }} />
-     
     </Box>
   );
 
@@ -246,8 +254,7 @@ DashboardSidebar.propTypes = {
 };
 
 DashboardSidebar.defaultProps = {
-  onMobileClose: () => {
-  },
+  onMobileClose: () => {},
   openMobile: false
 };
 

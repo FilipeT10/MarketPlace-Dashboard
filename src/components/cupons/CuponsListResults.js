@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { KeyboardArrowDown, KeyboardArrowUp } from '@material-ui/icons';
 import {
   Avatar,
   Box,
@@ -30,11 +31,12 @@ import Edit from '@material-ui/icons/Edit';
 
 import IconButton from '@material-ui/core/IconButton';
 import { ArrowBack } from '@material-ui/icons';
-import ServiceCategorias from 'src/services/Categorias';
+import ServiceCupons from 'src/services/Cupons';
 import ModalFeedback from '../Other/ModalFeedback';
-import CategoriasListToolbar from './CategoriasListToolbar';
+import CuponsListToolbar from './CuponsListToolbar';
+import formatDate from 'src/utils/formatDate';
 
-const CategoriasListResults = ({ customers, ...rest }) => {
+const CuponsListResults = ({ customers, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [customerEdit, setCustomerEdit] = useState({});
@@ -46,13 +48,13 @@ const CategoriasListResults = ({ customers, ...rest }) => {
     nome: ''
   });
 
-  const [categorias, setCategorias] = useState(customers);
+  const [cupons, setCupons] = useState(customers);
   const [searchText, setSearchText] = useState('');
 
   const handleChangeSearch = (event) => {
     let value = event.target.value;
     setSearchText(value);
-    let categoriasFilter = customers.filter(function (item) {
+    let cuponsFilter = customers.filter(function (item) {
       return (
         item.name.includes(value) ||
         item.name.includes(value.toLowerCase()) ||
@@ -60,7 +62,7 @@ const CategoriasListResults = ({ customers, ...rest }) => {
         item.name.includes(value.charAt(0).toUpperCase() + value.slice(1))
       );
     });
-    setCategorias(categoriasFilter);
+    setCupons(cuponsFilter);
   };
   const handleChange = (event) => {
     setValues({
@@ -90,17 +92,115 @@ const CategoriasListResults = ({ customers, ...rest }) => {
     setChecked(!isChecked);
   };
 
-  const saveCategoria = (nome, ativo) => {
+  function Row(props) {
+    const { customer } = props;
+
+    const [open, setOpen] = useState(false);
+
+    return (
+      <Fragment>
+        <TableRow hover key={customer.id}>
+          <TableCell>
+            <Box
+              sx={{
+                alignItems: 'center',
+                display: 'flex'
+              }}
+            >
+              <Typography color="textPrimary" variant="body1">
+                {customer.name}
+              </Typography>
+            </Box>
+          </TableCell>
+          <TableCell>
+            <Box
+              sx={{
+                alignItems: 'center',
+                display: 'flex'
+              }}
+            >
+              <Typography color="textPrimary" variant="body1">
+                {customer.descricao}
+              </Typography>
+            </Box>
+          </TableCell>
+          <TableCell>
+            <Box
+              sx={{
+                alignItems: 'center',
+                display: 'flex'
+              }}
+            >
+              <Typography color="textPrimary" variant="body1">
+                {formatDate(customer.periodoInicial)}
+              </Typography>
+            </Box>
+          </TableCell>
+          <TableCell>
+            <Box
+              sx={{
+                alignItems: 'center',
+                display: 'flex'
+              }}
+            >
+              <Typography color="textPrimary" variant="body1">
+                {formatDate(customer.periodoFinal)}
+              </Typography>
+            </Box>
+          </TableCell>
+          <TableCell>
+            {customer.ativo ? (
+              <Chip color="success" label={'Ativo'} size="small" />
+            ) : (
+              <Chip color="warning" label={'Inativo'} size="small" />
+            )}
+          </TableCell>
+
+          <TableCell>
+            {customer.ativo && (
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={() => {
+                  handleEdit(customer);
+                }}
+              >
+                <Edit />
+              </IconButton>
+            )}
+            <IconButton
+              color="inherit"
+              aria-label="expandir linha"
+              onClick={() => setOpen(!open)}
+            >
+              {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+            </IconButton>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <Box sx={{ margin: 1 }}>
+                {/*<ProducsPedidotListResults customers={customer.produtos} />*/}
+              </Box>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      </Fragment>
+    );
+  }
+
+  const saveCupom = (nome, ativo) => {
     var json = {
       name: values.nome,
       ativo: isChecked
     };
-    ServiceCategorias.editCategorias(customerEdit._id, json)
+    ServiceCupons.editCupons(customerEdit._id, json)
       .then((response) => {
         setModalSuccess(true);
         setModalVisible(true);
-        var categorias = response.data;
-        console.log(categorias);
+        var cupons = response.data;
+        console.log(cupons);
       })
       .catch((error) => {
         setModalSuccess(false);
@@ -126,7 +226,7 @@ const CategoriasListResults = ({ customers, ...rest }) => {
               </IconButton>
 
               <Card>
-                <CardHeader subheader="Categorias" title="Editar" />
+                <CardHeader subheader="Cupons" title="Editar" />
                 <Divider />
                 <CardContent>
                   <TextField
@@ -172,7 +272,7 @@ const CategoriasListResults = ({ customers, ...rest }) => {
                     color="primary"
                     variant="contained"
                     onClick={() => {
-                      saveCategoria(values.nome, isChecked);
+                      saveCupom(values.nome, isChecked);
                     }}
                   >
                     {' '}
@@ -188,7 +288,7 @@ const CategoriasListResults = ({ customers, ...rest }) => {
               title={modalSuccess ? 'Sucesso' : 'Falhou'}
               subTitle={
                 modalSuccess
-                  ? 'Categoria editada com sucesso.'
+                  ? 'Cupom editado com sucesso.'
                   : 'Não foi possível editar a categoria, tente novamente mais tarde.'
               }
             />
@@ -196,7 +296,7 @@ const CategoriasListResults = ({ customers, ...rest }) => {
         </Card>
       ) : (
         <div>
-          <CategoriasListToolbar onTextHandle={handleChangeSearch} />
+          <CuponsListToolbar onTextHandle={handleChangeSearch} />
 
           <Card style={{ marginTop: 20 }}>
             <PerfectScrollbar>
@@ -205,54 +305,18 @@ const CategoriasListResults = ({ customers, ...rest }) => {
                   <TableHead>
                     <TableRow>
                       <TableCell>Nome</TableCell>
+                      <TableCell>Descrição</TableCell>
+                      <TableCell>Período inicial</TableCell>
+                      <TableCell>Período final</TableCell>
                       <TableCell>Ativo</TableCell>
                       <TableCell>Ações</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {categorias
+                    {cupons
                       .slice(page * limit, page * limit + limit)
                       .map((customer) => (
-                        <TableRow hover key={customer.id}>
-                          <TableCell>
-                            <Box
-                              sx={{
-                                alignItems: 'center',
-                                display: 'flex'
-                              }}
-                            >
-                              <Typography color="textPrimary" variant="body1">
-                                {customer.name}
-                              </Typography>
-                            </Box>
-                          </TableCell>
-                          <TableCell>
-                            {customer.ativo ? (
-                              <Chip
-                                color="success"
-                                label={'Ativo'}
-                                size="small"
-                              />
-                            ) : (
-                              <Chip
-                                color="warning"
-                                label={'Inativo'}
-                                size="small"
-                              />
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            <IconButton
-                              color="inherit"
-                              aria-label="open drawer"
-                              onClick={() => {
-                                handleEdit(customer);
-                              }}
-                            >
-                              <Edit />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
+                        <Row key={customer._id} customer={customer} />
                       ))}
                   </TableBody>
                 </Table>
@@ -275,8 +339,8 @@ const CategoriasListResults = ({ customers, ...rest }) => {
   );
 };
 
-CategoriasListResults.propTypes = {
+CuponsListResults.propTypes = {
   customers: PropTypes.array.isRequired
 };
 
-export default CategoriasListResults;
+export default CuponsListResults;
