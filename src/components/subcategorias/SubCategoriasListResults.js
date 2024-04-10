@@ -34,10 +34,10 @@ import ServiceSubCategorias from 'src/services/SubCategorias';
 import ModalFeedback from '../Other/ModalFeedback';
 import SubCategoriasListToolbar from './SubCategoriasListToolbar';
 
-const SubCategoriasListResults = ({ customers, categorias, ...rest }) => {
+const SubCategoriasListResults = ({ objs, categorias, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-  const [customerEdit, setCustomerEdit] = useState({});
+  const [objEdit, setobjEdit] = useState({});
   const [isEdit, setIsEdit] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalSuccess, setModalSuccess] = useState(true);
@@ -46,13 +46,13 @@ const SubCategoriasListResults = ({ customers, categorias, ...rest }) => {
     nome: ''
   });
 
-  const [subcategorias, setSubCategorias] = useState(customers);
+  const [subcategorias, setSubCategorias] = useState(objs);
   const [searchText, setSearchText] = useState('');
 
   const handleChangeSearch = (event) => {
     let value = event.target.value;
     setSearchText(value);
-    let subcategoriasFilter = customers.filter(function (item) {
+    let subcategoriasFilter = objs.filter(function (item) {
       return (
         item.name.includes(value) ||
         item.name.includes(value.toLowerCase()) ||
@@ -89,11 +89,11 @@ const SubCategoriasListResults = ({ customers, categorias, ...rest }) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
-  const handleEdit = (customer) => {
-    setChecked(customer.ativo);
-    setValues({ nome: customer.name, categoria: customer.categoria });
+  const handleEdit = (obj) => {
+    setChecked(obj.ativo);
+    setValues({ nome: obj.name, categoria: obj.categoria });
     setIsEdit(true);
-    setCustomerEdit(customer);
+    setobjEdit(obj);
   };
 
   const handleBackEdit = () => {
@@ -115,7 +115,7 @@ const SubCategoriasListResults = ({ customers, categorias, ...rest }) => {
       categoria: values.categoria,
       ativo: isChecked
     };
-    ServiceSubCategorias.editSubCategorias(customerEdit._id, json)
+    ServiceSubCategorias.editSubCategorias(objEdit._id, json)
       .then((response) => {
         setModalSuccess(true);
         setModalVisible(true);
@@ -255,8 +255,8 @@ const SubCategoriasListResults = ({ customers, categorias, ...rest }) => {
                   <TableBody>
                     {subcategorias
                       .slice(page * limit, page * limit + limit)
-                      .map((customer) => (
-                        <TableRow hover key={customer.id}>
+                      .map((obj) => (
+                        <TableRow hover key={obj.id}>
                           <TableCell>
                             <Box
                               sx={{
@@ -265,7 +265,7 @@ const SubCategoriasListResults = ({ customers, categorias, ...rest }) => {
                               }}
                             >
                               <Typography color="textPrimary" variant="body1">
-                                {customer.name}
+                                {obj.name}
                               </Typography>
                             </Box>
                           </TableCell>
@@ -277,12 +277,12 @@ const SubCategoriasListResults = ({ customers, categorias, ...rest }) => {
                               }}
                             >
                               <Typography color="textPrimary" variant="body1">
-                                {filterCategoriaFromId(customer.categoria)}
+                                {filterCategoriaFromId(obj.categoria)}
                               </Typography>
                             </Box>
                           </TableCell>
                           <TableCell>
-                            {customer.ativo ? (
+                            {obj.ativo ? (
                               <Chip
                                 color="success"
                                 label={'Ativo'}
@@ -301,7 +301,7 @@ const SubCategoriasListResults = ({ customers, categorias, ...rest }) => {
                               color="inherit"
                               aria-label="open drawer"
                               onClick={() => {
-                                handleEdit(customer);
+                                handleEdit(obj);
                               }}
                             >
                               <Edit />
@@ -316,7 +316,7 @@ const SubCategoriasListResults = ({ customers, categorias, ...rest }) => {
 
             <TablePagination
               component="div"
-              count={customers.length}
+              count={objs.length}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleLimitChange}
               page={page}
@@ -331,7 +331,7 @@ const SubCategoriasListResults = ({ customers, categorias, ...rest }) => {
 };
 
 SubCategoriasListResults.propTypes = {
-  customers: PropTypes.array.isRequired,
+  objs: PropTypes.array.isRequired,
   categorias: PropTypes.array.isRequired
 };
 

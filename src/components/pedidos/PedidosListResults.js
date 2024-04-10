@@ -37,7 +37,7 @@ import ServicePedidos from 'src/services/Pedidos';
 
 const PedidoListResults = ({
   onListType,
-  customers,
+  objs,
   usuarios,
   tipopagamentos,
   onRefresh,
@@ -56,7 +56,7 @@ const PedidoListResults = ({
     nome: ''
   });
 
-  const [pedidos, setPedidos] = useState(customers);
+  const [pedidos, setPedidos] = useState(objs);
   const [searchText, setSearchText] = useState('');
 
   const navigate = useNavigate();
@@ -64,7 +64,7 @@ const PedidoListResults = ({
   const handleChangeSearch = (event) => {
     let value = event.target.value;
     setSearchText(value);
-    let pedidosFilter = customers.filter(function (item) {
+    let pedidosFilter = objs.filter(function (item) {
       if (item.numeroPedido) {
         return String(item.numeroPedido).includes(value);
       } else {
@@ -109,7 +109,7 @@ const PedidoListResults = ({
   const handleLimitChange = (event) => {
     setPage(0);
     if (event.target.value == 'All') {
-      setLimit(customers.length);
+      setLimit(objs.length);
     } else {
       setLimit(event.target.value);
     }
@@ -119,12 +119,12 @@ const PedidoListResults = ({
     setPage(newPage);
   };
 
-  const handleEdit = (customer) => {
-    //setValues({nome: customer.name, ...customer})
+  const handleEdit = (obj) => {
+    //setValues({nome: obj.name, ...obj})
 
     navigate('/app/editar-pedido', {
       replace: true,
-      state: { values: { ...customer } }
+      state: { values: { ...obj } }
     });
     //setIsEdit(true);
   };
@@ -199,7 +199,7 @@ const PedidoListResults = ({
   };
 
   function Row(props) {
-    const { customer } = props;
+    const { obj } = props;
 
     const [open, setOpen] = useState(false);
 
@@ -207,7 +207,7 @@ const PedidoListResults = ({
       <Fragment>
         <TableRow
           hover
-          key={customer._id}
+          key={obj._id}
           onClick={() => {
             setOpen(!open);
           }}
@@ -220,12 +220,12 @@ const PedidoListResults = ({
               }}
             >
               <Typography color="textPrimary" variant="h4">
-                {customer.numeroPedido}
+                {obj.numeroPedido}
               </Typography>
             </Box>
           </TableCell>
           <TableCell>
-            {customer.produtos.map((subcategoria) => (
+            {obj.produtos.map((subcategoria) => (
               <Box
                 sx={{
                   alignItems: 'center',
@@ -247,7 +247,7 @@ const PedidoListResults = ({
               }}
             >
               <Typography color="textPrimary" variant="body1">
-                {customer.valor}
+                {obj.valor}
               </Typography>
             </Box>
           </TableCell>
@@ -259,7 +259,7 @@ const PedidoListResults = ({
               }}
             >
               <Typography color="textPrimary" variant="body1">
-                {filterTipoPagamentoFromId(customer.tipoPagamento)}
+                {filterTipoPagamentoFromId(obj.tipoPagamento)}
               </Typography>
             </Box>
           </TableCell>
@@ -270,9 +270,9 @@ const PedidoListResults = ({
                 display: 'flex'
               }}
             >
-              {customer.cupom ? (
+              {obj.cupom ? (
                 <Typography color="textPrimary" variant="body1">
-                  {customer.cupom.name}
+                  {obj.cupom.name}
                 </Typography>
               ) : (
                 <NotInterested color="error" />
@@ -288,16 +288,16 @@ const PedidoListResults = ({
               }}
             >
               <Typography color="textPrimary" variant="body1">
-                {filterUsuarioFromId(customer.user)}
+                {filterUsuarioFromId(obj.user)}
               </Typography>
             </Box>
           </TableCell>
           <TableCell>
-            {customer.endereco.referencia == 'Loja Física' &&
-            customer.endereco.cep == 'Loja Física' &&
-            customer.endereco.numero == 0 ? (
+            {obj.endereco.referencia == 'Loja Física' &&
+            obj.endereco.cep == 'Loja Física' &&
+            obj.endereco.numero == 0 ? (
               <Typography color="textPrimary" variant="body1">
-                {customer.endereco.referencia}
+                {obj.endereco.referencia}
               </Typography>
             ) : (
               <Box
@@ -306,54 +306,52 @@ const PedidoListResults = ({
                 }}
               >
                 <Typography color="textPrimary" variant="body1">
-                  {customer.endereco.logradouro +
-                    ', ' +
-                    customer.endereco.complemento}
+                  {obj.endereco.logradouro + ', ' + obj.endereco.complemento}
                 </Typography>
                 <Typography color="textPrimary" variant="body1">
-                  {customer.endereco.numero + ' ' + customer.endereco.bairro}
+                  {obj.endereco.numero + ' ' + obj.endereco.bairro}
                 </Typography>
                 <Typography color="textPrimary" variant="body1">
-                  {customer.endereco.cidade + ' - ' + customer.endereco.estado}
+                  {obj.endereco.cidade + ' - ' + obj.endereco.estado}
                 </Typography>
                 <Typography color="textPrimary" variant="body1">
-                  {customer.endereco.cep}
+                  {obj.endereco.cep}
                 </Typography>
 
                 <Typography color="textPrimary" variant="body1">
-                  {customer.endereco.referencia}
+                  {obj.endereco.referencia}
                 </Typography>
               </Box>
             )}
           </TableCell>
 
           <TableCell>
-            {customer.status == 1 ? (
+            {obj.status == 1 ? (
               <Chip color="info" label={'Em análise'} size="small" />
-            ) : customer.status == 2 ? (
+            ) : obj.status == 2 ? (
               <Chip
                 color="warning"
                 label={'Aguardando pagamento'}
                 size="small"
                 style={{ backgroundColor: '#D4BC34' }}
               />
-            ) : customer.status == 3 ? (
+            ) : obj.status == 3 ? (
               <Chip
                 color="success"
                 label={'Em andamento'}
                 size="small"
                 style={{ backgroundColor: '#563880' }}
               />
-            ) : customer.status == 4 ? (
+            ) : obj.status == 4 ? (
               <Chip
                 color="success"
                 label={'A caminho'}
                 size="small"
                 style={{ backgroundColor: '#4F77BE' }}
               />
-            ) : customer.status == 5 ? (
+            ) : obj.status == 5 ? (
               <Chip color="success" label={'Finalizado'} size="small" />
-            ) : customer.status == 6 ? (
+            ) : obj.status == 6 ? (
               <Chip color="error" label={'Cancelado'} size="small" />
             ) : (
               <></>
@@ -367,50 +365,50 @@ const PedidoListResults = ({
               }}
             >
               <Typography color="textPrimary" variant="body1">
-                {formataData(customer.data)}
+                {formataData(obj.data)}
               </Typography>
             </Box>
           </TableCell>
           <TableCell>
-            {customer.status == 1 ? (
+            {obj.status == 1 ? (
               <IconButton
                 color="inherit"
                 aria-label="aprovar pedido"
                 onClick={() => {
-                  setSelected(customer);
+                  setSelected(obj);
                   setModalVisible(true);
                 }}
               >
                 <AssignmentTurnedIn />
               </IconButton>
-            ) : customer.status == 2 ? (
+            ) : obj.status == 2 ? (
               <IconButton
                 color="inherit"
                 aria-label="aprovar pagamento"
                 onClick={() => {
-                  setSelected(customer);
+                  setSelected(obj);
                   setModalVisible(true);
                 }}
               >
                 <PriceCheck />
               </IconButton>
-            ) : customer.status == 3 ? (
+            ) : obj.status == 3 ? (
               <IconButton
                 color="inherit"
                 aria-label="realizar entrega"
                 onClick={() => {
-                  setSelected(customer);
+                  setSelected(obj);
                   setModalVisible(true);
                 }}
               >
                 <Moped />
               </IconButton>
-            ) : customer.status == 4 ? (
+            ) : obj.status == 4 ? (
               <IconButton
                 color="inherit"
                 aria-label="finalizar pedido"
                 onClick={() => {
-                  setSelected(customer);
+                  setSelected(obj);
                   setModalVisible(true);
                 }}
               >
@@ -419,23 +417,23 @@ const PedidoListResults = ({
             ) : (
               <></>
             )}
-            {customer.status != 5 && (
+            {obj.status != 5 && (
               <IconButton
                 color="inherit"
                 aria-label="editar"
                 onClick={() => {
-                  handleEdit(customer);
+                  handleEdit(obj);
                 }}
               >
                 <Edit />
               </IconButton>
             )}
-            {customer.status != 5 && (
+            {obj.status != 5 && (
               <IconButton
                 color="inherit"
                 aria-label="cancelar"
                 onClick={() => {
-                  setSelected(customer);
+                  setSelected(obj);
                   setModalCancelVisible(true);
                 }}
               >
@@ -456,7 +454,7 @@ const PedidoListResults = ({
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
             <Collapse in={open} timeout="auto" unmountOnExit>
               <Box sx={{ margin: 1 }}>
-                <ProducsPedidotListResults customers={customer.produtos} />
+                <ProducsPedidotListResults objs={obj.produtos} />
               </Box>
             </Collapse>
           </TableCell>
@@ -594,8 +592,8 @@ const PedidoListResults = ({
                   <TableBody>
                     {pedidos
                       .slice(page * limit, page * limit + limit)
-                      .map((customer) => (
-                        <Row key={customer._id} customer={customer} />
+                      .map((obj) => (
+                        <Row key={obj._id} obj={obj} />
                       ))}
                   </TableBody>
                 </Table>
@@ -620,7 +618,7 @@ const PedidoListResults = ({
 
 PedidoListResults.propTypes = {
   onListType: PropTypes.func,
-  customers: PropTypes.array.isRequired,
+  objs: PropTypes.array.isRequired,
   usuarios: PropTypes.array.isRequired,
   tipopagamentos: PropTypes.array.isRequired
 };

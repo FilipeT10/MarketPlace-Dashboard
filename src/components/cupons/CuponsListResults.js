@@ -2,7 +2,11 @@ import { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { KeyboardArrowDown, KeyboardArrowUp } from '@material-ui/icons';
+import {
+  KeyboardArrowDown,
+  KeyboardArrowUp,
+  NotInterested
+} from '@material-ui/icons';
 import {
   Avatar,
   Box,
@@ -23,7 +27,7 @@ import {
   TextField,
   Typography,
   Grid,
-  Container
+  Collapse
 } from '@material-ui/core';
 import getInitials from '../../utils/getInitials';
 
@@ -36,10 +40,10 @@ import ModalFeedback from '../Other/ModalFeedback';
 import CuponsListToolbar from './CuponsListToolbar';
 import formatDate from 'src/utils/formatDate';
 
-const CuponsListResults = ({ customers, ...rest }) => {
+const CuponsListResults = ({ objs, categorias, subcategorias, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-  const [customerEdit, setCustomerEdit] = useState({});
+  const [objEdit, setobjEdit] = useState({});
   const [isEdit, setIsEdit] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalSuccess, setModalSuccess] = useState(true);
@@ -48,13 +52,13 @@ const CuponsListResults = ({ customers, ...rest }) => {
     nome: ''
   });
 
-  const [cupons, setCupons] = useState(customers);
+  const [cupons, setCupons] = useState(objs);
   const [searchText, setSearchText] = useState('');
 
   const handleChangeSearch = (event) => {
     let value = event.target.value;
     setSearchText(value);
-    let cuponsFilter = customers.filter(function (item) {
+    let cuponsFilter = objs.filter(function (item) {
       return (
         item.name.includes(value) ||
         item.name.includes(value.toLowerCase()) ||
@@ -78,11 +82,11 @@ const CuponsListResults = ({ customers, ...rest }) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
-  const handleEdit = (customer) => {
-    setChecked(customer.ativo);
-    setValues({ nome: customer.name });
+  const handleEdit = (obj) => {
+    setChecked(obj.ativo);
+    setValues({ nome: obj.name });
     setIsEdit(true);
-    setCustomerEdit(customer);
+    setobjEdit(obj);
   };
 
   const handleBackEdit = () => {
@@ -91,15 +95,131 @@ const CuponsListResults = ({ customers, ...rest }) => {
   const handleAtivoChecked = () => {
     setChecked(!isChecked);
   };
+  const filterCategoriaFromId = (id) => {
+    if (categorias.length == 0 || id == undefined) {
+      return '';
+    } else {
+      let usuariosFilter = categorias.filter(function (item) {
+        return item._id == id;
+      });
+      if (usuariosFilter.length == 0) {
+        return 'Categoria não encontrada';
+      }
+      return usuariosFilter[0].name;
+    }
+  };
+  const filterSubCategoriaFromId = (id) => {
+    if (subcategorias.length == 0 || id == undefined) {
+      return '';
+    } else {
+      let usuariosFilter = subcategorias.filter(function (item) {
+        return item._id == id;
+      });
+      if (usuariosFilter.length == 0) {
+        return 'Subcategoria não encontrada';
+      }
+      return usuariosFilter[0].name;
+    }
+  };
 
+  function TableCollapsable(props) {
+    const { obj } = props;
+
+    return (
+      <Fragment>
+        <Card style={{ marginTop: 10 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Valor</TableCell>
+                <TableCell>Condição</TableCell>
+                <TableCell>Categorias</TableCell>
+                <TableCell>Subcategorias</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow hover key={obj.id}>
+                <TableCell>
+                  <Box
+                    sx={{
+                      alignItems: 'center',
+                      display: 'flex'
+                    }}
+                  >
+                    <Typography color="textPrimary" variant="body1">
+                      {obj.tipo == '$' ? 'R$: ' + obj.valor : obj.valor + '%'}
+                    </Typography>
+                  </Box>
+                </TableCell>
+                <TableCell>
+                  <Box
+                    sx={{
+                      alignItems: 'center',
+                      display: 'flex'
+                    }}
+                  >
+                    <Typography color="textPrimary" variant="body1">
+                      {obj.condicao == 'all'
+                        ? 'Todos'
+                        : obj.condicao == 'PC'
+                        ? 'Primeira compra'
+                        : obj.condicao == '>'
+                        ? 'Compras a partir de R$: ' + obj.valorCondicao
+                        : ''}
+                    </Typography>
+                  </Box>
+                </TableCell>
+                <TableCell>
+                  <Box
+                    sx={{
+                      alignItems: 'center',
+                      display: 'flex'
+                    }}
+                  >
+                    {obj.categorias.length > 0 ? (
+                      obj.categorias.map((category) => (
+                        <Typography color="textPrimary" variant="body1">
+                          {filterCategoriaFromId(category)}
+                        </Typography>
+                      ))
+                    ) : (
+                      <NotInterested color="error" />
+                    )}
+                  </Box>
+                </TableCell>
+                <TableCell>
+                  <Box
+                    sx={{
+                      alignItems: 'center',
+                      display: 'flex'
+                    }}
+                  >
+                    {obj.subcategorias.length > 0 ? (
+                      obj.subcategorias.map((subcategory) => (
+                        <Typography color="textPrimary" variant="body1">
+                          {filterSubCategoriaFromId(subcategory)}
+                        </Typography>
+                      ))
+                    ) : (
+                      <NotInterested color="error" />
+                    )}
+                  </Box>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </Card>
+      </Fragment>
+    );
+  }
   function Row(props) {
-    const { customer } = props;
+    const { obj } = props;
 
     const [open, setOpen] = useState(false);
 
     return (
       <Fragment>
-        <TableRow hover key={customer.id}>
+        <TableRow hover key={obj.id}>
           <TableCell>
             <Box
               sx={{
@@ -108,7 +228,7 @@ const CuponsListResults = ({ customers, ...rest }) => {
               }}
             >
               <Typography color="textPrimary" variant="body1">
-                {customer.name}
+                {obj.name}
               </Typography>
             </Box>
           </TableCell>
@@ -120,7 +240,7 @@ const CuponsListResults = ({ customers, ...rest }) => {
               }}
             >
               <Typography color="textPrimary" variant="body1">
-                {customer.descricao}
+                {obj.descricao}
               </Typography>
             </Box>
           </TableCell>
@@ -132,7 +252,7 @@ const CuponsListResults = ({ customers, ...rest }) => {
               }}
             >
               <Typography color="textPrimary" variant="body1">
-                {formatDate(customer.periodoInicial)}
+                {formatDate(obj.periodoInicial)}
               </Typography>
             </Box>
           </TableCell>
@@ -144,12 +264,12 @@ const CuponsListResults = ({ customers, ...rest }) => {
               }}
             >
               <Typography color="textPrimary" variant="body1">
-                {formatDate(customer.periodoFinal)}
+                {formatDate(obj.periodoFinal)}
               </Typography>
             </Box>
           </TableCell>
           <TableCell>
-            {customer.ativo ? (
+            {obj.ativo ? (
               <Chip color="success" label={'Ativo'} size="small" />
             ) : (
               <Chip color="warning" label={'Inativo'} size="small" />
@@ -157,12 +277,12 @@ const CuponsListResults = ({ customers, ...rest }) => {
           </TableCell>
 
           <TableCell>
-            {customer.ativo && (
+            {obj.ativo && (
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
                 onClick={() => {
-                  handleEdit(customer);
+                  handleEdit(obj);
                 }}
               >
                 <Edit />
@@ -178,10 +298,17 @@ const CuponsListResults = ({ customers, ...rest }) => {
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+          <TableCell
+            style={{
+              paddingBottom: 0,
+              paddingTop: 0,
+              backgroundColor: 'transparent'
+            }}
+            colSpan={10}
+          >
             <Collapse in={open} timeout="auto" unmountOnExit>
               <Box sx={{ margin: 1 }}>
-                {/*<ProducsPedidotListResults customers={customer.produtos} />*/}
+                <TableCollapsable obj={obj} />
               </Box>
             </Collapse>
           </TableCell>
@@ -195,7 +322,7 @@ const CuponsListResults = ({ customers, ...rest }) => {
       name: values.nome,
       ativo: isChecked
     };
-    ServiceCupons.editCupons(customerEdit._id, json)
+    ServiceCupons.editCupons(objEdit._id, json)
       .then((response) => {
         setModalSuccess(true);
         setModalVisible(true);
@@ -315,8 +442,8 @@ const CuponsListResults = ({ customers, ...rest }) => {
                   <TableBody>
                     {cupons
                       .slice(page * limit, page * limit + limit)
-                      .map((customer) => (
-                        <Row key={customer._id} customer={customer} />
+                      .map((obj) => (
+                        <Row key={obj._id} obj={obj} />
                       ))}
                   </TableBody>
                 </Table>
@@ -325,7 +452,7 @@ const CuponsListResults = ({ customers, ...rest }) => {
 
             <TablePagination
               component="div"
-              count={customers.length}
+              count={objs.length}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleLimitChange}
               page={page}
@@ -337,10 +464,6 @@ const CuponsListResults = ({ customers, ...rest }) => {
       )}
     </div>
   );
-};
-
-CuponsListResults.propTypes = {
-  customers: PropTypes.array.isRequired
 };
 
 export default CuponsListResults;

@@ -34,10 +34,10 @@ import ServiceUsuarios from 'src/services/Usuarios';
 import ModalFeedback from '../Other/ModalFeedback';
 import UsuariosListToolbar from './UsuariosListToolbar';
 
-const UsuariosListResults = ({ customers, lojas, ...rest }) => {
+const UsuariosListResults = ({ objs, lojas, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-  const [customerEdit, setCustomerEdit] = useState({});
+  const [objEdit, setobjEdit] = useState({});
   const [isEdit, setIsEdit] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalSuccess, setModalSuccess] = useState(true);
@@ -47,14 +47,14 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
     tipo: ''
   });
 
-  const [usuarios, setUsuarios] = useState(customers);
+  const [usuarios, setUsuarios] = useState(objs);
 
   const [searchText, setSearchText] = useState('');
 
   const handleChangeSearch = (event) => {
     let value = event.target.value;
     setSearchText(value);
-    let usuariosFilter = customers.filter(function (item) {
+    let usuariosFilter = objs.filter(function (item) {
       return (
         item.name.includes(value) ||
         item.name.includes(value.toLowerCase()) ||
@@ -97,11 +97,11 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
-  const handleEdit = (customer) => {
-    setChecked(customer.ativo);
-    setValues({ nome: customer.name, tipo: customer.tipoUsuario });
+  const handleEdit = (obj) => {
+    setChecked(obj.ativo);
+    setValues({ nome: obj.name, tipo: obj.tipoUsuario });
     setIsEdit(true);
-    setCustomerEdit(customer);
+    setobjEdit(obj);
   };
 
   const handleBackEdit = () => {
@@ -117,7 +117,7 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
       tipoUsuario: values.tipo,
       ativo: isChecked
     };
-    ServiceUsuarios.editUsuarios(customerEdit._id, json)
+    ServiceUsuarios.editUsuarios(objEdit._id, json)
       .then((response) => {
         setModalSuccess(true);
         setModalVisible(true);
@@ -231,8 +231,8 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
                   <TableBody>
                     {usuarios
                       .slice(page * limit, page * limit + limit)
-                      .map((customer) => (
-                        <TableRow hover key={customer._id}>
+                      .map((obj) => (
+                        <TableRow hover key={obj._id}>
                           <TableCell>
                             <Box
                               sx={{
@@ -241,7 +241,7 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
                               }}
                             >
                               <Typography color="textPrimary" variant="body1">
-                                {customer.name}
+                                {obj.name}
                               </Typography>
                             </Box>
                           </TableCell>
@@ -253,7 +253,7 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
                               }}
                             >
                               <Typography color="textPrimary" variant="body1">
-                                {customer.cpf}
+                                {obj.cpf}
                               </Typography>
                             </Box>
                           </TableCell>
@@ -265,7 +265,7 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
                               }}
                             >
                               <Typography color="textPrimary" variant="body1">
-                                {customer.email}
+                                {obj.email}
                               </Typography>
                             </Box>
                           </TableCell>
@@ -277,9 +277,9 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
                               }}
                             >
                               <Typography color="textPrimary" variant="body1">
-                                {customer.gender == 'Male'
+                                {obj.gender == 'Male'
                                   ? 'Masculino'
-                                  : customer.gender == 'Female'
+                                  : obj.gender == 'Female'
                                   ? 'Feminino'
                                   : ''}
                               </Typography>
@@ -293,7 +293,7 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
                               }}
                             >
                               <Typography color="textPrimary" variant="body1">
-                                {filterLojaFromId(customer.loja)}
+                                {filterLojaFromId(obj.loja)}
                               </Typography>
                             </Box>
                           </TableCell>
@@ -304,7 +304,7 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
                                 display: 'flex'
                               }}
                             >
-                              {customer.profiles.map((user) => (
+                              {obj.profiles.map((user) => (
                                 <Typography color="textPrimary" variant="body1">
                                   {user == 'sysAdminMktPlc' ? 'sistema' : user}
                                 </Typography>
@@ -320,7 +320,7 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
 
             <TablePagination
               component="div"
-              count={customers.length}
+              count={objs.length}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleLimitChange}
               page={page}
@@ -335,7 +335,7 @@ const UsuariosListResults = ({ customers, lojas, ...rest }) => {
 };
 
 UsuariosListResults.propTypes = {
-  customers: PropTypes.array.isRequired,
+  objs: PropTypes.array.isRequired,
   lojas: PropTypes.array.isRequired
 };
 

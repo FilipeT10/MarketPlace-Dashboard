@@ -76,9 +76,9 @@ class Pedidos extends React.Component {
   handleBackEdit = () => {
     this.setState({ isEdit: false });
   };
-  handleEdit = (customer) => {
+  handleEdit = (obj) => {
     this.setState({
-      values: { nome: customer.name, ...customer },
+      values: { nome: obj.name, ...obj },
       isEdit: true
     });
   };
@@ -118,7 +118,7 @@ class Pedidos extends React.Component {
                 <LinearProgress />
               ) : (
                 <PedidosListResults
-                  customers={pedidos}
+                  objs={pedidos.sort((x, y) => y.numeroPedido - x.numeroPedido)}
                   usuarios={usuarios}
                   tipopagamentos={tipopagamentos}
                   onListType={() => {

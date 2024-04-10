@@ -605,7 +605,7 @@ class EditarPedido extends React.Component {
                       <CardContent>
                         {produtosPedido.length > 0 && (
                           <ProducsPedidotListResults
-                            customers={produtosPedido}
+                            objs={produtosPedido}
                             editProduct={(product) => this.editProduct(product)}
                             removeProduct={(product) =>
                               this.removeProduct(product)

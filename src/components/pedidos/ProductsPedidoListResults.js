@@ -34,7 +34,7 @@ import { CheckCircle, Close, NotInterested } from '@material-ui/icons';
 
 const ProducsPedidotListResults = ({
   onListType,
-  customers,
+  objs,
   removeProduct,
   editProduct,
   ...rest
@@ -48,11 +48,11 @@ const ProducsPedidotListResults = ({
     nome: ''
   });
 
-  const [produtos, setProdutos] = useState(customers);
+  const [produtos, setProdutos] = useState(objs);
   const [searchText, setSearchText] = useState('');
 
-  const handleEdit = (customer) => {
-    setValues({ nome: customer.name, ...customer });
+  const handleEdit = (obj) => {
+    setValues({ nome: obj.name, ...obj });
     setIsEdit(true);
   };
   const handleBackEdit = () => {
@@ -95,8 +95,8 @@ const ProducsPedidotListResults = ({
                   <TableBody>
                     {produtos
                       .slice(page * limit, page * limit + limit)
-                      .map((customer, index) => (
-                        <TableRow hover key={customer.produto}>
+                      .map((obj, index) => (
+                        <TableRow hover key={obj.produto}>
                           <TableCell>
                             <Box
                               sx={{
@@ -105,7 +105,7 @@ const ProducsPedidotListResults = ({
                               }}
                             >
                               <Typography color="textPrimary" variant="body1">
-                                {customer.name}
+                                {obj.name}
                               </Typography>
                             </Box>
                           </TableCell>
@@ -117,11 +117,11 @@ const ProducsPedidotListResults = ({
                               }}
                             >
                               <Typography color="textPrimary" variant="body1">
-                                {customer.preco}
+                                {obj.preco}
                               </Typography>
                             </Box>
                           </TableCell>
-                          {customer.promocao ? (
+                          {obj.promocao ? (
                             <TableCell>
                               <Box
                                 sx={{
@@ -152,7 +152,7 @@ const ProducsPedidotListResults = ({
                               }}
                             >
                               <Typography color="textPrimary" variant="body1">
-                                {customer.quantidade}
+                                {obj.quantidade}
                               </Typography>
                             </Box>
                           </TableCell>
@@ -164,7 +164,7 @@ const ProducsPedidotListResults = ({
                               }}
                             >
                               <Typography color="textPrimary" variant="body1">
-                                {customer.tamanho}
+                                {obj.tamanho}
                               </Typography>
                             </Box>
                           </TableCell>
@@ -176,12 +176,12 @@ const ProducsPedidotListResults = ({
                               }}
                             >
                               <Typography color="textPrimary" variant="body1">
-                                {customer.cor}
+                                {obj.cor}
                               </Typography>
                             </Box>
                           </TableCell>
                           <TableCell>
-                            {customer.ingredientes.map((subcategoria) => (
+                            {obj.ingredientes.map((subcategoria) => (
                               <Box
                                 sx={{
                                   alignItems: 'center',
@@ -237,7 +237,7 @@ ProducsPedidotListResults.propTypes = {
   onListType: PropTypes.func,
   removeProduct: PropTypes.func,
   editProduct: PropTypes.func,
-  customers: PropTypes.array.isRequired
+  objs: PropTypes.array.isRequired
 };
 
 export default ProducsPedidotListResults;

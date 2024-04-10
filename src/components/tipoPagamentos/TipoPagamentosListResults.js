@@ -37,10 +37,10 @@ import InputImages from '../Other/InputImages';
 
 var imagens = [];
 
-const TipoPagamentosListResults = ({ customers, ...rest }) => {
+const TipoPagamentosListResults = ({ objs, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-  const [customerEdit, setCustomerEdit] = useState({});
+  const [objEdit, setobjEdit] = useState({});
   const [isEdit, setIsEdit] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalSuccess, setModalSuccess] = useState(true);
@@ -52,13 +52,13 @@ const TipoPagamentosListResults = ({ customers, ...rest }) => {
 
   const [errorImagem, setErrorImagem] = useState(false);
 
-  const [tipoPagamentos, setTipoPagamentos] = useState(customers);
+  const [tipoPagamentos, setTipoPagamentos] = useState(objs);
   const [searchText, setSearchText] = useState('');
 
   const handleChangeSearch = (event) => {
     let value = event.target.value;
     setSearchText(value);
-    let tipoPagamentosFilter = customers.filter(function (item) {
+    let tipoPagamentosFilter = objs.filter(function (item) {
       return (
         item.name.includes(value) ||
         item.name.includes(value.toLowerCase()) ||
@@ -82,23 +82,23 @@ const TipoPagamentosListResults = ({ customers, ...rest }) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
-  const handleEdit = (customer) => {
-    setChecked(customer.ativo);
-    if (customer.logo && customer.logo.base) {
+  const handleEdit = (obj) => {
+    setChecked(obj.ativo);
+    if (obj.logo && obj.logo.base) {
       setValues({
-        nome: customer.name,
-        tipo: customer.tipoTipoPagamento,
-        imagens: [customer.logo]
+        nome: obj.name,
+        tipo: obj.tipoTipoPagamento,
+        imagens: [obj.logo]
       });
     } else {
       setValues({
-        nome: customer.name,
-        tipo: customer.tipoTipoPagamento,
+        nome: obj.name,
+        tipo: obj.tipoTipoPagamento,
         imagens: []
       });
     }
     setIsEdit(true);
-    setCustomerEdit(customer);
+    setobjEdit(obj);
   };
 
   const handleBackEdit = () => {
@@ -118,7 +118,7 @@ const TipoPagamentosListResults = ({ customers, ...rest }) => {
       name: values.nome,
       ativo: isChecked
     };
-    ServiceTipoPagamentos.editTipoPagamentos(customerEdit._id, json)
+    ServiceTipoPagamentos.editTipoPagamentos(objEdit._id, json)
       .then((response) => {
         setModalSuccess(true);
         setModalVisible(true);
@@ -235,8 +235,8 @@ const TipoPagamentosListResults = ({ customers, ...rest }) => {
                   <TableBody>
                     {tipoPagamentos
                       .slice(page * limit, page * limit + limit)
-                      .map((customer) => (
-                        <TableRow hover key={customer.id}>
+                      .map((obj) => (
+                        <TableRow hover key={obj.id}>
                           <TableCell>
                             <Box
                               sx={{
@@ -245,12 +245,12 @@ const TipoPagamentosListResults = ({ customers, ...rest }) => {
                               }}
                             >
                               <Typography color="textPrimary" variant="body1">
-                                {customer.name}
+                                {obj.name}
                               </Typography>
                             </Box>
                           </TableCell>
                           <TableCell>
-                            {customer.ativo ? (
+                            {obj.ativo ? (
                               <Chip
                                 color="success"
                                 label={'Ativo'}
@@ -269,7 +269,7 @@ const TipoPagamentosListResults = ({ customers, ...rest }) => {
                               color="inherit"
                               aria-label="open drawer"
                               onClick={() => {
-                                handleEdit(customer);
+                                handleEdit(obj);
                               }}
                             >
                               <Edit />
@@ -284,7 +284,7 @@ const TipoPagamentosListResults = ({ customers, ...rest }) => {
 
             <TablePagination
               component="div"
-              count={customers.length}
+              count={objs.length}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleLimitChange}
               page={page}
@@ -299,7 +299,7 @@ const TipoPagamentosListResults = ({ customers, ...rest }) => {
 };
 
 TipoPagamentosListResults.propTypes = {
-  customers: PropTypes.array.isRequired
+  objs: PropTypes.array.isRequired
 };
 
 export default TipoPagamentosListResults;

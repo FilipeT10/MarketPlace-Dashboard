@@ -10,11 +10,10 @@ import TotalProfit from '../components/dashboard/TotalProfit';
 import TrafficByDevice from '../components/dashboard/TrafficByDevice';
 import AppConfig from 'src/AppConfig';
 
-
 const Dashboard = () => (
   <>
     <Helmet>
-      <title>{'Painel | '+AppConfig.sigla}</title>
+      <title>{'Painel | ' + AppConfig.sigla}</title>
     </Helmet>
     <Box
       sx={{
@@ -24,80 +23,29 @@ const Dashboard = () => (
       }}
     >
       <Container maxWidth={false}>
-        <Grid
-          container
-          spacing={3}
-        >
-          <Grid
-            item
-            lg={3}
-            sm={6}
-            xl={3}
-            xs={12}
-          >
+        <Grid container spacing={3}>
+          <Grid item lg={3} sm={6} xl={3} xs={12}>
             <Budget />
           </Grid>
-          <Grid
-            item
-            lg={3}
-            sm={6}
-            xl={3}
-            xs={12}
-          >
+          <Grid item lg={3} sm={6} xl={3} xs={12}>
             <TotalCustomers />
           </Grid>
-          <Grid
-            item
-            lg={3}
-            sm={6}
-            xl={3}
-            xs={12}
-          >
+          <Grid item lg={3} sm={6} xl={3} xs={12}>
             <TasksProgress />
           </Grid>
-          <Grid
-            item
-            lg={3}
-            sm={6}
-            xl={3}
-            xs={12}
-          >
+          <Grid item lg={3} sm={6} xl={3} xs={12}>
             <TotalProfit sx={{ height: '100%' }} />
           </Grid>
-          <Grid
-            item
-            lg={8}
-            md={12}
-            xl={9}
-            xs={12}
-          >
+          <Grid item lg={8} md={12} xl={9} xs={12}>
             <Sales />
           </Grid>
-          <Grid
-            item
-            lg={4}
-            md={6}
-            xl={3}
-            xs={12}
-          >
+          <Grid item lg={4} md={6} xl={3} xs={12}>
             <TrafficByDevice sx={{ height: '100%' }} />
           </Grid>
-          <Grid
-            item
-            lg={4}
-            md={6}
-            xl={3}
-            xs={12}
-          >
+          <Grid item lg={4} md={6} xl={3} xs={12}>
             <LatestProducts sx={{ height: '100%' }} />
           </Grid>
-          <Grid
-            item
-            lg={8}
-            md={12}
-            xl={9}
-            xs={12}
-          >
+          <Grid item lg={8} md={12} xl={9} xs={12}>
             <LatestOrders />
           </Grid>
         </Grid>

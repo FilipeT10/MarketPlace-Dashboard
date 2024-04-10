@@ -38,10 +38,10 @@ import ColorPicker from 'material-ui-color-picker';
 
 var imagens = [];
 
-const LojasListResults = ({ customers, ...rest }) => {
+const LojasListResults = ({ objs, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-  const [customerEdit, setCustomerEdit] = useState({});
+  const [objEdit, setobjEdit] = useState({});
   const [isEdit, setIsEdit] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalSuccess, setModalSuccess] = useState(true);
@@ -79,7 +79,7 @@ const LojasListResults = ({ customers, ...rest }) => {
   const [errorCorSecondary, setErrorSecondary] = useState(false);
   const [errorCorSecondaryLight, setErrorSecondaryLight] = useState(false);
 
-  const [lojas, setLojas] = useState(customers);
+  const [lojas, setLojas] = useState(objs);
   const [searchText, setSearchText] = useState('');
 
   var errorText = 'Campo obrigatório';
@@ -103,7 +103,7 @@ const LojasListResults = ({ customers, ...rest }) => {
   const handleChangeSearch = (event) => {
     let value = event.target.value;
     setSearchText(value);
-    let lojasFilter = customers.filter(function (item) {
+    let lojasFilter = objs.filter(function (item) {
       return (
         item.name.includes(value) ||
         item.name.includes(value.toLowerCase()) ||
@@ -127,50 +127,50 @@ const LojasListResults = ({ customers, ...rest }) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
-  const handleEdit = (customer) => {
-    setChecked(customer.ativo);
-    setCheckedApp(customer.aplications[0].ativo);
-    setCheckedSite(customer.aplications[1].ativo);
+  const handleEdit = (obj) => {
+    setChecked(obj.ativo);
+    setCheckedApp(obj.aplications[0].ativo);
+    setCheckedSite(obj.aplications[1].ativo);
 
-    if (customer.logo && customer.logo.base) {
+    if (obj.logo && obj.logo.base) {
       setValues({
-        nome: customer.name,
-        tipo: customer.tipoLoja,
-        imagens: [customer.logo],
-        cep: customer.endereco.cep,
-        numero: customer.endereco.numero,
-        complemento: customer.endereco.complemento,
-        bairro: customer.endereco.bairro,
-        cidade: customer.endereco.cidade,
-        estado: customer.endereco.estado,
-        logradouro: customer.endereco.logradouro,
-        referencia: customer.endereco.referencia,
-        primaryColor: customer.cores.primary,
-        primaryLightColor: customer.cores.primaryLight,
-        secondaryColor: customer.cores.secondary,
-        secondaryLightColor: customer.cores.secondaryLight
+        nome: obj.name,
+        tipo: obj.tipoLoja,
+        imagens: [obj.logo],
+        cep: obj.endereco.cep,
+        numero: obj.endereco.numero,
+        complemento: obj.endereco.complemento,
+        bairro: obj.endereco.bairro,
+        cidade: obj.endereco.cidade,
+        estado: obj.endereco.estado,
+        logradouro: obj.endereco.logradouro,
+        referencia: obj.endereco.referencia,
+        primaryColor: obj.cores.primary,
+        primaryLightColor: obj.cores.primaryLight,
+        secondaryColor: obj.cores.secondary,
+        secondaryLightColor: obj.cores.secondaryLight
       });
     } else {
       setValues({
-        nome: customer.name,
-        tipo: customer.tipoLoja,
+        nome: obj.name,
+        tipo: obj.tipoLoja,
         imagens: [],
-        cep: customer.endereco.cep,
-        numero: customer.endereco.numero,
-        complemento: customer.endereco.complemento,
-        bairro: customer.endereco.bairro,
-        cidade: customer.endereco.cidade,
-        estado: customer.endereco.estado,
-        logradouro: customer.endereco.logradouro,
-        referencia: customer.endereco.referencia,
-        primaryColor: customer.cores.primary,
-        primaryLightColor: customer.cores.primaryLight,
-        secondaryColor: customer.cores.secondary,
-        secondaryLightColor: customer.cores.secondaryLight
+        cep: obj.endereco.cep,
+        numero: obj.endereco.numero,
+        complemento: obj.endereco.complemento,
+        bairro: obj.endereco.bairro,
+        cidade: obj.endereco.cidade,
+        estado: obj.endereco.estado,
+        logradouro: obj.endereco.logradouro,
+        referencia: obj.endereco.referencia,
+        primaryColor: obj.cores.primary,
+        primaryLightColor: obj.cores.primaryLight,
+        secondaryColor: obj.cores.secondary,
+        secondaryLightColor: obj.cores.secondaryLight
       });
     }
     setIsEdit(true);
-    setCustomerEdit(customer);
+    setobjEdit(obj);
   };
 
   const handleBackEdit = () => {
@@ -379,7 +379,7 @@ const LojasListResults = ({ customers, ...rest }) => {
           secondaryLight: values.secondaryLightColor
         }
       };
-      ServiceLojas.editLojas(customerEdit._id, json)
+      ServiceLojas.editLojas(objEdit._id, json)
         .then((response) => {
           setModalSuccess(true);
           setModalVisible(true);
@@ -852,17 +852,17 @@ const LojasListResults = ({ customers, ...rest }) => {
                   <TableBody>
                     {lojas
                       .slice(page * limit, page * limit + limit)
-                      .map((customer) => (
-                        <TableRow hover key={customer.id}>
+                      .map((obj) => (
+                        <TableRow hover key={obj.id}>
                           <TableCell>
-                            {customer.logo != undefined && (
+                            {obj.logo != undefined && (
                               <img
                                 style={{
                                   justifyContent: 'center',
                                   width: 50,
                                   height: 50
                                 }}
-                                src={customer.logo.base}
+                                src={obj.logo.base}
                               />
                             )}
                           </TableCell>
@@ -874,7 +874,7 @@ const LojasListResults = ({ customers, ...rest }) => {
                               }}
                             >
                               <Typography color="textPrimary" variant="body1">
-                                {customer.name}
+                                {obj.name}
                               </Typography>
                             </Box>
                           </TableCell>
@@ -886,7 +886,7 @@ const LojasListResults = ({ customers, ...rest }) => {
                               }}
                             >
                               <Typography color="textPrimary" variant="body1">
-                                {customer.tipoLoja}
+                                {obj.tipoLoja}
                               </Typography>
                             </Box>
                           </TableCell>
@@ -897,7 +897,7 @@ const LojasListResults = ({ customers, ...rest }) => {
                                 display: 'flex'
                               }}
                             >
-                              {customer.aplications.map((aplication) => (
+                              {obj.aplications.map((aplication) => (
                                 <IconButton
                                   color="inherit"
                                   aria-label="open drawer"
@@ -925,7 +925,7 @@ const LojasListResults = ({ customers, ...rest }) => {
                             </Box>
                           </TableCell>
                           <TableCell>
-                            {customer.ativo ? (
+                            {obj.ativo ? (
                               <Chip
                                 color="success"
                                 label={'Ativo'}
@@ -944,7 +944,7 @@ const LojasListResults = ({ customers, ...rest }) => {
                               color="inherit"
                               aria-label="open drawer"
                               onClick={() => {
-                                handleEdit(customer);
+                                handleEdit(obj);
                               }}
                             >
                               <Edit />
@@ -959,7 +959,7 @@ const LojasListResults = ({ customers, ...rest }) => {
 
             <TablePagination
               component="div"
-              count={customers.length}
+              count={objs.length}
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleLimitChange}
               page={page}
@@ -974,7 +974,7 @@ const LojasListResults = ({ customers, ...rest }) => {
 };
 
 LojasListResults.propTypes = {
-  customers: PropTypes.array.isRequired
+  objs: PropTypes.array.isRequired
 };
 
 export default LojasListResults;
