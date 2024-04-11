@@ -1,16 +1,15 @@
-import React, { useEffect } from "react";
-import PropTypes from "prop-types";
-import Chip from "@material-ui/core/Chip";
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
+import Chip from '@material-ui/core/Chip';
 
 import { makeStyles } from '@material-ui/styles';
-import TextField from "@material-ui/core/TextField";
-import Downshift from "downshift";
+import TextField from '@material-ui/core/TextField';
+import Downshift from 'downshift';
 
-import Edit from "@material-ui/icons/Edit";
-import { IconButton } from "@material-ui/core";
+import Edit from '@material-ui/icons/Edit';
+import { IconButton } from '@material-ui/core';
 
-
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   chip: {
     margin: theme.spacing(0.5, 0.25)
   }
@@ -19,36 +18,36 @@ const useStyles = makeStyles(theme => ({
 export default function CheckBoxInput({ ...props }) {
   const classes = useStyles();
   const { selectedTags, placeholder, tags, ...other } = props;
-  const [inputValue, setInputValue] = React.useState("");
+  const [inputValue, setInputValue] = React.useState('');
   const [selectedItem, setSelectedItem] = React.useState([]);
   useEffect(() => {
     setSelectedItem(tags);
   }, [tags]);
   useEffect(() => {
-    selectedTags(selectedItem);
+    //selectedTags(selectedItem);
   }, [selectedItem, selectedTags]);
 
   function handleKeyDown(event) {
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       const newSelectedItem = [...selectedItem];
       const duplicatedValues = newSelectedItem.indexOf(
         event.target.value.trim()
       );
 
       if (duplicatedValues !== -1) {
-        setInputValue("");
+        setInputValue('');
         return;
       }
-      if (!event.target.value.replace(/\s/g, "").length) return;
+      if (!event.target.value.replace(/\s/g, '').length) return;
 
       newSelectedItem.push(event.target.value.trim());
       setSelectedItem(newSelectedItem);
-      setInputValue("");
+      setInputValue('');
     }
     if (
       selectedItem.length &&
       !inputValue.length &&
-      event.key === "Backspace"
+      event.key === 'Backspace'
     ) {
       setSelectedItem(selectedItem.slice(0, selectedItem.length - 1));
     }
@@ -58,11 +57,11 @@ export default function CheckBoxInput({ ...props }) {
     if (newSelectedItem.indexOf(item) === -1) {
       newSelectedItem = [...newSelectedItem, item];
     }
-    setInputValue("");
+    setInputValue('');
     setSelectedItem(newSelectedItem);
   }
 
-  const handleDelete = item => () => {
+  const handleDelete = (item) => () => {
     const newSelectedItem = [...selectedItem];
     newSelectedItem.splice(newSelectedItem.indexOf(item), 1);
     setSelectedItem(newSelectedItem);
@@ -88,7 +87,7 @@ export default function CheckBoxInput({ ...props }) {
             <div>
               <TextField
                 InputProps={{
-                  startAdornment: selectedItem.map(item => (
+                  startAdornment: selectedItem.map((item) => (
                     <Chip
                       key={item}
                       tabIndex={-1}
@@ -98,7 +97,7 @@ export default function CheckBoxInput({ ...props }) {
                     />
                   )),
                   onBlur,
-                  onChange: event => {
+                  onChange: (event) => {
                     handleInputChange(event);
                     onChange(event);
                   },
@@ -114,10 +113,10 @@ export default function CheckBoxInput({ ...props }) {
     </React.Fragment>
   );
 }
-CheckboxInput.defaultProps = {
+CheckBoxInput.defaultProps = {
   tags: []
 };
-CheckboxInput.propTypes = {
+CheckBoxInput.propTypes = {
   selectedTags: PropTypes.func.isRequired,
   tags: PropTypes.arrayOf(PropTypes.string)
 };
