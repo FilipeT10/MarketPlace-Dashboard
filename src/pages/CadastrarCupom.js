@@ -25,31 +25,55 @@ import AppConfig from 'src/AppConfig';
 import { getLoja } from 'src/daos/auth';
 import MultiSelect from 'src/components/Other/MultiSelect';
 import ServiceCategorias from 'src/services/Categorias';
+import ServiceSubCategorias from 'src/services/SubCategorias';
+import formatMoney from 'src/utils/formatMoney';
 
 class CadastrarCupom extends React.Component {
   state = {
-    isChecked: true,
+    disponibilidade: null,
     loading: true,
     nome: '',
     valor: '',
-    tipoValor: null,
+    valorMinimo: '',
+    tipoValor: '$',
     descricao: '',
     errorNome: false,
     errorDescricao: false,
+    errorValorMinimo: false,
+    errorCategorias: false,
+    errorDisponibilidade: false,
     modalVisible: false,
     modalSuccess: true,
-    categorias: []
+    categorias: [],
+    subcategorias: [],
+    categoriasSelected: [],
+    subcategoriasSelected: []
   };
 
   componentDidMount() {
     this.getCategorias();
   }
-
+  getSubCategorias = () => {
+    ServiceSubCategorias.getSubCategorias()
+      .then((response) => {
+        var subcategorias = response.data;
+        this.setState({
+          subcategorias,
+          subcategoriasSelected: subcategorias,
+          loading: false
+        });
+      })
+      .catch((error) => {
+        alert('Falha ao carregar as categorias, tente novamente mais tarde.');
+        console.log(error);
+      });
+  };
   getCategorias = () => {
     ServiceCategorias.getCategorias()
       .then((response) => {
         var categorias = response.data;
-        this.setState({ categorias, loading: false });
+        this.setState({ categorias, categoriasSelected: categorias });
+        this.getSubCategorias();
       })
       .catch((error) => {
         alert('Falha ao carregar as categorias, tente novamente mais tarde.');
@@ -58,7 +82,14 @@ class CadastrarCupom extends React.Component {
   };
 
   saveCupom = () => {
-    this.setState({ errorNome: false, errorDescricao: false });
+    this.setState({
+      errorNome: false,
+      errorDescricao: false,
+      errorValor: false,
+      errorDisponibilidade: false,
+      errorCategorias: false,
+      errorValorMinimo: false
+    });
     if (this.state.nome == '') {
       this.setState({ errorNome: true });
       return;
@@ -67,32 +98,65 @@ class CadastrarCupom extends React.Component {
       this.setState({ errorDescricao: true });
       return;
     }
-    // var json = {
-    //   name: this.state.nome,
-    //   loja: getLoja(),
-    //   ativo: this.state.isChecked
-    // };
-    // ServiceCupons.saveCupons(json)
-    //   .then((response) => {
-    //     var cupom = response.data;
+    if (this.state.valor == '') {
+      this.setState({ errorValor: true });
+      return;
+    }
+    if (this.state.disponibilidade == null) {
+      this.setState({ errorDisponibilidade: true });
+      return;
+    }
+    if (this.state.valorMinimo == '' && this.state.disponibilidade == '>') {
+      this.setState({ errorValorMinimo: true });
+      return;
+    }
+    if (
+      this.state.categoriasSelected.length == 0 &&
+      this.state.subcategoriasSelected.length == 0 &&
+      this.state.disponibilidade != 'all'
+    ) {
+      this.setState({ errorCategorias: true });
+      return;
+    }
+    var json = {
+      name: this.state.nome,
+      loja: getLoja(),
+      descricao: this.state.descricao,
+      categorias:
+        this.state.disponibilidade == 'all'
+          ? []
+          : this.state.categoriasSelected,
+      subcategorias:
+        this.state.disponibilidade == 'all'
+          ? []
+          : this.state.subcategoriasSelected,
+      valor: this.state.valor,
+      tipo: this.state.tipoValor,
+      //periodoInicial:
+      //periodoFinal:
+      condicao: this.state.disponibilidade,
+      valorCondicao:
+        this.state.disponibilidade == '>' ? this.state.valorMinimo : undefined
+    };
+    ServiceCupons.saveCupons(json)
+      .then((response) => {
+        var cupom = response.data;
 
-    //     this.setState({ modalVisible: true, modalSuccess: true });
-    //   })
-    //   .catch((error) => {
-    //     this.setState({ modalVisible: true, modalSuccess: false });
-    //     console.log(error);
-    //   });
+        this.setState({ modalVisible: true, modalSuccess: true });
+      })
+      .catch((error) => {
+        if (error.response.data.message) {
+          this.setState({ errorMessage: error.response.data.message });
+        }
+        this.setState({ modalVisible: true, modalSuccess: false });
+        console.log(error);
+      });
     return;
   };
 
   handleChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value
-    });
-  };
-  handleAllChecked = () => {
-    this.setState({
-      isChecked: !this.state.isChecked
     });
   };
 
@@ -169,8 +233,11 @@ class CadastrarCupom extends React.Component {
                           <FormControl style={{ marginLeft: 10, marginTop: 5 }}>
                             <RadioGroup
                               aria-labelledby="tipo do valor"
-                              defaultValue="$"
-                              name="radio-buttons-group"
+                              defaultValue={this.state.tipoValor}
+                              name="tipoValor"
+                              onChange={(event, value) => {
+                                this.setState({ tipoValor: value });
+                              }}
                             >
                               <FormControlLabel
                                 value="$"
@@ -185,38 +252,111 @@ class CadastrarCupom extends React.Component {
                             </RadioGroup>
                           </FormControl>
 
-                          <Typography color="textPrimary" variant="body1">
-                            {'Válido para todos os produtos?'}
+                          <Typography
+                            color={
+                              this.state.errorDisponibilidade
+                                ? 'error'
+                                : 'textPrimary'
+                            }
+                            variant="body1"
+                          >
+                            {this.state.errorDisponibilidade
+                              ? 'Disponibilidade *   Campo obrigatório'
+                              : 'Disponibilidade *'}
                           </Typography>
-                          <Grid container spacing={2}>
-                            <Grid item xs={0}>
-                              <Switch
-                                checked={this.state.isChecked}
-                                onChange={this.handleAllChecked}
-                                inputProps={{ 'aria-label': 'controlled' }}
+                          <FormControl
+                            style={{
+                              marginLeft: 10,
+                              marginTop: 5,
+                              width: '100%'
+                            }}
+                          >
+                            <RadioGroup
+                              aria-labelledby="disponibilidade"
+                              required
+                              name="disponibilidade"
+                              onChange={(event, value) => {
+                                if (value == 'all') {
+                                  this.setState({
+                                    categoriasSelected: this.state.categorias,
+                                    errorCategorias: false,
+                                    subcategoriasSelected:
+                                      this.state.subcategorias
+                                  });
+                                }
+                                this.setState({ disponibilidade: value });
+                              }}
+                            >
+                              <FormControlLabel
+                                value="all"
+                                control={<Radio size="small" />}
+                                label="Válido para todos os produtos?"
                               />
-                            </Grid>
-                            <Grid item xs={1} style={{ marginTop: 10 }}>
-                              {this.state.isChecked ? (
-                                <Typography color="textPrimary" variant="h5">
-                                  Sim
-                                </Typography>
-                              ) : (
-                                <Typography color="textPrimary" variant="h5">
-                                  Não
+                              <FormControlLabel
+                                value="PC"
+                                control={<Radio size="small" />}
+                                label="Válido somente para a primeira compra?"
+                              />
+                              <FormControlLabel
+                                value=">"
+                                control={<Radio size="small" />}
+                                label="Válido para compras a partir de algum valor?"
+                              />
+                            </RadioGroup>
+                          </FormControl>
+
+                          {this.state.disponibilidade == '>' && (
+                            <TextField
+                              label="Valor mínimo"
+                              margin="normal"
+                              name="valorMinimo"
+                              required
+                              error={this.state.errorValorMinimo}
+                              helperText={
+                                this.state.errorValorMinimo
+                                  ? 'Campo obrigatório'
+                                  : ''
+                              }
+                              onChange={this.handleChange}
+                              value={this.state.valorMinimo}
+                              variant="outlined"
+                            />
+                          )}
+                          {(this.state.disponibilidade == 'PC' ||
+                            this.state.disponibilidade == '>') && (
+                            <>
+                              <MultiSelect
+                                fullWidth
+                                onSelectedValue={(values) => {
+                                  console.log(values);
+                                  this.setState({
+                                    categoriasSelected: values
+                                  });
+                                }}
+                                title={'Categorias'}
+                                placeholder={'Selecione as Categorias'}
+                                items={this.state.categorias}
+                              />
+                              <MultiSelect
+                                fullWidth
+                                onSelectedValue={(values) => {
+                                  this.setState({
+                                    subcategoriasSelected: values
+                                  });
+                                }}
+                                title={'Subcategorias'}
+                                placeholder={'Selecione as Subcategorias'}
+                                items={this.state.subcategorias}
+                              />
+                              {this.state.errorCategorias && (
+                                <Typography color={'error'} variant="body1">
+                                  {
+                                    'É obrigatório selecionar pelo menos 1 categoria ou 1 subcategoria.'
+                                  }
                                 </Typography>
                               )}
-                            </Grid>
-                          </Grid>
-                          <MultiSelect
-                            fullWidth
-                            onSelectedValue={(values) => {
-                              console.log(values);
-                            }}
-                            title={'Categorias'}
-                            placeholder={'Selecione as Categorias'}
-                            items={this.state.categorias}
-                          />
+                            </>
+                          )}
                         </CardContent>
                         <Divider />
                         <Box
@@ -245,6 +385,8 @@ class CadastrarCupom extends React.Component {
                           subTitle={
                             modalSuccess
                               ? 'Cadastro realizado com sucesso.'
+                              : this.state.errorMessage
+                              ? this.state.errorMessage
                               : 'Não foi possível realizar o cadastro, tente novamente mais tarde.'
                           }
                         />{' '}

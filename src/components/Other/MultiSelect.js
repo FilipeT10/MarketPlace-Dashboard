@@ -9,12 +9,13 @@ export default function MultiSelect({ ...props }) {
 
   return (
     <Autocomplete
-      sx={{ m: 1, width: fullWidth ? '100%' : 500 }}
+      sx={{ mt: 1, mb: 2, width: fullWidth ? '100%' : 500 }}
       multiple
       onChange={(event, value) =>
         onSelectedValue ? onSelectedValue(value) : {}
       }
       options={items}
+      defaultValue={items}
       getOptionLabel={(option) => option.name}
       disableCloseOnSelect
       renderInput={(params) => (
