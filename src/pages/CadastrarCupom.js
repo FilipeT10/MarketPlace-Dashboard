@@ -27,7 +27,9 @@ import MultiSelect from 'src/components/Other/MultiSelect';
 import ServiceCategorias from 'src/services/Categorias';
 import ServiceSubCategorias from 'src/services/SubCategorias';
 import formatMoney from 'src/utils/formatMoney';
-
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import DateTimePicker from 'src/components/datetimepicker/DateTimePicker';
 class CadastrarCupom extends React.Component {
   state = {
     disponibilidade: null,
@@ -42,8 +44,13 @@ class CadastrarCupom extends React.Component {
     errorValorMinimo: false,
     errorCategorias: false,
     errorDisponibilidade: false,
+    errorDataFinalMessage: null,
     modalVisible: false,
     modalSuccess: true,
+    dataFinal: null,
+    dataInicial: null,
+    errorDataFinal: false,
+    errorDataInicial: false,
     categorias: [],
     subcategorias: [],
     categoriasSelected: [],
@@ -88,7 +95,10 @@ class CadastrarCupom extends React.Component {
       errorValor: false,
       errorDisponibilidade: false,
       errorCategorias: false,
-      errorValorMinimo: false
+      errorValorMinimo: false,
+      errorDataFinalMessage: null,
+      errorDataFinal: false,
+      errorDataInicial: false
     });
     if (this.state.nome == '') {
       this.setState({ errorNome: true });
@@ -118,6 +128,31 @@ class CadastrarCupom extends React.Component {
       this.setState({ errorCategorias: true });
       return;
     }
+    if (this.state.dataInicial == null) {
+      this.setState({ errorDataInicial: true });
+      return;
+    }
+    if (this.state.dataFinal == null) {
+      this.setState({ errorDataFinal: true });
+      return;
+    }
+    if (new Date(this.state.dataFinal) <= new Date()) {
+      this.setState({
+        errorDataFinal: true,
+        errorDataFinalMessage: 'Período final inválido!'
+      });
+      return;
+    }
+    const tempoRestante = new Date(this.state.dataFinal) - new Date();
+    //20 dias
+    if (tempoRestante > 1728000000) {
+      this.setState({
+        errorDataFinal: true,
+        errorDataFinalMessage:
+          'O intervalo máximo permitido é de 20 dias a partir da data atual.'
+      });
+      return;
+    }
     var json = {
       name: this.state.nome,
       loja: getLoja(),
@@ -132,23 +167,30 @@ class CadastrarCupom extends React.Component {
           : this.state.subcategoriasSelected,
       valor: this.state.valor,
       tipo: this.state.tipoValor,
-      //periodoInicial:
-      //periodoFinal:
+      periodoInicial: this.state.dataInicial,
+      periodoFinal: this.state.dataFinal,
       condicao: this.state.disponibilidade,
       valorCondicao:
         this.state.disponibilidade == '>' ? this.state.valorMinimo : undefined
     };
+    this.setState({ loading: true });
     ServiceCupons.saveCupons(json)
-      .then((response) => {
-        var cupom = response.data;
-
-        this.setState({ modalVisible: true, modalSuccess: true });
+      .then(() => {
+        this.setState({
+          modalVisible: true,
+          modalSuccess: true,
+          loading: false
+        });
       })
       .catch((error) => {
         if (error.response.data.message) {
           this.setState({ errorMessage: error.response.data.message });
         }
-        this.setState({ modalVisible: true, modalSuccess: false });
+        this.setState({
+          modalVisible: true,
+          modalSuccess: false,
+          loading: false
+        });
         console.log(error);
       });
     return;
@@ -275,6 +317,7 @@ class CadastrarCupom extends React.Component {
                               aria-labelledby="disponibilidade"
                               required
                               name="disponibilidade"
+                              style={{ marginBottom: 10 }}
                               onChange={(event, value) => {
                                 if (value == 'all') {
                                   this.setState({
@@ -357,6 +400,29 @@ class CadastrarCupom extends React.Component {
                               )}
                             </>
                           )}
+                          <Grid container spacing={2} fullWidth>
+                            <Grid item>
+                              <DateTimePicker
+                                required
+                                onSelectedValue={(date) =>
+                                  this.setState({ dataInicial: date })
+                                }
+                                title={'Horário inicial'}
+                                error={this.state.errorDataInicial}
+                              />
+                            </Grid>
+                            <Grid item style={{ marginTop: 0 }}>
+                              <DateTimePicker
+                                required
+                                onSelectedValue={(date) =>
+                                  this.setState({ dataFinal: date })
+                                }
+                                title={'Horário final'}
+                                errorMessage={this.state.errorDataFinalMessage}
+                                error={this.state.errorDataFinal}
+                              />
+                            </Grid>
+                          </Grid>
                         </CardContent>
                         <Divider />
                         <Box
