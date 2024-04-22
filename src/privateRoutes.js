@@ -18,6 +18,7 @@ import EditarPedido from './pages/EditarPedido';
 import Privacy from './pages/Privacy';
 import Cupons from './pages/Cupons';
 import CadastrarCupom from './pages/CadastrarCupom';
+import CadastrarPromocao from './pages/CadastrarPromocao';
 
 const privateRoutes = [
   {
@@ -29,6 +30,7 @@ const privateRoutes = [
       { path: 'categorias', element: <Categorias /> },
       { path: 'cadastrar-categoria', element: <CadastrarCategoria /> },
       { path: 'cadastrar-cupom', element: <CadastrarCupom /> },
+      { path: 'cadastrar-promocao', element: <CadastrarPromocao /> },
       { path: 'subcategorias', element: <SubSubCategorias /> },
       { path: 'cadastrar-subcategoria', element: <CadastrarSubCategoria /> },
       { path: 'cadastrar-produto', element: <CadastrarProduto /> },
@@ -36,7 +38,6 @@ const privateRoutes = [
       { path: 'painel', element: <Dashboard /> },
       { path: 'produtos', element: <Produtos /> },
       { path: 'pedidos', element: <Pedidos /> },
-      { path: 'promo', element: <Pedidos /> },
       { path: 'cupons', element: <Cupons /> },
       { path: 'editar-pedido', element: <EditarPedido /> },
       { path: 'configuracoes', element: <Settings /> },

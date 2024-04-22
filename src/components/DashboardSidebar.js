@@ -63,11 +63,6 @@ const items = [
     title: 'Subcategorias'
   },
   {
-    href: '/app/promo',
-    icon: Bookmark,
-    title: 'Promoções'
-  },
-  {
     href: '/app/cupons',
     icon: Tag,
     title: 'Cupons'

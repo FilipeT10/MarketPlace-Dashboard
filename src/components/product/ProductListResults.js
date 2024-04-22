@@ -1,56 +1,42 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
-import ServiceCategorias from '../../services/Categorias';
 import {
-  Avatar,
   Box,
-  Button,
   Card,
   Chip,
-  Checkbox,
-  CardContent,
-  CardHeader,
-  Divider,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TablePagination,
   TableRow,
-  TextField,
-  Typography,
-  Grid,
-  Switch
+  Typography
 } from '@material-ui/core';
-import getInitials from '../../utils/getInitials';
-
 import Edit from '@material-ui/icons/Edit';
-
 import IconButton from '@material-ui/core/IconButton';
-
-import { ArrowBack } from '@material-ui/icons';
-import TagsInput from '../Other/TagsInput';
+import { ArrowBack, MoneyOff, AttachMoney } from '@material-ui/icons';
 import ProductEdit from './ProductEdit';
 import ProductListToolbar from './ProductListToolbar';
+import formatDate from 'src/utils/formatDate';
+import { useNavigate } from 'react-router';
 
 const ProductListResults = ({
   onListType,
   objs,
   categorias,
   subcategorias,
+  onHandleRemovePromo,
   ...rest
 }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [isEdit, setIsEdit] = useState(false);
-
-  const [isList, setIsList] = useState(true);
   const [values, setValues] = useState({
     nome: ''
   });
+  const navigate = useNavigate();
 
   const [produtos, setProdutos] = useState(objs);
   const [searchText, setSearchText] = useState('');
@@ -178,9 +164,34 @@ const ProductListResults = ({
                                   display: 'flex'
                                 }}
                               >
-                                <Typography color="textPrimary" variant="body1">
+                                <Typography
+                                  color={
+                                    obj.promocao ? 'error' : 'textSecondary'
+                                  }
+                                  style={{
+                                    textDecorationLine: obj.promocao
+                                      ? 'line-through'
+                                      : 'none'
+                                  }}
+                                  display="inline"
+                                  sx={{ pl: 1 }}
+                                  variant="body2"
+                                >
+                                  {'R$:'}
                                   {obj.preco}
                                 </Typography>
+                                {obj.promocao && (
+                                  <Typography
+                                    color={'textSecondary'}
+                                    style={{}}
+                                    display="inline"
+                                    sx={{ pl: 1 }}
+                                    variant="body2"
+                                  >
+                                    {'R$:'}
+                                    {obj.promocao.preco}
+                                  </Typography>
+                                )}
                               </Box>
                             </TableCell>
                             <TableCell>
@@ -283,7 +294,7 @@ const ProductListResults = ({
                                 }}
                               >
                                 <Typography color="textPrimary" variant="body1">
-                                  {obj.data}
+                                  {formatDate(obj.data)}
                                 </Typography>
                               </Box>
                             </TableCell>
@@ -312,6 +323,28 @@ const ProductListResults = ({
                               >
                                 <Edit />
                               </IconButton>
+                              {obj.promocao ? (
+                                <IconButton
+                                  color="inherit"
+                                  aria-label="remover promoção"
+                                  onClick={() => onHandleRemovePromo(obj)}
+                                >
+                                  <MoneyOff />
+                                </IconButton>
+                              ) : (
+                                <IconButton
+                                  color="inherit"
+                                  aria-label="cadastrar promoção"
+                                  onClick={() =>
+                                    navigate(
+                                      '/app/cadastrar-promocao?product=' +
+                                        obj._id
+                                    )
+                                  }
+                                >
+                                  <AttachMoney />
+                                </IconButton>
+                              )}
                             </TableCell>
                           </TableRow>
                         ))
@@ -342,11 +375,33 @@ const ProductListResults = ({
                                   }}
                                 >
                                   <Typography
-                                    color="textPrimary"
-                                    variant="body1"
+                                    color={
+                                      obj.promocao ? 'error' : 'textSecondary'
+                                    }
+                                    style={{
+                                      textDecorationLine: obj.promocao
+                                        ? 'line-through'
+                                        : 'none'
+                                    }}
+                                    display="inline"
+                                    sx={{ pl: 1 }}
+                                    variant="body2"
                                   >
+                                    {'R$:'}
                                     {obj.preco}
                                   </Typography>
+                                  {obj.promocao && (
+                                    <Typography
+                                      color={'textSecondary'}
+                                      style={{}}
+                                      display="inline"
+                                      sx={{ pl: 1 }}
+                                      variant="body2"
+                                    >
+                                      {'R$:'}
+                                      {obj.promocao.preco}
+                                    </Typography>
+                                  )}
                                 </Box>
                               </TableCell>
                               <TableCell>
@@ -458,7 +513,7 @@ const ProductListResults = ({
                                     color="textPrimary"
                                     variant="body1"
                                   >
-                                    {obj.data}
+                                    {formatDate(obj.data)}
                                   </Typography>
                                 </Box>
                               </TableCell>
@@ -487,6 +542,28 @@ const ProductListResults = ({
                                 >
                                   <Edit />
                                 </IconButton>
+                                {obj.promocao ? (
+                                  <IconButton
+                                    color="inherit"
+                                    aria-label="remover promoção"
+                                    onClick={() => onHandleRemovePromo(obj)}
+                                  >
+                                    <MoneyOff />
+                                  </IconButton>
+                                ) : (
+                                  <IconButton
+                                    color="inherit"
+                                    aria-label="cadastrar promoção"
+                                    onClick={() =>
+                                      navigate(
+                                        '/app/cadastrar-promocao?product=' +
+                                          obj._id
+                                      )
+                                    }
+                                  >
+                                    <AttachMoney />
+                                  </IconButton>
+                                )}
                               </TableCell>
                             </TableRow>
                           ))}
@@ -515,7 +592,8 @@ ProductListResults.propTypes = {
   onListType: PropTypes.func,
   objs: PropTypes.array.isRequired,
   categorias: PropTypes.array.isRequired,
-  subcategorias: PropTypes.array.isRequired
+  subcategorias: PropTypes.array.isRequired,
+  onHandleRemovePromo: PropTypes.func
 };
 
 export default ProductListResults;

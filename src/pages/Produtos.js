@@ -11,6 +11,7 @@ import ServiceProdutos from '../services/Produtos';
 import ServiceCategorias from '../services/Categorias';
 import AppConfig from 'src/AppConfig';
 import ServiceSubCategorias from 'src/services/SubCategorias';
+import ModalFeedback from 'src/components/Other/ModalFeedback';
 
 class Produtos extends React.Component {
   state = {
@@ -22,7 +23,11 @@ class Produtos extends React.Component {
     loading: false,
     categorias: [],
     isEdit: false,
-    values: {}
+    values: {},
+    modalVisible: false,
+    modalSuccess: false,
+    modalFeedbackVisible: false,
+    selected: null
   };
 
   componentDidMount() {
@@ -75,6 +80,28 @@ class Produtos extends React.Component {
   handleEdit = (obj) => {
     this.setState({ values: { nome: obj.name, ...obj }, isEdit: true });
   };
+  handleRemovePromo = (obj) => {
+    this.setState({ modalVisible: true, selected: obj });
+  };
+  handleRemovePromoRequest = (id) => {
+    this.setState({ loading: true, modalVisible: false });
+    ServiceProdutos.removePromocao(id)
+      .then(() => {
+        this.setState({
+          loading: false,
+          modalFeedbackVisible: true,
+          modalSuccess: true
+        });
+        this.getProdutos();
+      })
+      .catch((error) => {
+        this.setState({
+          loading: false,
+          modalFeedbackVisible: true,
+          modalSuccess: false
+        });
+      });
+  };
 
   handleChange = (event) => {
     this.setState({ searchText: event.target.value });
@@ -90,7 +117,11 @@ class Produtos extends React.Component {
       values,
       isEdit,
       categorias,
-      subcategorias
+      subcategorias,
+      modalVisible,
+      selected,
+      modalFeedbackVisible,
+      modalSuccess
     } = this.state;
 
     return (
@@ -105,6 +136,30 @@ class Produtos extends React.Component {
             py: 3
           }}
         >
+          <ModalFeedback
+            open={modalVisible && selected?._id}
+            success={true}
+            redirect={''}
+            onClickConfirm={() => this.handleRemovePromoRequest(selected?._id)}
+            onClose={() => {
+              this.setState({ modalVisible: false });
+            }}
+            confirmationButton
+            neutralButton
+            title={'Confirmar'}
+            subTitle={`O produto está com uma promoção ativa, tem certeza que deseja remover a promoção?`}
+          />
+          <ModalFeedback
+            open={modalFeedbackVisible}
+            success={modalSuccess}
+            redirect={''}
+            title={modalSuccess ? 'Sucesso' : 'Falhou'}
+            subTitle={
+              modalSuccess
+                ? 'Promoção removida com sucesso.'
+                : 'Não foi possível remover a promoção, tente novamente mais tarde.'
+            }
+          />
           <Container maxWidth={false}>
             {!isEdit && !isList && (
               <ProductListToolbar
@@ -124,6 +179,9 @@ class Produtos extends React.Component {
                   objs={produtos}
                   categorias={categorias}
                   subcategorias={subcategorias}
+                  onHandleRemovePromo={(produto) =>
+                    this.handleRemovePromo(produto)
+                  }
                   onListType={() => {
                     isList
                       ? this.setState({ isList: false })
@@ -173,6 +231,9 @@ class Produtos extends React.Component {
                           <ProductCard
                             product={produto}
                             onHandleEdit={() => this.handleEdit(produto)}
+                            onHandleRemovePromo={() =>
+                              this.handleRemovePromo(produto)
+                            }
                           />
                         </Grid>
                       ))
