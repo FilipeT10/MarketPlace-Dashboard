@@ -157,13 +157,13 @@ const ProductCard = ({
             >
               <Edit />
             </IconButton>
-            <IconButton
+            {/*<IconButton
               color="inherit"
               aria-label="open drawer"
               onClick={onHandleEdit}
             >
               <RemoveRedEye />
-            </IconButton>
+            </IconButton>*/}
             {product.promocao ? (
               <IconButton
                 color="inherit"

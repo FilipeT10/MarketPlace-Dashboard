@@ -79,6 +79,7 @@ class CadastrarPromocao extends React.Component {
       this.setState({ errorDataFinal: true });
       return;
     }
+
     if (new Date(this.state.dataFinal) <= new Date()) {
       this.setState({
         errorDataFinal: true,
