@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet';
 import { Box, Container, Grid } from '@material-ui/core';
-import Budget from '../components/dashboard/Budget';
+import MediaMes from '../components/dashboard/MediaMes';
 import LatestOrders from '../components/dashboard/LatestOrders';
 import LatestProducts from '../components/dashboard/LatestProducts';
 import Sales from '../components/dashboard/Sales';
@@ -25,7 +25,7 @@ const Dashboard = () => (
       <Container maxWidth={false}>
         <Grid container spacing={3}>
           <Grid item lg={3} sm={6} xl={3} xs={12}>
-            <Budget />
+            <MediaMes />
           </Grid>
           <Grid item lg={3} sm={6} xl={3} xs={12}>
             <TotalCustomers />
