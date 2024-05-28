@@ -36,6 +36,8 @@ const ProducsPedidotListResults = ({
   onListType,
   objs,
   removeProduct,
+  observacao,
+  produtos,
   editProduct,
   ...rest
 }) => {
@@ -48,7 +50,6 @@ const ProducsPedidotListResults = ({
     nome: ''
   });
 
-  const [produtos, setProdutos] = useState(objs);
   const [searchText, setSearchText] = useState('');
 
   const handleEdit = (obj) => {
@@ -59,9 +60,24 @@ const ProducsPedidotListResults = ({
     setIsEdit(false);
   };
 
+  const getIngredientesRemovidos = (obj) => {
+    var ingredientesRemovidos = [];
+    var produto = produtos.filter((produto) => {
+      return obj.produto === produto._id;
+    });
+    if (produto.length > 0) {
+      produto[0].ingredientes.forEach((element) => {
+        if (!obj.ingredientes.includes(element)) {
+          ingredientesRemovidos.push(' X - ' + element);
+        }
+      });
+    }
+    return ingredientesRemovidos;
+  };
+
   const getValorTotal = () => {
     var valorTotal = 0;
-    produtos.map((produto) => {
+    objs.map((produto) => {
       var precoProduto = Number(produto.preco) * produto.quantidade;
       valorTotal = valorTotal + precoProduto;
     });
@@ -93,7 +109,7 @@ const ProducsPedidotListResults = ({
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {produtos
+                    {objs
                       .slice(page * limit, page * limit + limit)
                       .map((obj, index) => (
                         <TableRow hover key={obj.produto}>
@@ -181,7 +197,7 @@ const ProducsPedidotListResults = ({
                             </Box>
                           </TableCell>
                           <TableCell>
-                            {obj.ingredientes.map((subcategoria) => (
+                            {obj.ingredientes.map((item) => (
                               <Box
                                 sx={{
                                   alignItems: 'center',
@@ -189,7 +205,19 @@ const ProducsPedidotListResults = ({
                                 }}
                               >
                                 <Typography color="textPrimary" variant="body1">
-                                  {subcategoria}
+                                  {item}
+                                </Typography>
+                              </Box>
+                            ))}
+                            {getIngredientesRemovidos(obj).map((item) => (
+                              <Box
+                                sx={{
+                                  alignItems: 'center',
+                                  display: 'flex'
+                                }}
+                              >
+                                <Typography color="error" variant="body1">
+                                  {item}
                                 </Typography>
                               </Box>
                             ))}
@@ -215,6 +243,18 @@ const ProducsPedidotListResults = ({
                           )}
                         </TableRow>
                       ))}
+                    {observacao && (
+                      <TableRow style={{ width: '100%' }}>
+                        <Typography
+                          color="textPrimary"
+                          variant="body1"
+                          fontWeight={600}
+                          margin={2}
+                        >
+                          {'Observações: ' + observacao}
+                        </Typography>
+                      </TableRow>
+                    )}
                     <TableRow>
                       <TableCell>
                         <Typography color="textPrimary" variant="body1">
@@ -237,7 +277,8 @@ ProducsPedidotListResults.propTypes = {
   onListType: PropTypes.func,
   removeProduct: PropTypes.func,
   editProduct: PropTypes.func,
-  objs: PropTypes.array.isRequired
+  objs: PropTypes.array.isRequired,
+  produtos: PropTypes.array.isRequired
 };
 
 export default ProducsPedidotListResults;

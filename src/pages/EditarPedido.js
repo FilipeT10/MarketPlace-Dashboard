@@ -317,6 +317,7 @@ class EditarPedido extends React.Component {
         status: '01',
         tipoPagamento: tipoPagamento,
         produtos: this.state.produtosPedido,
+        observacao: this.state.values.observacao,
         endereco: {
           cep: this.state.values.cep,
           numero: this.state.values.numero,
@@ -338,6 +339,7 @@ class EditarPedido extends React.Component {
           status: '01',
           tipoPagamento: tipoPagamento,
           produtos: this.state.produtosPedido,
+          observacao: this.state.values.observacao,
           pontos: pontos,
           endereco: {
             cep: 'Loja Física',
@@ -605,6 +607,7 @@ class EditarPedido extends React.Component {
                       <CardContent>
                         {produtosPedido.length > 0 && (
                           <ProducsPedidotListResults
+                            produtos={produtos}
                             objs={produtosPedido}
                             editProduct={(product) => this.editProduct(product)}
                             removeProduct={(product) =>
@@ -1188,6 +1191,17 @@ class EditarPedido extends React.Component {
                         ) : (
                           <div></div>
                         )}
+
+                        <TextField
+                          fullWidth
+                          label="Observações"
+                          margin="normal"
+                          name="observacao"
+                          inputProps={{ maxLength: 300 }}
+                          onChange={this.handleChange}
+                          value={values.observacao}
+                          variant="outlined"
+                        />
 
                         <div style={{ display: 'flex', flexDirection: 'row' }}>
                           <Typography

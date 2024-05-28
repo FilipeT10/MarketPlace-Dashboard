@@ -309,6 +309,7 @@ class CadastrarPedido extends React.Component {
         status: '01',
         tipoPagamento: tipoPagamento,
         produtos: this.state.produtosPedido,
+        observacao: this.state.values.observacao,
         valorFrete: this.state.valorFrete,
         tipoEntrega: 'entrega',
         endereco: {
@@ -332,6 +333,7 @@ class CadastrarPedido extends React.Component {
           status: '01',
           tipoPagamento: tipoPagamento,
           tipoEntrega: 'retirada',
+          observacao: this.state.values.observacao,
           produtos: this.state.produtosPedido,
           valorFrete: this.state.valorFrete,
           pontos: pontos,
@@ -648,6 +650,7 @@ class CadastrarPedido extends React.Component {
                         {produtosPedido.length > 0 && (
                           <ProducsPedidotListResults
                             objs={produtosPedido}
+                            produtos={produtos}
                             editProduct={(product) => this.editProduct(product)}
                             removeProduct={(product) =>
                               this.removeProduct(product)
@@ -1230,6 +1233,17 @@ class CadastrarPedido extends React.Component {
                         ) : (
                           <div></div>
                         )}
+
+                        <TextField
+                          fullWidth
+                          label="Observações"
+                          margin="normal"
+                          name="observacao"
+                          inputProps={{ maxLength: 300 }}
+                          onChange={this.handleChange}
+                          value={values.observacao}
+                          variant="outlined"
+                        />
 
                         <div style={{ display: 'flex', flexDirection: 'row' }}>
                           <Typography

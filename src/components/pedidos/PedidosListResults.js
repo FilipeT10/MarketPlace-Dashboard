@@ -40,6 +40,7 @@ const PedidoListResults = ({
   objs,
   usuarios,
   tipopagamentos,
+  produtos,
   onRefresh,
   ...rest
 }) => {
@@ -454,7 +455,11 @@ const PedidoListResults = ({
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
             <Collapse in={open} timeout="auto" unmountOnExit>
               <Box sx={{ margin: 1 }}>
-                <ProducsPedidotListResults objs={obj.produtos} />
+                <ProducsPedidotListResults
+                  objs={obj.produtos}
+                  observacao={obj.observacao}
+                  produtos={produtos}
+                />
               </Box>
             </Collapse>
           </TableCell>
@@ -620,6 +625,7 @@ PedidoListResults.propTypes = {
   onListType: PropTypes.func,
   objs: PropTypes.array.isRequired,
   usuarios: PropTypes.array.isRequired,
+  produtos: PropTypes.array.isRequired,
   tipopagamentos: PropTypes.array.isRequired
 };
 

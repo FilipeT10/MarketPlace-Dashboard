@@ -1,7 +1,12 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import { Box, Container, CircularProgress, LinearProgress } from '@material-ui/core';
-import ServiceUsuarios from '../../services/Usuarios'
+import {
+  Box,
+  Container,
+  CircularProgress,
+  LinearProgress
+} from '@material-ui/core';
+import ServiceUsuarios from '../../services/Usuarios';
 
 import {
   Button,
@@ -11,22 +16,19 @@ import {
   Divider,
   Switch,
   TextField,
-  Typography, Grid
+  Typography,
+  Grid
 } from '@material-ui/core';
 
 import ModalFeedback from 'src/components/Other/ModalFeedback';
 import InputImages from 'src/components/Other/InputImages';
 import AppConfig from 'src/AppConfig';
 import ServiceLojas from 'src/services/Lojas';
+import { validateCPF } from 'src/utils/validateCpf.ts';
 
-
-var imagens = []
-
+var imagens = [];
 
 class CadastrarUsuario extends React.Component {
-
-
-
   state = {
     isChecked: true,
     isCheckedSite: true,
@@ -34,8 +36,11 @@ class CadastrarUsuario extends React.Component {
     errorNome: false,
     errorPreco: false,
     errorQtd: false,
+    errorCPF: false,
     errorText: 'Campo obrigatório',
     errorTextEmail: 'Campo obrigatório',
+    errorTextTelefone: 'Campo obrigatório',
+    errorTextCPF: 'CPF inválido',
     nome: '',
     lojas: [],
     values: {},
@@ -44,27 +49,26 @@ class CadastrarUsuario extends React.Component {
     selectedFile: '',
     errorPassword: false,
     errorEmail: false,
+    errorTelefone: false,
     errorPasswordConfirm: false,
     confirmarSenha: ''
   };
 
-
   componentDidMount() {
-    this.getLojas()
+    this.getLojas();
   }
 
   getLojas = () => {
-    ServiceLojas.getLojas().then(response => {
-      var lojas = response.data;
-      this.setState({ lojas })
-
-    }).catch(error => {
-
-      alert('Falha ao carregar as lojas, tente novamente mais tarde.');
-      console.log(error);
-    });
-  }
-
+    ServiceLojas.getLojas()
+      .then((response) => {
+        var lojas = response.data;
+        this.setState({ lojas });
+      })
+      .catch((error) => {
+        alert('Falha ao carregar as lojas, tente novamente mais tarde.');
+        console.log(error);
+      });
+  };
 
   handleInputChange = (event) => {
     let files = event.target.files;
@@ -72,14 +76,12 @@ class CadastrarUsuario extends React.Component {
     reader.readAsDataURL(files[0]);
 
     reader.onload = (e) => {
-      console.log(e.target.result)
-      this.saveImage(e.target.result)
-    }
-
-  }
+      console.log(e.target.result);
+      this.saveImage(e.target.result);
+    };
+  };
   saveImage(image) {
-
-    this.setState({ images: [...this.state.images, image] })
+    this.setState({ images: [...this.state.images, image] });
   }
 
   tipoUsuarios = [
@@ -112,83 +114,135 @@ class CadastrarUsuario extends React.Component {
   ];
 
   handleSelecetedImagens = (items) => {
-    imagens = items
-    console.log("imagens " + imagens);
-  }
+    imagens = items;
+    console.log('imagens ' + imagens);
+  };
 
   validateEmail = (email) => {
-    var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    return re.test(email)
-  }
+    var re =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  };
+  validateTelefone = (telefone) => {
+    var re = /^\d{10,11}$/;
+    return re.test(telefone);
+  };
   saveUsuarios = () => {
-
-    var possuiError = false
-    this.setState({ errorQtd: true, errorNome: false, errorPreco: false, errorEmail: false, errorPassword: false, errorPasswordConfirm: false })
+    var possuiError = false;
+    this.setState({
+      errorQtd: true,
+      errorNome: false,
+      errorPreco: false,
+      errorEmail: false,
+      errorPassword: false,
+      errorPasswordConfirm: false,
+      errorCPF: false,
+      errorTelefone: false
+    });
 
     if (this.state.values.name != undefined) {
       if (String(this.state.values.name).length == 0) {
-        this.setState({ errorNome: true })
-        possuiError = true
+        this.setState({ errorNome: true });
+        possuiError = true;
       }
     } else {
-      this.setState({ errorNome: true })
-      possuiError = true
+      this.setState({ errorNome: true });
+      possuiError = true;
+    }
+
+    if (this.state.values.cpf != undefined) {
+      console.log(String(this.state.values.cpf));
+      var isValid = validateCPF(this.state.values.cpf);
+      if (!isValid) {
+        this.setState({ errorCPF: true, errorTextCPF: 'CPF inválido' });
+        possuiError = true;
+      }
     }
 
     if (this.state.values.email != undefined) {
       if (this.state.values.email == '') {
-        this.setState({ errorEmail: true, errorTextEmail: 'Campo obrigatório' })
-        possuiError = true
+        this.setState({
+          errorEmail: true,
+          errorTextEmail: 'Campo obrigatório'
+        });
+        possuiError = true;
       } else {
-        var isValid = this.validateEmail(this.state.values.email)
+        var isValid = this.validateEmail(this.state.values.email);
         if (!isValid) {
-          this.setState({ errorEmail: true, errorTextEmail: 'Email inválido' })
-          possuiError = true
+          this.setState({ errorEmail: true, errorTextEmail: 'Email inválido' });
+          possuiError = true;
         }
       }
     } else {
-      this.setState({ errorEmail: true, errorTextEmail: 'Campo obrigatório' })
-      possuiError = true
+      this.setState({ errorEmail: true, errorTextEmail: 'Campo obrigatório' });
+      possuiError = true;
+    }
+
+    if (this.state.values.telefone != undefined) {
+      if (this.state.values.telefone == '') {
+        this.setState({
+          errorTelefone: true,
+          errorTextTelefone: 'Campo obrigatório'
+        });
+        possuiError = true;
+      } else {
+        var isValid = this.validateTelefone(this.state.values.telefone);
+        if (!isValid) {
+          this.setState({
+            errorTelefone: true,
+            errorTextTelefone: 'Telefone inválido'
+          });
+          possuiError = true;
+        }
+      }
+    } else {
+      this.setState({
+        errorTelefone: true,
+        errorTextTelefone: 'Campo obrigatório'
+      });
+      possuiError = true;
     }
 
     if (this.state.values.password != undefined) {
       if (String(this.state.values.password).length < 6) {
-        this.setState({ errorPassword: true })
-        possuiError = true
+        this.setState({ errorPassword: true });
+        possuiError = true;
       }
     } else {
-      this.setState({ errorPassword: true })
-      possuiError = true
+      this.setState({ errorPassword: true });
+      possuiError = true;
     }
 
-    if (this.state.errorPassword == false && this.state.values.password != this.state.confirmarSenha) {
-      this.setState({ errorPasswordConfirm: true })
-      possuiError = true
+    if (
+      this.state.errorPassword == false &&
+      this.state.values.password != this.state.confirmarSenha
+    ) {
+      this.setState({ errorPasswordConfirm: true });
+      possuiError = true;
     }
 
-
-    var tipo = this.state.values.tipo
+    var tipo = this.state.values.tipo;
 
     if (tipo == undefined) {
-      tipo = this.tipoUsuarios[0].value
+      tipo = this.tipoUsuarios[0].value;
     }
-    var loja = this.state.values.loja
+    var loja = this.state.values.loja;
 
     if (loja == undefined && tipo == 'admin') {
-      loja = this.state.lojas.items[0]._id
+      loja = this.state.lojas.items[0]._id;
     }
 
     if (tipo != 'admin') {
-      loja = undefined
+      loja = undefined;
     }
 
-    var gender = this.state.values.gender
+    var gender = this.state.values.gender;
 
     if (gender == undefined) {
-      gender = this.tipoSexo[0].value
+      gender = this.tipoSexo[0].value;
     }
     if (gender == null) {
-      gender = ''
+      gender = '';
     }
 
     /*if(imagens.length < 1){
@@ -197,44 +251,47 @@ class CadastrarUsuario extends React.Component {
     }*/
 
     if (possuiError == false) {
-      this.setState({ errorQtd: true, errorNome: false, errorPreco: false, errorEmail: false, errorPassword: false, errorPasswordConfirm: false })
+      this.setState({
+        errorQtd: true,
+        errorNome: false,
+        errorPreco: false,
+        errorEmail: false,
+        errorPassword: false,
+        errorPasswordConfirm: false
+      });
       var json = {
         ...this.state.values,
         //"imagens": imagens,
-        "profiles": [tipo],
-        "loja": loja,
-        "gender": gender,
-      }
-      ServiceUsuarios.saveUsuarios(json).then(response => {
-        this.setState({ modalVisible: true, modalSuccess: true })
-      }).catch(error => {
-
-        this.setState({ modalVisible: true, modalSuccess: false })
-        console.log(error);
-      });
+        profiles: [tipo],
+        loja: loja,
+        gender: gender
+      };
+      ServiceUsuarios.saveUsuarios(json)
+        .then((response) => {
+          this.setState({ modalVisible: true, modalSuccess: true });
+        })
+        .catch((error) => {
+          this.setState({ modalVisible: true, modalSuccess: false });
+          console.log(error);
+        });
     }
-  }
-
-
+  };
 
   handleChange = (event) => {
     this.setState({
-      values:
-      {
+      values: {
         ...this.state.values,
-        [event.target.name]: event.target.value
+        [event.target.name]:
+          event.target.value == '' ? undefined : event.target.value
       }
     });
 
-    console.log(this.state.values)
+    console.log(this.state.values);
   };
 
   handleChangeConfirmar = (event) => {
     this.setState({ confirmarSenha: event.target.value });
-
   };
-
-
 
   handleAtivoChecked = () => {
     this.setState({
@@ -253,10 +310,28 @@ class CadastrarUsuario extends React.Component {
   };
 
   render() {
-
-    const { values, lojas, isChecked, isCheckedSite, errorTextEmail, isCheckedApp, errorNome, errorPreco, errorQtd, errorText, modalVisible, modalSuccess, errorEmail, errorPassword, errorPasswordConfirm } = this.state;
+    const {
+      values,
+      lojas,
+      isChecked,
+      isCheckedSite,
+      errorTextEmail,
+      errorTextTelefone,
+      errorTextCPF,
+      isCheckedApp,
+      errorNome,
+      errorCPF,
+      errorPreco,
+      errorQtd,
+      errorText,
+      errorTelefone,
+      modalVisible,
+      modalSuccess,
+      errorEmail,
+      errorPassword,
+      errorPasswordConfirm
+    } = this.state;
     return (
-
       <>
         <Helmet>
           <title>{'Cadastrar Usuario | ' + AppConfig.sigla}</title>
@@ -272,13 +347,8 @@ class CadastrarUsuario extends React.Component {
             <Box sx={{ pt: 3 }}>
               <Box sx={{}}>
                 <div>
-
-
                   <Card>
-                    <CardHeader
-                      subheader="Usuario"
-                      title="Cadastrar"
-                    />
+                    <CardHeader subheader="Usuario" title="Cadastrar" />
                     <Divider />
                     <CardContent>
                       <TextField
@@ -297,7 +367,10 @@ class CadastrarUsuario extends React.Component {
                         fullWidth
                         label="CPF"
                         margin="normal"
+                        inputProps={{ maxLength: 11 }}
                         name="cpf"
+                        error={errorCPF}
+                        helperText={errorCPF ? errorTextCPF : ''}
                         onChange={this.handleChange}
                         value={values.cpf}
                         variant="outlined"
@@ -316,6 +389,19 @@ class CadastrarUsuario extends React.Component {
                       />
                       <TextField
                         fullWidth
+                        label="Telefone"
+                        margin="normal"
+                        name="telefone"
+                        inputProps={{ maxLength: 11 }}
+                        required
+                        error={errorTelefone}
+                        helperText={errorTelefone ? errorTextTelefone : ''}
+                        onChange={this.handleChange}
+                        value={values.telefone}
+                        variant="outlined"
+                      />
+                      <TextField
+                        fullWidth
                         label="Sexo"
                         name="gender"
                         margin="normal"
@@ -326,15 +412,11 @@ class CadastrarUsuario extends React.Component {
                         value={values.gender}
                         variant="outlined"
                       >
-                        {
-                          this.tipoSexo.map((option) => (
-                            <option
-                              key={option.value}
-                              value={option.value}
-                            >
-                              {option.label}
-                            </option>
-                          ))}
+                        {this.tipoSexo.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
                       </TextField>
                       <TextField
                         fullWidth
@@ -348,39 +430,33 @@ class CadastrarUsuario extends React.Component {
                         value={values.tipo}
                         variant="outlined"
                       >
-                        {
-                          this.tipoUsuarios.map((option) => (
-                            <option
-                              key={option.value}
-                              value={option.value}
-                            >
-                              {option.label}
-                            </option>
-                          ))}
+                        {this.tipoUsuarios.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
                       </TextField>
 
-                      {values.tipo == 'admin' && <TextField
-                        fullWidth
-                        label="Loja"
-                        name="loja"
-                        margin="normal"
-                        onChange={this.handleChange}
-                        required
-                        select
-                        SelectProps={{ native: true }}
-                        value={values.loja}
-                        variant="outlined"
-                      >
-                        {
-                          lojas.items.map((option) => (
-                            <option
-                              key={option._id}
-                              value={option._id}
-                            >
+                      {values.tipo == 'admin' && (
+                        <TextField
+                          fullWidth
+                          label="Loja"
+                          name="loja"
+                          margin="normal"
+                          onChange={this.handleChange}
+                          required
+                          select
+                          SelectProps={{ native: true }}
+                          value={values.loja}
+                          variant="outlined"
+                        >
+                          {lojas.items.map((option) => (
+                            <option key={option._id} value={option._id}>
                               {option.name}
                             </option>
                           ))}
-                      </TextField>}
+                        </TextField>
+                      )}
 
                       {/* <InputImages 
                             error={this.state.errorImagem}
@@ -402,7 +478,11 @@ class CadastrarUsuario extends React.Component {
                         label="Senha"
                         margin="normal"
                         error={errorPassword}
-                        helperText={errorPassword ? 'Senha inválida, precisa ter no mínimo 6 caracteres' : ''}
+                        helperText={
+                          errorPassword
+                            ? 'Senha inválida, precisa ter no mínimo 6 caracteres'
+                            : ''
+                        }
                         name="password"
                         onChange={this.handleChange}
                         type="password"
@@ -415,40 +495,55 @@ class CadastrarUsuario extends React.Component {
                         label="Confirme a sua senha"
                         margin="normal"
                         error={errorPasswordConfirm}
-                        helperText={errorPasswordConfirm ? 'Confirme sua senha' : ''}
+                        helperText={
+                          errorPasswordConfirm ? 'Confirme sua senha' : ''
+                        }
                         name="confirmarSenha"
                         onChange={this.handleChangeConfirmar}
                         type="password"
                         value={this.confirmarSenha}
                         variant="outlined"
                       />
-
-
                     </CardContent>
                     <Divider />
-                    <Box sx={{
-                      display: 'flex',
-                      justifyContent: 'flex-end',
-                      p: 2
-                    }}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        p: 2
+                      }}
+                    >
                       <Button
                         color="primary"
                         variant="contained"
-                        onClick={() => { this.saveUsuarios() }}> Salvar</Button>
+                        onClick={() => {
+                          this.saveUsuarios();
+                        }}
+                      >
+                        {' '}
+                        Salvar
+                      </Button>
                     </Box>
                   </Card>
                 </div>
               </Box>
             </Box>
           </Container>
-          <ModalFeedback open={modalVisible} success={modalSuccess} redirect={modalSuccess ? '/adm/usuarios' : ''} title={modalSuccess ? "Sucesso" : "Falhou"} subTitle={modalSuccess ? "Cadastro realizado com sucesso." : "Não foi possível realizar o cadastro, tente novamente mais tarde."} />
-
+          <ModalFeedback
+            open={modalVisible}
+            success={modalSuccess}
+            redirect={modalSuccess ? '/adm/usuarios' : ''}
+            title={modalSuccess ? 'Sucesso' : 'Falhou'}
+            subTitle={
+              modalSuccess
+                ? 'Cadastro realizado com sucesso.'
+                : 'Não foi possível realizar o cadastro, tente novamente mais tarde.'
+            }
+          />
         </Box>
       </>
     );
   }
 }
-
-
 
 export default CadastrarUsuario;

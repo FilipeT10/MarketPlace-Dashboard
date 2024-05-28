@@ -17,12 +17,14 @@ import AppConfig from 'src/AppConfig';
 import ServiceSubCategorias from 'src/services/SubCategorias';
 import ServiceUsuarios from 'src/services/Usuarios';
 import ServiceTipoPagamentos from 'src/services/TipoPagamentos';
+import ServiceProdutos from 'src/services/Produtos';
 
 class Pedidos extends React.Component {
   state = {
     pedidos: [],
     usuarios: [],
     tipopagamentos: [],
+    produtos: [],
     searchText: '',
     isList: false,
     loading: false,
@@ -54,6 +56,18 @@ class Pedidos extends React.Component {
       .then((response) => {
         var usuarios = response.data.items;
         this.setState({ usuarios });
+        this.getProdutos();
+      })
+      .catch((error) => {
+        alert('Falha ao carregar, tente novamente mais tarde.');
+        console.log(error);
+      });
+  };
+  getProdutos = () => {
+    ServiceProdutos.getProdutos()
+      .then((response) => {
+        var produtos = response.data;
+        this.setState({ produtos });
         this.getTipoPagamendos();
       })
       .catch((error) => {
@@ -97,7 +111,8 @@ class Pedidos extends React.Component {
       values,
       isEdit,
       usuarios,
-      tipopagamentos
+      tipopagamentos,
+      produtos
     } = this.state;
 
     return (
@@ -121,6 +136,7 @@ class Pedidos extends React.Component {
                   objs={pedidos.sort((x, y) => y.numeroPedido - x.numeroPedido)}
                   usuarios={usuarios}
                   tipopagamentos={tipopagamentos}
+                  produtos={produtos}
                   onListType={() => {
                     isList
                       ? this.setState({ isList: false })
