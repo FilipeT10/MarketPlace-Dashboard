@@ -48,19 +48,16 @@ const products = [
   }
 ];
 
-const LatestProducts = (props) => (
+const ComprasPromocoes = (props) => (
   <Card {...props}>
     <CardHeader
       subtitle={`${products.length} in total`}
-      title="Latest Products"
+      title="COMPRAS POR PROMOÇÕES"
     />
     <Divider />
     <List>
       {products.map((product, i) => (
-        <ListItem
-          divider={i < products.length - 1}
-          key={product.id}
-        >
+        <ListItem divider={i < products.length - 1} key={product.id}>
           <ListItemAvatar>
             <img
               alt={product.name}
@@ -75,10 +72,7 @@ const LatestProducts = (props) => (
             primary={product.name}
             secondary={`Updated ${product.updatedAt.fromNow()}`}
           />
-          <IconButton
-            edge="end"
-            size="small"
-          >
+          <IconButton edge="end" size="small">
             <MoreVertIcon />
           </IconButton>
         </ListItem>
@@ -98,10 +92,10 @@ const LatestProducts = (props) => (
         size="small"
         variant="text"
       >
-        View all
+        Ver todos
       </Button>
     </Box>
   </Card>
 );
 
-export default LatestProducts;
+export default ComprasPromocoes;

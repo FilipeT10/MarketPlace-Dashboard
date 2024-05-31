@@ -16,6 +16,14 @@ const MediaMes = (props) => (
       <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
         <Grid item>
           <Typography color="textSecondary" gutterBottom variant="h6">
+            LUCRO DO MÊS
+          </Typography>
+          <Typography color="textPrimary" variant="h3">
+            $24,000
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Typography color="textSecondary" gutterBottom variant="h6">
             MÉDIA DE LUCRO POR MÊS
           </Typography>
           <Typography color="textPrimary" variant="h3">
@@ -52,7 +60,7 @@ const MediaMes = (props) => (
           12%
         </Typography>
         <Typography color="textSecondary" variant="caption">
-          Since last month
+          Desde o último mês
         </Typography>
       </Box>
     </CardContent>

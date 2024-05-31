@@ -6,57 +6,65 @@ import {
   Grid,
   Typography
 } from '@material-ui/core';
-import { green } from '@material-ui/core/colors';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import PeopleIcon from '@material-ui/icons/PeopleOutlined';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import MoneyIcon from '@material-ui/icons/Money';
+import { red } from '@material-ui/core/colors';
 
-const Totalobjs = (props) => (
-  <Card {...props}>
+const MediaDia = (props) => (
+  <Card sx={{ height: '100%' }} {...props}>
     <CardContent>
       <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
         <Grid item>
           <Typography color="textSecondary" gutterBottom variant="h6">
-            TOTAL objS
+            LUCRO DO DIA
           </Typography>
           <Typography color="textPrimary" variant="h3">
-            1,600
+            $24,000
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Typography color="textSecondary" gutterBottom variant="h6">
+            MÉDIA DE LUCRO POR DIA
+          </Typography>
+          <Typography color="textPrimary" variant="h3">
+            $24,000
           </Typography>
         </Grid>
         <Grid item>
           <Avatar
             sx={{
-              backgroundColor: green[600],
+              backgroundColor: red[600],
               height: 56,
               width: 56
             }}
           >
-            <PeopleIcon />
+            <MoneyIcon />
           </Avatar>
         </Grid>
       </Grid>
       <Box
         sx={{
-          alignItems: 'center',
+          pt: 2,
           display: 'flex',
-          pt: 2
+          alignItems: 'center'
         }}
       >
-        <ArrowUpwardIcon sx={{ color: green[900] }} />
+        <ArrowDownwardIcon sx={{ color: red[900] }} />
         <Typography
-          variant="body2"
           sx={{
-            color: green[900],
+            color: red[900],
             mr: 1
           }}
+          variant="body2"
         >
-          16%
+          12%
         </Typography>
         <Typography color="textSecondary" variant="caption">
-          Since last month
+          Desde o último dia
         </Typography>
       </Box>
     </CardContent>
   </Card>
 );
 
-export default Totalobjs;
+export default MediaDia;

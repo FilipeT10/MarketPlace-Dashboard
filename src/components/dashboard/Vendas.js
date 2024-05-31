@@ -12,7 +12,7 @@ import {
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
-const Sales = (props) => {
+const Vendas = (props) => {
   const theme = useTheme();
 
   const data = {
@@ -95,16 +95,12 @@ const Sales = (props) => {
   return (
     <Card {...props}>
       <CardHeader
-        action={(
-          <Button
-            endIcon={<ArrowDropDownIcon />}
-            size="small"
-            variant="text"
-          >
+        action={
+          <Button endIcon={<ArrowDropDownIcon />} size="small" variant="text">
             Last 7 days
           </Button>
-        )}
-        title="Latest Sales"
+        }
+        title="VENDAS"
       />
       <Divider />
       <CardContent>
@@ -114,10 +110,7 @@ const Sales = (props) => {
             position: 'relative'
           }}
         >
-          <Bar
-            data={data}
-            options={options}
-          />
+          <Bar data={data} options={options} />
         </Box>
       </CardContent>
       <Divider />
@@ -141,4 +134,4 @@ const Sales = (props) => {
   );
 };
 
-export default Sales;
+export default Vendas;

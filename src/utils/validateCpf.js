@@ -1,4 +1,4 @@
-export const validateCPF = (cpf: string): boolean => {
+export const validateCPF = (cpf = '') => {
   let sum, rest;
 
   if (cpf == undefined || cpf.trim().length === 0 || cpf === '00000000000') {

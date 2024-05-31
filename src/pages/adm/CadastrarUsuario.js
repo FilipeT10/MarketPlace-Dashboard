@@ -24,7 +24,7 @@ import ModalFeedback from 'src/components/Other/ModalFeedback';
 import InputImages from 'src/components/Other/InputImages';
 import AppConfig from 'src/AppConfig';
 import ServiceLojas from 'src/services/Lojas';
-import { validateCPF } from 'src/utils/validateCpf.ts';
+import { validateCPF } from 'src/utils/validateCpf.js';
 
 var imagens = [];
 
