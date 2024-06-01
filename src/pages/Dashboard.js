@@ -1,7 +1,6 @@
 import { Helmet } from 'react-helmet';
 import { Box, Container, Grid, LinearProgress } from '@material-ui/core';
-import MediaMes from '../components/dashboard/MediaMes';
-import MediaDia from '../components/dashboard/MediaDia';
+import MediaLucro from '../components/dashboard/MediaLucro';
 import UltimosPedidos from '../components/dashboard/UltimosPedidos';
 import MaisVendidos from '../components/dashboard/MaisVendidos';
 import Vendas from '../components/dashboard/Vendas';
@@ -36,7 +35,14 @@ class Dashboard extends React.Component {
     subcategorias: [],
     loadingSubCategorias: true,
     usuarios: [],
-    loadingUsuarios: true
+    loadingUsuarios: true,
+    totalMesAtual: 0,
+    mediaMensal: 0,
+    variacaoMensal: 0,
+    totalDiaAtual: 0,
+    mediaDiaria: 0,
+    variacaoDiaria: 0,
+    valorTotal: 0
   };
 
   componentDidMount() {
@@ -46,7 +52,8 @@ class Dashboard extends React.Component {
     ServicePedidos.getPedidos()
       .then((response) => {
         var pedidos = response.data;
-        this.setState({ pedidos, loadingPedidos: false });
+        this.setState({ pedidos });
+        this.analisarPedidos(pedidos);
         this.getUsers();
       })
       .catch((error) => {
@@ -114,6 +121,146 @@ class Dashboard extends React.Component {
       });
   };
 
+  // Função para organizar pedidos por mês, preenchendo meses sem registros
+  organizarPedidosPorMes(pedidos) {
+    const pedidosPorMes = {};
+    const inicio = new Date(Math.min(...pedidos.map((p) => new Date(p.data))));
+    const fim = new Date(Math.max(...pedidos.map((p) => new Date(p.data))));
+
+    for (
+      let d = new Date(inicio.getFullYear(), inicio.getMonth(), 1);
+      d <= new Date(fim.getFullYear(), fim.getMonth(), 1);
+      d.setMonth(d.getMonth() + 1)
+    ) {
+      const mes =
+        d.getFullYear() + '-' + (d.getMonth() + 1).toString().padStart(2, '0');
+      pedidosPorMes[mes] = [];
+    }
+
+    pedidos.forEach((pedido) => {
+      const data = new Date(pedido.data);
+      const mes =
+        data.getFullYear() +
+        '-' +
+        (data.getMonth() + 1).toString().padStart(2, '0');
+      pedidosPorMes[mes].push(pedido);
+    });
+
+    return pedidosPorMes;
+  }
+
+  // Função para organizar pedidos por dia, preenchendo dias sem registros
+  organizarPedidosPorDia(pedidos) {
+    const pedidosPorDia = {};
+    const inicio = new Date(Math.min(...pedidos.map((p) => new Date(p.data))));
+    const fim = new Date(Math.max(...pedidos.map((p) => new Date(p.data))));
+
+    for (let d = new Date(inicio); d <= fim; d.setDate(d.getDate() + 1)) {
+      const dia = d.toISOString().split('T')[0];
+      pedidosPorDia[dia] = [];
+    }
+
+    pedidos.forEach((pedido) => {
+      const data = new Date(pedido.data);
+      const dia = data.toISOString().split('T')[0];
+      pedidosPorDia[dia].push(pedido);
+    });
+
+    return pedidosPorDia;
+  }
+
+  // Função para calcular o total arrecadado por período (mês ou dia)
+  calcularTotalPorPeriodo(pedidosPorPeriodo) {
+    const totalPorPeriodo = {};
+
+    for (const periodo in pedidosPorPeriodo) {
+      totalPorPeriodo[periodo] = pedidosPorPeriodo[periodo].reduce(
+        (total, pedido) => total + Number(pedido.valor),
+        0
+      );
+    }
+
+    return totalPorPeriodo;
+  }
+
+  // Função para calcular a média por período (mês ou dia)
+  calcularMediaPorPeriodo(totalPorPeriodo) {
+    const valores = Object.values(totalPorPeriodo);
+    const total = valores.reduce((total, valor) => total + valor, 0);
+    return total / valores.length;
+  }
+
+  // Função para calcular a variação percentual entre dois períodos
+  calcularVariacaoPercentual(periodoAtual, periodoAnterior) {
+    if (periodoAnterior === 0) return 0;
+    return ((periodoAtual - periodoAnterior) / periodoAnterior) * 100;
+  }
+
+  // Função principal
+  analisarPedidos(pedidos) {
+    // Análise mensal
+    const pedidosPorMes = this.organizarPedidosPorMes(pedidos);
+    const totalPorMes = this.calcularTotalPorPeriodo(pedidosPorMes);
+
+    const meses = Object.keys(totalPorMes).sort();
+    const mesAtual = meses[meses.length - 1];
+    const mesAnterior = meses[meses.length - 2];
+
+    const totalMesAtual = totalPorMes[mesAtual] || 0;
+    const totalMesAnterior = totalPorMes[mesAnterior] || 0;
+
+    const mediaMensal = this.calcularMediaPorPeriodo(totalPorMes);
+    const variacaoMensal = this.calcularVariacaoPercentual(
+      totalMesAtual,
+      totalMesAnterior
+    );
+
+    // Análise diária
+    const pedidosPorDia = this.organizarPedidosPorDia(pedidos);
+    const totalPorDia = this.calcularTotalPorPeriodo(pedidosPorDia);
+
+    const dias = Object.keys(totalPorDia).sort();
+    const diaAtual = dias[dias.length - 1];
+    const diaAnterior = dias[dias.length - 2];
+
+    const totalDiaAtual = totalPorDia[diaAtual] || 0;
+    const totalDiaAnterior = totalPorDia[diaAnterior] || 0;
+
+    const mediaDiaria = this.calcularMediaPorPeriodo(totalPorDia);
+    const variacaoDiaria = this.calcularVariacaoPercentual(
+      totalDiaAtual,
+      totalDiaAnterior
+    );
+
+    //analise total
+
+    const valorTotal = pedidos.reduce(
+      (total, pedido) => total + Number(pedido.valor),
+      0
+    );
+
+    console.log({
+      totalMesAtual,
+      mediaMensal,
+      variacaoMensal,
+      totalDiaAtual,
+      mediaDiaria,
+      variacaoDiaria,
+      valorTotal,
+      loadingPedidos: false
+    });
+    this.setState({
+      totalMesAtual,
+      mediaMensal,
+      variacaoMensal,
+      totalDiaAtual,
+      mediaDiaria,
+      variacaoDiaria,
+      valorTotal,
+      loadingPedidos: false
+    });
+  }
+
   render() {
     const {
       pedidos,
@@ -128,7 +275,14 @@ class Dashboard extends React.Component {
       loadingUsuarios,
       loadingSubCategorias,
       subcategorias,
-      loadingPedidos
+      loadingPedidos,
+      totalMesAtual,
+      mediaMensal,
+      variacaoMensal,
+      totalDiaAtual,
+      mediaDiaria,
+      valorTotal,
+      variacaoDiaria
     } = this.state;
 
     return (
@@ -149,10 +303,22 @@ class Dashboard extends React.Component {
             ) : (
               <Grid container spacing={3}>
                 <Grid item lg={3} sm={6} xl={3} xs={12}>
-                  <MediaDia />
+                  <MediaLucro
+                    type={'diario'}
+                    lucro={totalDiaAtual}
+                    media={mediaDiaria}
+                    variacao={variacaoDiaria}
+                    loading={loadingPedidos}
+                  />
                 </Grid>
                 <Grid item lg={3} sm={6} xl={3} xs={12}>
-                  <MediaMes />
+                  <MediaLucro
+                    type={'mensal'}
+                    lucro={totalMesAtual}
+                    media={mediaMensal}
+                    variacao={variacaoMensal}
+                    loading={loadingPedidos}
+                  />
                 </Grid>
                 <Grid item lg={3} sm={6} xl={3} xs={12}>
                   <TotalClientes
@@ -169,7 +335,7 @@ class Dashboard extends React.Component {
                   <Financeiro
                     totalProdutos={produtos.length}
                     totalPedidos={pedidos.length}
-                    lucroTotal={0}
+                    lucroTotal={valorTotal.toFixed(2)}
                     loading={loadingPedidos || loadingProdutos}
                     sx={{ height: '100%' }}
                   />
