@@ -44,7 +44,7 @@ const Financeiro = ({
           </Grid>
           <Grid item>
             <Typography color="textSecondary" gutterBottom variant="h6">
-              LUCRO TOTAL
+              VALOR TOTAL DE VENDAS
             </Typography>
             <Typography color="textPrimary" variant="h3">
               {'R$: ' + lucroTotal}

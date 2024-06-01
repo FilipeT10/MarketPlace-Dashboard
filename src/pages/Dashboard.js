@@ -196,6 +196,27 @@ class Dashboard extends React.Component {
     return ((periodoAtual - periodoAnterior) / periodoAnterior) * 100;
   }
 
+  contarStatus(pedidos) {
+    const contagemStatus = {};
+
+    pedidos.forEach((pedido) => {
+      const status = pedido.status;
+      if (!contagemStatus[status]) {
+        contagemStatus[status] = {
+          quantidade: 0,
+          porcentagem: 0
+        };
+      }
+      contagemStatus[status].quantidade++;
+    });
+    for (const status in contagemStatus) {
+      contagemStatus[status].porcentagem =
+        (contagemStatus[status].quantidade / pedidos.length) * 100;
+    }
+
+    return contagemStatus;
+  }
+
   // Função principal
   analisarPedidos(pedidos) {
     // Análise mensal
@@ -233,11 +254,15 @@ class Dashboard extends React.Component {
     );
 
     //analise total
-
     const valorTotal = pedidos.reduce(
       (total, pedido) => total + Number(pedido.valor),
       0
     );
+
+    //analise status
+    const contagemStatus = this.contarStatus(pedidos);
+
+    console.log(contagemStatus);
 
     console.log({
       totalMesAtual,
@@ -247,6 +272,7 @@ class Dashboard extends React.Component {
       mediaDiaria,
       variacaoDiaria,
       valorTotal,
+      contagemStatus,
       loadingPedidos: false
     });
     this.setState({
@@ -257,6 +283,7 @@ class Dashboard extends React.Component {
       mediaDiaria,
       variacaoDiaria,
       valorTotal,
+      contagemStatus,
       loadingPedidos: false
     });
   }
