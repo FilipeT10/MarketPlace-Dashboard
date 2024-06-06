@@ -42,7 +42,9 @@ class Dashboard extends React.Component {
     totalDiaAtual: 0,
     mediaDiaria: 0,
     variacaoDiaria: 0,
-    valorTotal: 0
+    valorTotal: 0,
+    contagemStatus: {},
+    maisVendidos: {}
   };
 
   componentDidMount() {
@@ -197,12 +199,13 @@ class Dashboard extends React.Component {
   }
 
   contarStatus(pedidos) {
-    const contagemStatus = {};
+    const contagemStatus = [];
 
     pedidos.forEach((pedido) => {
       const status = pedido.status;
       if (!contagemStatus[status]) {
         contagemStatus[status] = {
+          key: status,
           quantidade: 0,
           porcentagem: 0
         };
@@ -215,6 +218,31 @@ class Dashboard extends React.Component {
     }
 
     return contagemStatus;
+  }
+  contarVendas(pedidos) {
+    const contagemProduto = [];
+    var qtdProdutos = 0;
+    pedidos.forEach((pedido) => {
+      pedido.produtos.forEach((obj) => {
+        const produto = obj.produto;
+        if (!contagemProduto[produto]) {
+          contagemProduto[produto] = {
+            nome: obj.name,
+            quantidade: 0,
+            porcentagem: 0
+          };
+        }
+        contagemProduto[produto].quantidade += Number(obj.quantidade);
+        qtdProdutos += Number(obj.quantidade);
+      });
+    });
+
+    for (const produto in contagemProduto) {
+      contagemProduto[produto].porcentagem =
+        (contagemProduto[produto].quantidade / qtdProdutos) * 100;
+    }
+
+    return contagemProduto;
   }
 
   // Função principal
@@ -261,20 +289,13 @@ class Dashboard extends React.Component {
 
     //analise status
     const contagemStatus = this.contarStatus(pedidos);
+    contagemStatus.sort((a, b) => b.quantidade - a.quantidade);
+    //analise mais vendidos
+    const maisVendidos = this.contarVendas(pedidos);
+    maisVendidos.sort((a, b) => b.quantidade - a.quantidade);
 
-    console.log(contagemStatus);
+    console.log(maisVendidos);
 
-    console.log({
-      totalMesAtual,
-      mediaMensal,
-      variacaoMensal,
-      totalDiaAtual,
-      mediaDiaria,
-      variacaoDiaria,
-      valorTotal,
-      contagemStatus,
-      loadingPedidos: false
-    });
     this.setState({
       totalMesAtual,
       mediaMensal,
@@ -284,6 +305,7 @@ class Dashboard extends React.Component {
       variacaoDiaria,
       valorTotal,
       contagemStatus,
+      maisVendidos,
       loadingPedidos: false
     });
   }
@@ -309,7 +331,9 @@ class Dashboard extends React.Component {
       totalDiaAtual,
       mediaDiaria,
       valorTotal,
-      variacaoDiaria
+      variacaoDiaria,
+      contagemStatus,
+      maisVendidos
     } = this.state;
 
     return (
@@ -368,10 +392,17 @@ class Dashboard extends React.Component {
                   />
                 </Grid>
                 <Grid item lg={3} sm={6} xl={3} xs={12}>
-                  <PedidosResumo />
+                  <PedidosResumo
+                    contagem={contagemStatus}
+                    loading={loadingPedidos}
+                  />
                 </Grid>
                 <Grid item lg={4} md={6} xl={3} xs={12}>
-                  <MaisVendidos sx={{ height: '100%' }} />
+                  <MaisVendidos
+                    sx={{ height: '100%' }}
+                    contagem={maisVendidos}
+                    loading={loadingPedidos}
+                  />
                 </Grid>
                 <Grid item lg={8} md={12} xl={9} xs={12}>
                   <Vendas />

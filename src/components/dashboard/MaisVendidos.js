@@ -1,83 +1,60 @@
-import { v4 as uuid } from 'uuid';
-import moment from 'moment';
 import {
   Box,
-  Button,
   Card,
+  CardContent,
   CardHeader,
+  Grid,
   Divider,
-  IconButton,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText
+  Button,
+  LinearProgress,
+  Typography
 } from '@material-ui/core';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import PropTypes from 'prop-types';
 
-const products = [
-  {
-    id: uuid(),
-    name: 'Dropbox',
-    imageUrl: '/static/images/products/product_1.png',
-    updatedAt: moment().subtract(2, 'hours')
-  },
-  {
-    id: uuid(),
-    name: 'Medium Corporation',
-    imageUrl: '/static/images/products/product_2.png',
-    updatedAt: moment().subtract(2, 'hours')
-  },
-  {
-    id: uuid(),
-    name: 'Slack',
-    imageUrl: '/static/images/products/product_3.png',
-    updatedAt: moment().subtract(3, 'hours')
-  },
-  {
-    id: uuid(),
-    name: 'Lyft',
-    imageUrl: '/static/images/products/product_4.png',
-    updatedAt: moment().subtract(5, 'hours')
-  },
-  {
-    id: uuid(),
-    name: 'GitHub',
-    imageUrl: '/static/images/products/product_5.png',
-    updatedAt: moment().subtract(9, 'hours')
-  }
-];
-
-const MaisVendidos = (props) => (
-  <Card {...props}>
-    <CardHeader
-      subtitle={`${products.length} in total`}
-      title="MAIS VENDIDOS"
-    />
+const MaisVendidos = ({ contagem, loading, ...props }) => (
+  <Card sx={{ height: '100%' }} {...props}>
+    <CardHeader title="MAIS VENDIDOS" />
     <Divider />
-    <List>
-      {products.map((product, i) => (
-        <ListItem divider={i < products.length - 1} key={product.id}>
-          <ListItemAvatar>
-            <img
-              alt={product.name}
-              src={product.imageUrl}
-              style={{
-                height: 48,
-                width: 48
-              }}
-            />
-          </ListItemAvatar>
-          <ListItemText
-            primary={product.name}
-            secondary={`Updated ${product.updatedAt.fromNow()}`}
-          />
-          <IconButton edge="end" size="small">
-            <MoreVertIcon />
-          </IconButton>
-        </ListItem>
-      ))}
-    </List>
+    <CardContent>
+      {loading == true ? (
+        <LinearProgress />
+      ) : (
+        <>
+          {Object.keys(contagem).map((key) => (
+            <>
+              <Grid
+                container
+                spacing={3}
+                sx={{ justifyContent: 'space-between', pt: 1 }}
+              >
+                <Grid item sx={{ pt: 2 }}>
+                  <Typography color="textPrimary" variant="h5" marginTop={0.5}>
+                    {contagem[key].nome}
+                  </Typography>
+                  <Typography color="textPrimary" variant="h5" marginTop={0.5}>
+                    {'Quantidade: ' + contagem[key].quantidade}
+                  </Typography>
+                </Grid>
+                <Grid item sx={{ pt: 2 }}>
+                  <Typography color="textPrimary" variant="h3">
+                    {contagem[key].porcentagem.toFixed(2) + '%'}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Box sx={{ pt: 1, pb: 1 }}>
+                <LinearProgress
+                  value={contagem[key].porcentagem}
+                  variant="determinate"
+                  color="primary"
+                />
+              </Box>
+            </>
+          ))}
+        </>
+      )}
+    </CardContent>
     <Divider />
     <Box
       sx={{
@@ -97,5 +74,10 @@ const MaisVendidos = (props) => (
     </Box>
   </Card>
 );
+
+MaisVendidos.propTypes = {
+  contagem: PropTypes.object.isRequired,
+  loading: PropTypes.bool
+};
 
 export default MaisVendidos;
